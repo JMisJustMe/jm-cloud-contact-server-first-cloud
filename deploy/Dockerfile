@@ -4,6 +4,8 @@ COPY package.json ./
 COPY JM_CLOUD_CONTACT_SERVER_v0_5_1_HOSTED_DESCENDANT.mjs ./
 COPY JM_CLOUD_CONTACT_SERVER_CONTRACT_HOSTED_v0_5_1.json ./
 COPY profiles ./profiles
+COPY qa ./qa
+RUN npm test && rm -rf .qa-data
 RUN mkdir -p /data && chown -R node:node /app /data
 USER node
 ENV NODE_ENV=production JM_CLOUD_MODE=production HOST=0.0.0.0 PORT=8791 JM_CLOUD_DATA=/data/JM_CLOUD_CONTACT_DATA_v0_5_1.json JM_CLOUD_PROFILE_DIR=/app/profiles JM_CLOUD_PROFILE_MANIFEST=/app/profiles/JM_CLOUD_PROFILE_MANIFEST_HOSTED_v0_5_1.json JM_CLOUD_RECEIPT_SIGNING_KEY=/data/JM_CLOUD_RECEIPT_SIGNING_KEY_v0_5_1.pem
