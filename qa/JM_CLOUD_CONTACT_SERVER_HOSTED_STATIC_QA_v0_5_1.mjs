@@ -1,0 +1,22 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import vm from 'node:vm';
+import { fileURLToPath } from 'node:url';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const checks=[];const test=(name,fn)=>{try{const detail=fn();checks.push({name,pass:true,detail:detail??'PASS'})}catch(e){checks.push({name,pass:false,detail:String(e.message||e)})}};
+const runner=fs.readFileSync(path.join(root,'profiles','JM_PHONE_LAPTOP_CONTACT_RUNNER_v0_5_1_HOSTED_DESCENDANT.html'),'utf8');
+const manifest=JSON.parse(fs.readFileSync(path.join(root,'profiles','JM_CLOUD_PROFILE_MANIFEST_HOSTED_v0_5_1.json'),'utf8'));
+const docker=fs.readFileSync(path.join(root,'deploy','Dockerfile'),'utf8');
+const render=fs.readFileSync(path.join(root,'render.yaml'),'utf8');
+const server=fs.readFileSync(path.join(root,'JM_CLOUD_CONTACT_SERVER_v0_5_1_HOSTED_DESCENDANT.mjs'),'utf8');
+function scripts(html){return [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(x=>x[1]).join('\n')}
+test('runner-inline-js-parse',()=>{new vm.Script(scripts(runner));return 'PASS'});
+test('runner-jmc5-only',()=>{if(!runner.includes('#JMC5.')||runner.includes('JM_CLOUD_ADMIN_TOKEN'))throw new Error('launch/authority boundary wrong');return 'JMC5 + no admin token'});
+test('runner-native-webrtc',()=>{for(const s of ['RTCPeerConnection','rtc-offer','rtc-answer','DING.BLOCK_REMOTE','PHONE_LAPTOP_AUTORUN_COMPLETE'])if(!runner.includes(s))throw new Error('missing '+s);return 'native WebRTC + terminal evidence'});
+test('manifest-one-profile',()=>{const p=manifest.profiles?.['phone-laptop'];if(!p||p.runner!=='JM_PHONE_LAPTOP_CONTACT_RUNNER_v0_5_1_HOSTED_DESCENDANT.html')throw new Error('manifest mismatch');return p});
+test('server-current-roots',()=>{for(const s of ["'/v5'", "'/v4'", "'/v3'",'/receipt-key','rejoinCredential'])if(!server.includes(s))throw new Error('missing '+s);return 'v5 + compatibility + public receipt key + cold rejoin'});
+test('docker-boots-hosted-descendant',()=>{if(!docker.includes('JM_CLOUD_CONTACT_SERVER_v0_5_1_HOSTED_DESCENDANT.mjs')||!docker.includes('/app/profiles'))throw new Error('docker mismatch');return 'PASS'});
+test('render-separate-service',()=>{if(!render.includes('name: jm-cloud-contact-server-v05')||render.includes('name: jm-cloud-contact-server\n'))throw new Error('service identity not separate');return 'jm-cloud-contact-server-v05'});
+test('render-production-self-origin',()=>{if(!render.includes('JM_CLOUD_ORIGINS')||!render.includes('value: self'))throw new Error('origin policy');return 'self'});
+test('render-v05-data-key-paths',()=>{for(const s of ['JM_CLOUD_CONTACT_DATA_v0_5_1.json','JM_CLOUD_RECEIPT_SIGNING_KEY_v0_5_1.pem','JM_CLOUD_PROFILE_MANIFEST_HOSTED_v0_5_1.json'])if(!render.includes(s))throw new Error('missing '+s);return 'PASS'});
+const passed=checks.filter(x=>x.pass).length,failed=checks.length-passed;const out={body:'JM CLOUD CONTACT SERVER v0.5.1-hosted static/deploy QA',checks,passed,failed,claimBoundary:'Static/deployment QA only; no hosted or physical Ding synthesized.'};console.log(JSON.stringify(out,null,2));fs.writeFileSync(path.join(root,'qa','JM_CLOUD_CONTACT_SERVER_HOSTED_STATIC_QA_RECEIPT_v0_5_1.json'),JSON.stringify(out,null,2));if(failed)process.exit(1);
