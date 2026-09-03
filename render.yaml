@@ -4,6 +4,7 @@ services:
     runtime: docker
     plan: free
     region: frankfurt
+    branch: hosted-v0.5-descendant
     autoDeploy: false
     dockerfilePath: ./deploy/Dockerfile
     dockerContext: .
