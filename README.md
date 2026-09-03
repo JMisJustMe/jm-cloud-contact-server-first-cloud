@@ -37,8 +37,9 @@ The mounted Phone↔Laptop control creates JMC5 endpoint envelopes. The runner r
 
 ## Assistant-side qualification
 
-- Static/deploy QA: **9/9 PASS**
+- Static/deploy QA: **10/10 PASS**
 - Server/profile/API integration QA: **34/34 PASS**
+- The Render service is explicitly pinned to `hosted-v0.5-descendant`.
 - The Docker image runs the same QA family during its build before the runtime image is allowed to continue.
 - Server and runner Git blob identities were checked against the locally proved source before handoff.
 
