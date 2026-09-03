@@ -2,6 +2,9 @@
 .env.*
 *.log
 JM_CLOUD_CONTACT_DATA*.json
+JM_CLOUD_RECEIPT_SIGNING_KEY*.pem
+JM_CLOUD_CONTACT_DATA*.bak
+.qa-data/
 qa-*.json
 node_modules/
 .DS_Store
