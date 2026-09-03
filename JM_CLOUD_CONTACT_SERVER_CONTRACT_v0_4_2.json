@@ -1,0 +1,89 @@
+{
+  "schema": "jm.cloud-contact.server-contract/0.4",
+  "name": "JM CLOUD CONTACT SERVER",
+  "version": "0.4.0",
+  "generation": "Deployment & Operations Descendant",
+  "identity": "General Estate cloud/server body. No single device, app or route owns the server boundary.",
+  "keeper": "SERVER FIRST. ROUTES MANY.",
+  "core_model": [
+    "SPACE",
+    "MEMBER",
+    "CAPABILITY",
+    "EVENT",
+    "COMMAND",
+    "SIGNAL",
+    "RECEIPT"
+  ],
+  "member_types_are_open": true,
+  "examples": [
+    "device",
+    "app",
+    "tool",
+    "game",
+    "website",
+    "agent",
+    "service",
+    "server",
+    "hosted-surface"
+  ],
+  "new_in_v0_3": [
+    "production-mode guardrails",
+    "strict production origins",
+    "health + readiness",
+    "rate limiting",
+    "atomic permission-restricted persistence",
+    "admin audit events in the same signed chain",
+    "member add/revoke/credential-rotate",
+    "space close lifecycle",
+    "request-id dedupe for events/commands/signals",
+    "command expiry enforcement",
+    "admin SSE space stream",
+    "graceful shutdown",
+    "container deployment body",
+    "v0.2 persisted-member credential compatibility with upgrade-on-rotation"
+  ],
+  "authority": "Admin may queue only commands explicitly advertised by the active target member capability set. Revoked members cannot authenticate. Members may emit events/signals only when capability-authorized.",
+  "security": {
+    "admin": "separate bearer token",
+    "member": "unique per-space credential; keyed hash persisted instead of raw credential",
+    "journal": "SHA-256 chained events + HMAC server signatures",
+    "dedupe": "X-JM-Request-ID or requestId",
+    "command_ttl": "5s to 1h",
+    "rate_limit": "configurable fixed window",
+    "production": "refuses wildcard origins and short secrets"
+  },
+  "routes": {
+    "POST /v3/spaces": "create generic contact space and members",
+    "GET /v3/spaces": "admin list",
+    "GET /v3/spaces/:id": "admin inspect",
+    "GET /v3/spaces/:id/receipt": "signed consolidated receipt",
+    "GET /v3/spaces/:id/stream": "admin SSE stream",
+    "POST /v3/spaces/:id/close": "close a space",
+    "POST /v3/spaces/:id/members": "add a member",
+    "POST /v3/spaces/:id/members/:member/rotate": "rotate member credential",
+    "POST /v3/spaces/:id/members/:member/revoke": "revoke member",
+    "POST /v3/spaces/:id/events": "member event",
+    "POST /v3/spaces/:id/commands": "admin queues capability-gated command",
+    "GET /v3/spaces/:id/commands": "target polls commands",
+    "POST /v3/spaces/:id/commands/:cid/ack": "target acknowledgment",
+    "POST /v3/spaces/:id/commands/:cid/result": "target result",
+    "POST /v3/spaces/:id/signals": "capability-gated member-to-member signal",
+    "GET /v3/spaces/:id/signals": "target polls signals"
+  },
+  "claim_boundary": "Deployment-ready and locally proved does not mean publicly deployed. Server-side proof does not impersonate device/app/game/site consequence. NO DING, NO CLAIM remains route-specific.",
+  "apiRoot": "/v4",
+  "compatibilityApiRoots": [
+    "/v3"
+  ],
+  "publicSurfaces": {
+    "landing": "/",
+    "console": "/console",
+    "meta": "/meta",
+    "health": "/health",
+    "ready": "/ready"
+  },
+  "firstPublicDing": {
+    "route": "HTTPS -> SPACE -> MEMBER EVENT -> COMMAND -> ACK -> RESULT -> CLOSE -> SIGNED RECEIPT",
+    "claimBoundary": "Proves public hosted server/browser contact; does not prove a separate physical/app endpoint consequence."
+  }
+}
