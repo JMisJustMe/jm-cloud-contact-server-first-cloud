@@ -1,0 +1,7 @@
+.env
+.env.*
+*.log
+JM_CLOUD_CONTACT_DATA*.json
+qa-*.json
+node_modules/
+.DS_Store
