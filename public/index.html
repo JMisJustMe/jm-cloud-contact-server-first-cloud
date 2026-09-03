@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JM Cloud Contact Server v0.4.2 — Single File Ding</title>
+<style>
+:root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#071019;color:#eef6ff}.wrap{max-width:820px;margin:auto;padding:24px 16px 56px}.card{border:1px solid #294052;border-radius:22px;background:#0c1721;padding:20px;margin:14px 0}.hero{padding:28px}.tag{display:inline-block;border:1px solid #3a5b70;border-radius:999px;padding:6px 10px;font-size:13px}.route,.status{font-family:ui-monospace,monospace;background:#101d29;padding:14px;border-radius:14px;overflow:auto}.status{white-space:pre-wrap;background:#050a0e;min-height:180px}.button,button{font:inherit;font-weight:800;padding:13px 17px;border:0;border-radius:14px;margin:8px 8px 0 0;cursor:pointer}.primary{background:#eef6ff;color:#071019}.secondary{background:#193044;color:#eef6ff}.button{display:inline-block;text-decoration:none}.good{color:#8ef0ba}.warn{color:#ffd78f}.small{font-size:13px;color:#b7c7d4}label{font-size:14px;display:block;margin:8px 0}input{width:100%;font:inherit;padding:13px;border-radius:12px;border:1px solid #3a5b70;background:#071019;color:#eef6ff}button:disabled{opacity:.5}.hidden{display:none}code{background:#101d29;padding:2px 5px;border-radius:6px}
+</style>
+</head>
+<body><main class="wrap">
+<section id="landing" class="card hero">
+<span class="tag">SINGLE-FILE PHONE DESCENDANT</span>
+<h1>JM CLOUD CONTACT SERVER v0.4.2</h1>
+<p><strong>SERVER FIRST. ROUTES MANY.</strong></p>
+<p>One HTML file. No sibling HTML jump. No external JavaScript file. The launch surface and Ding console live in the same document.</p>
+<div class="route">SPACE → MEMBER → CAPABILITY → EVENT / COMMAND / SIGNAL → RECEIPT</div>
+<button id="openConsole" class="primary">🔥 Open First Public Cloud Ding</button>
+</section>
+
+<section id="consolePanel" class="hidden">
+<section class="card"><h1>☁️ First Public Cloud Ding</h1><p>Phone-usable proof console for <strong>JM CLOUD CONTACT SERVER v0.4.2</strong>.</p><div class="route">HTTPS → SPACE → MEMBER EVENT → COMMAND → ACK → RESULT → CLOSE → SIGNED RECEIPT</div></section>
+<section class="card"><label for="admin">Admin token — used in browser memory only; never saved by this page.</label><input id="admin" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Paste JM_CLOUD_ADMIN_TOKEN"><button id="health" class="secondary">Check cloud</button><button id="run" class="primary">🔥 Run first public Ding</button><button id="download" class="secondary" disabled>Download receipt JSON</button><button id="back" class="secondary">Back to overview</button></section>
+<section class="card"><div id="status" class="status">Ready. No claim yet.</div></section>
+<section class="card small"><strong>Claim boundary:</strong> this proves the public hosted server and an external browser can complete the generic contact/command/receipt rail. The “worker” in this first proof is intentionally simulated inside the browser; it does not claim Phone↔Laptop, APK, game, app or other physical endpoint consequence.</section>
+</section>
+
+<section class="card small"><strong>Local preview:</strong> opening this file directly on Android proves this single HTML document loads. The cloud controls only become active when the same document is served from an HTTP/HTTPS JM server origin.</section>
+</main>
+<script>
+const landing=document.getElementById('landing'), panel=document.getElementById('consolePanel');
+document.getElementById('openConsole').addEventListener('click',()=>{landing.classList.add('hidden');panel.classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'})});
+document.getElementById('back').addEventListener('click',()=>{panel.classList.add('hidden');landing.classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'})});
+(()=>{
+'use strict';
+const $=id=>document.getElementById(id), status=$('status'), admin=$('admin'), run=$('run'), health=$('health'), download=$('download');
+let finalReceipt=null;
+
+const hostedHttp = location.protocol === 'https:' || location.protocol === 'http:';
+if(!hostedHttp){
+  run.disabled=true;
+  health.disabled=true;
+  run.textContent='Deploy HTTPS to run Ding';
+  health.textContent='Hosted cloud required';
+  status.textContent='LOCAL PREVIEW ✅\n\nThe console HTML + JavaScript loaded from this phone. This is not a cloud Ding. Deploy the package to an HTTPS host, then open that hosted /console (or /console.html) to enable Check cloud and Run first public Ding.';
+}
+const line=(msg,kind='')=>{const p=document.createElement('div');if(kind)p.className=kind;p.textContent=msg;status.appendChild(p);status.scrollTop=status.scrollHeight};
+const reset=()=>{status.textContent='';finalReceipt=null;download.disabled=true};
+const rid=prefix=>`${prefix}_${Date.now()}_${Math.random().toString(36).slice(2,9)}`;
+async function api(path,{token=null,method='GET',body=null,requestId=null}={}){
+  const headers={};if(token)headers.Authorization=`Bearer ${token}`;if(body!==null)headers['Content-Type']='application/json';if(requestId)headers['X-JM-Request-ID']=requestId;
+  const r=await fetch(path,{method,headers,body:body===null?undefined:JSON.stringify(body),cache:'no-store'});let j;try{j=await r.json()}catch{j={ok:false,error:`non-json response ${r.status}`}}if(!r.ok)throw new Error(`${r.status} ${j.error||r.statusText}`);return j;
+}
+async function check(){reset();try{const [h,r,m]=await Promise.all([api('/health'),api('/ready'),api('/meta')]);line(`HEALTH ✅ ${h.name} ${h.version}`,'good');line(`READY  ✅ mode=${r.mode}`,'good');line(`META   ✅ API ${m.apiRoots.join(' + ')}`,'good');line(`Console origin: ${location.origin}`)}catch(e){line(`CHECK FAILED ❌ ${e.message}`,'warn')}}
+async function proof(){
+  reset();const a=admin.value.trim();if(!a){line('Admin token required.','warn');return}run.disabled=true;health.disabled=true;
+  let spaceId=null;
+  try{
+    line('1/9 Checking public HTTPS surface…');if(location.protocol!=='https:'&&location.hostname!=='localhost'&&location.hostname!=='127.0.0.1')throw new Error('public proof requires HTTPS');
+    const [h,r]=await Promise.all([api('/health'),api('/ready')]);line(`   HEALTH + READY ✅ ${h.version} / ${r.mode}`,'good');
+    spaceId=`public_ding_${Date.now()}`;
+    line('2/9 Creating disposable general proof space…');
+    const created=await api('/v4/spaces',{token:a,method:'POST',requestId:rid('space'),body:{spaceId,label:'First Public Cloud Ding',kind:'first-public-cloud-proof',metadata:{console:'hosted-v0.4',origin:location.origin},members:[{id:'phone_browser',type:'browser-client',label:'External Phone Browser',capabilities:['event:write']},{id:'echo_worker',type:'simulated-worker',label:'Hosted Proof Worker',capabilities:['event:write','command:echo']}]}});
+    const phoneToken=created.credentials.phone_browser, workerToken=created.credentials.echo_worker;line(`   SPACE ✅ ${spaceId}`,'good');
+    line('3/9 Sending external member event…');
+    const ev=await api(`/v4/spaces/${encodeURIComponent(spaceId)}/events`,{token:phoneToken,method:'POST',requestId:rid('event'),body:{event:{type:'PUBLIC_BROWSER_CONTACT',payload:{origin:location.origin,userAgent:navigator.userAgent.slice(0,180)}}}});line(`   EVENT ✅ seq=${ev.record.seq}`,'good');
+    line('4/9 Queueing capability-gated echo command…');
+    const cq=await api(`/v4/spaces/${encodeURIComponent(spaceId)}/commands`,{token:a,method:'POST',requestId:rid('command'),body:{action:'echo',target:'echo_worker',ttlMs:120000,payload:{message:'SERVER FIRST. ROUTES MANY.',issuedFrom:'public-console-v0.4'}}});const cid=cq.command.id;line(`   QUEUE ✅ command=${cid}`,'good');
+    line('5/9 Polling as the proof worker…');const polled=await api(`/v4/spaces/${encodeURIComponent(spaceId)}/commands?after=0`,{token:workerToken});const cmd=polled.commands.find(x=>x.id===cid);if(!cmd)throw new Error('queued command not delivered to proof worker');line(`   DELIVERY ✅ action=${cmd.action}`,'good');
+    line('6/9 Returning ACK…');await api(`/v4/spaces/${encodeURIComponent(spaceId)}/commands/${cid}/ack`,{token:workerToken,method:'POST',body:{status:'accepted',note:'Hosted proof worker accepted echo'}});line('   ACK ✅','good');
+    line('7/9 Returning RESULT + consequence event…');await api(`/v4/spaces/${encodeURIComponent(spaceId)}/commands/${cid}/result`,{token:workerToken,method:'POST',body:{ok:true,kind:'FIRST_PUBLIC_CLOUD_DING',detail:{echo:cmd.payload,carrier:'hosted-browser-simulated-worker'}}});await api(`/v4/spaces/${encodeURIComponent(spaceId)}/events`,{token:workerToken,method:'POST',requestId:rid('consequence'),body:{event:{type:'COMMAND_CONSEQUENCE',payload:{commandId:cid,action:cmd.action,carrier:'hosted-browser-simulated-worker'}}}});line('   RESULT + EVENT ✅','good');
+    line('8/9 Closing disposable proof space…');await api(`/v4/spaces/${encodeURIComponent(spaceId)}/close`,{token:a,method:'POST'});line('   CLOSED ✅','good');
+    line('9/9 Fetching signed final receipt…');const rr=await api(`/v4/spaces/${encodeURIComponent(spaceId)}/receipt`,{token:a});finalReceipt={generatedBy:'JM First Public Cloud Ding Console v0.4',capturedAt:new Date().toISOString(),origin:location.origin,health:h,readiness:r,receipt:rr.receipt};line(`   RECEIPT ✅ ${rr.receipt.receiptHash}`,'good');line(`   SERVER SIG ✅ ${rr.receipt.serverSig}`,'good');line('PUBLIC CLOUD SERVER DING EARNED ✅','good');line('Route-specific physical/device/app consequences remain separately claim-gated.');download.disabled=false;
+  }catch(e){line(`PROOF FAILED ❌ ${e.message}`,'warn');if(spaceId)line(`Open/recover space: ${spaceId}`)}finally{run.disabled=false;health.disabled=false;}
+}
+health.addEventListener('click',check);run.addEventListener('click',proof);download.addEventListener('click',()=>{if(!finalReceipt)return;const blob=new Blob([JSON.stringify(finalReceipt,null,2)],{type:'application/json'}),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=`JM_FIRST_PUBLIC_CLOUD_DING_${Date.now()}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)});
+})();
+
+</script></body></html>
