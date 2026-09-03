@@ -1,0 +1,71 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JM Phone ↔ Laptop — General Cloud Control v0.2</title><style>
+body{font-family:system-ui;background:#071019;color:#eef6ff;margin:0;padding:18px}main{max-width:920px;margin:auto}.card{border:1px solid #294052;border-radius:20px;background:#0c1721;padding:18px;margin:12px 0}
+input,button{font:inherit;padding:12px;border-radius:11px;border:1px solid #3a5b70;background:#071019;color:#eef6ff;box-sizing:border-box}input{width:100%;margin:6px 0}button{font-weight:800;cursor:pointer;margin:6px 6px 0 0}.good{color:#8ef0ba}.warn{color:#ffd78f}pre{white-space:pre-wrap;word-break:break-word;background:#050a0e;padding:12px;border-radius:12px}.links a{display:block;color:#8edfff;margin:9px 0}</style></head><body><main>
+<h1>JM PHONE ↔ LAPTOP · GENERAL CLOUD CONTROL v0.2</h1>
+<p><b>SERVER FIRST. ROUTES MANY.</b> This is a Phone↔Laptop profile/operator surface for JM CLOUD CONTACT SERVER, not another root server.</p>
+<div class="card"><label>General cloud server base</label><input id="base" placeholder="https://your-jm-cloud.example">
+<label>Runner URL</label><input id="runner" placeholder="https://your-jm-cloud.example/phone-laptop-runner">
+<label>ADMIN token — memory only</label><input id="admin" type="password" autocomplete="off">
+<button id="create">CREATE PHONE ↔ LAPTOP SPACE</button></div>
+<div class="card links" id="links">No profile space yet.</div>
+<div class="card"><pre id="status">Ready.</pre></div>
+<script>
+const $=id=>document.getElementById(id);if(location.protocol.startsWith('http')){queueMicrotask(()=>{$('base').value=location.origin;$('runner').value=location.origin+'/profiles/phone-laptop/runner'})}const enc=x=>{const b=new TextEncoder().encode(JSON.stringify(x));let s='';b.forEach(v=>s+=String.fromCharCode(v));return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')};
+const rid=p=>p+'-'+Date.now()+'-'+Math.random().toString(36).slice(2,8);let state=null,pollTimer=null;
+async function api(path,{method='GET',token=null,body=null,requestId=null}={}){const h={'Content-Type':'application/json'};if(token)h.Authorization='Bearer '+token;if(requestId)h['X-JM-Request-ID']=requestId;const r=await fetch(state.base+path,{method,headers:h,body:body?JSON.stringify(body):undefined});const j=await r.json();if(!r.ok)throw new Error(j.error||('HTTP '+r.status));return j}
+function log(x){$('status').textContent+=(typeof x==='string'?'\n'+x:'\n'+JSON.stringify(x,null,2));$('status').scrollTop=$('status').scrollHeight}
+function traceEvents(space,kind){return (space.events||[]).filter(r=>r.event?.type==='PHONE_LAPTOP_TRACE'&&r.event?.trace?.kind===kind)}
+function witnessed(space,kind){const rows=traceEvents(space,kind),roles=new Set(rows.map(x=>x.memberId));return roles.has('phone')&&roles.has('laptop')}
+function canonical(v){if(v===null||typeof v!=='object')return JSON.stringify(v);if(Array.isArray(v))return '['+v.map(canonical).join(',')+']';return '{'+Object.keys(v).sort().map(k=>JSON.stringify(k)+':'+canonical(v[k])).join(',')+'}'}
+async function sha256(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+function b64urlBytes(s){let x=String(s||'').replace(/-/g,'+').replace(/_/g,'/');while(x.length%4)x+='=';return Uint8Array.from(atob(x),c=>c.charCodeAt(0))}
+async function verifyGeneralReceipt(receipt){
+ const snap=structuredClone(receipt);
+ for(const k of ['receiptHash','serverSig','publicSig','publicKeyId','signatureAlgorithm','claimBoundary'])delete snap[k];
+ const localHash=await sha256(canonical(snap));
+ if(localHash!==receipt.receiptHash)return {ok:false,reason:'receipt hash mismatch',localHash};
+ const kr=await fetch(state.base+'/receipt-key'),kj=await kr.json();
+ if(!kr.ok||!kj.publicKeyJwk||kj.keyId!==receipt.publicKeyId)return {ok:false,reason:'receipt key mismatch',localHash};
+ const key=await crypto.subtle.importKey('jwk',kj.publicKeyJwk,{name:'ECDSA',namedCurve:'P-256'},false,['verify']);
+ const sigOk=await crypto.subtle.verify({name:'ECDSA',hash:'SHA-256'},key,b64urlBytes(receipt.publicSig),new TextEncoder().encode(receipt.receiptHash));
+ return {ok:sigOk,reason:sigOk?'verified':'public signature failed',localHash,keyId:kj.keyId}
+}
+async function monitor(){
+ if(!state)return;try{
+  const x=await api(state.apiRoot+'/spaces/'+encodeURIComponent(state.spaceId),{token:state.admin}),space=x.space;
+  const c=space.events?.filter(e=>e.event?.type==='PHONE_LAPTOP_TRACE')||[];
+  $('status').textContent='SPACE '+state.spaceId+'\nTrace events: '+c.length+'\nCONNECT witnessed: '+witnessed(space,'DING.CONNECT')+'\nPAIR witnessed: '+witnessed(space,'DING.PAIR')+'\nBLOCK sender: '+traceEvents(space,'DING.BLOCK').length+'\nBLOCK remote: '+traceEvents(space,'DING.BLOCK_REMOTE').length;
+  if(!state.autorunQueued&&witnessed(space,'DING.CONNECT')){
+   const q=await api(state.apiRoot+'/spaces/'+encodeURIComponent(state.spaceId)+'/commands',{token:state.admin,method:'POST',requestId:rid('autorun'),body:{action:'autorun',target:'laptop',ttlMs:600000,payload:{profile:'jm.phone-laptop-contact/0.5.0'}}});state.autorunQueued=true;state.commandId=q.command.id;log('AUTORUN QUEUED ✅ command '+state.commandId)
+  }
+  const autorun=state.commandId?(space.commands||[]).find(x=>x.id===state.commandId):null;
+  if(!state.closed&&traceEvents(space,'DING.BLOCK').length&&traceEvents(space,'DING.BLOCK_REMOTE').length&&autorun?.status==='completed'){
+   state.closed=true;await api(state.apiRoot+'/spaces/'+encodeURIComponent(state.spaceId)+'/close',{token:state.admin,method:'POST'});
+   const rr=await api(state.apiRoot+'/spaces/'+encodeURIComponent(state.spaceId)+'/receipt',{token:state.admin});
+   const verified=await verifyGeneralReceipt(rr.receipt);
+   if(!verified.ok)throw new Error('FINAL RECEIPT VERIFY FAILED · '+verified.reason);
+   log('SPACE CLOSED + GENERAL RECEIPT HASH VERIFIED + ECDSA VERIFIED ✅');
+   log({receipt:rr.receipt,verification:verified});
+   clearInterval(pollTimer)
+  }
+ }catch(e){log('MONITOR '+e.message)}
+}
+$('create').onclick=async()=>{try{
+ const base=$('base').value.trim().replace(/\/+$/,''),runner=$('runner').value.trim(),admin=$('admin').value.trim();if(!base||!runner||!admin)throw new Error('base + runner + admin required');
+ const meta=await fetch(base+'/meta').then(r=>r.json());if(!meta.ok||!String(meta.schema||'').startsWith('jm.cloud-contact.server/'))throw new Error('not JM CLOUD CONTACT SERVER');const roots=meta.apiRoots||[];const apiRoot=roots.includes('/v5')?'/v5':roots.includes('/v4')?'/v4':roots[0]||'/v4';
+ state={base,runner,admin,apiRoot,autorunQueued:false,closed:false};const pairSeed=crypto.getRandomValues(new Uint8Array(32));const p=[...pairSeed].map(x=>x.toString(16).padStart(2,'0')).join('');
+ const spaceId='phone_laptop_'+Date.now();
+ const made=await api(state.apiRoot+'/spaces',{token:admin,method:'POST',requestId:rid('space'),body:{spaceId,label:'JM Phone ↔ Laptop Contact',kind:'device-contact',metadata:{profile:'jm.phone-laptop-contact/0.5.0'},members:[
+  {id:'phone',type:'device',capabilities:['event:write','command:autorun','command:pair','command:exchange','command:recover','command:revoke','command:block','command:ping','command:snapshot','signal:rtc-offer','signal:rtc-answer']},
+  {id:'laptop',type:'device',capabilities:['event:write','command:autorun','command:pair','command:exchange','command:recover','command:revoke','command:block','command:ping','command:snapshot','signal:rtc-offer','signal:rtc-answer']}
+ ]}});
+ state.spaceId=spaceId;
+ const mk=(m,t,r)=>runner+'#JMC5.'+enc({u:base,s:spaceId,m,t,r,p,x:'cloud-command'});
+ const phone=mk('phone',made.credentials.phone,made.rejoinCredentials.phone),laptop=mk('laptop',made.credentials.laptop,made.rejoinCredentials.laptop);
+ $('links').innerHTML='<b>Open the matching link on each endpoint:</b><a target="_blank" href="'+phone+'">📱 PHONE RUNNER</a><a target="_blank" href="'+laptop+'">💻 LAPTOP RUNNER</a><button id="copyPhone">COPY PHONE LINK</button><button id="copyLaptop">COPY LAPTOP LINK</button>';
+ $('copyPhone').onclick=()=>navigator.clipboard.writeText(phone);$('copyLaptop').onclick=()=>navigator.clipboard.writeText(laptop);
+ $('status').textContent='SPACE CREATED ✅ '+spaceId+'\nWaiting for both endpoints. ADMIN token remains only in this page memory.';
+ pollTimer=setInterval(monitor,1500);monitor()
+}catch(e){$('status').textContent='CREATE FAILED · '+e.message}}
+</script></main></body></html>
