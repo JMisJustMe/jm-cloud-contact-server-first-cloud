@@ -1,0 +1,17 @@
+{
+  "body": "JM CLOUD CONTACT SERVER v0.5.1-hosted static/deploy QA",
+  "checks": [
+    {"name":"runner-inline-js-parse","pass":true,"detail":"PASS"},
+    {"name":"runner-jmc5-only","pass":true,"detail":"JMC5 + no admin token"},
+    {"name":"runner-native-webrtc","pass":true,"detail":"native WebRTC + terminal evidence"},
+    {"name":"manifest-one-profile","pass":true,"detail":{"label":"JM Phone ↔ Laptop Contact","kind":"device-contact","profile":"JM_PHONE_LAPTOP_PROFILE_v0_5_0.json","control":"JM_PHONE_LAPTOP_GENERAL_CLOUD_CONTROL_v0_2.html","runner":"JM_PHONE_LAPTOP_CONTACT_RUNNER_v0_5_1_HOSTED_DESCENDANT.html","launchEnvelope":"JMC5","claimBoundary":"Hosted profile/server proof does not impersonate physical Phone↔Laptop consequence."}},
+    {"name":"server-current-roots","pass":true,"detail":"v5 + compatibility + public receipt key + cold rejoin"},
+    {"name":"docker-boots-hosted-descendant","pass":true,"detail":"PASS"},
+    {"name":"render-separate-service","pass":true,"detail":"jm-cloud-contact-server-v05"},
+    {"name":"render-production-self-origin","pass":true,"detail":"self"},
+    {"name":"render-v05-data-key-paths","pass":true,"detail":"PASS"}
+  ],
+  "passed": 9,
+  "failed": 0,
+  "claimBoundary": "Static/deployment QA only; no hosted or physical Ding synthesized."
+}
