@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: jm-cloud-contact-server
+    name: jm-cloud-contact-server-v05
     runtime: docker
     plan: free
     region: frankfurt
@@ -18,10 +18,14 @@ services:
       - key: JM_CLOUD_ORIGINS
         value: self
       - key: JM_CLOUD_DATA
-        value: /data/JM_CLOUD_CONTACT_DATA_v0_4.json
-      - key: JM_CLOUD_PUBLIC
-        value: /app/public
+        value: /data/JM_CLOUD_CONTACT_DATA_v0_5_1.json
+      - key: JM_CLOUD_PROFILE_DIR
+        value: /app/profiles
+      - key: JM_CLOUD_PROFILE_MANIFEST
+        value: /app/profiles/JM_CLOUD_PROFILE_MANIFEST_HOSTED_v0_5_1.json
+      - key: JM_CLOUD_RECEIPT_SIGNING_KEY
+        value: /data/JM_CLOUD_RECEIPT_SIGNING_KEY_v0_5_1.pem
       - key: JM_CLOUD_RATE_WINDOW_MS
         value: "60000"
       - key: JM_CLOUD_RATE_MAX
-        value: "240"
+        value: "360"
