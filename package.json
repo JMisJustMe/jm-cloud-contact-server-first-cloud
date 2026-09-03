@@ -1,0 +1,13 @@
+{
+  "name": "jm-cloud-contact-server",
+  "version": "0.4.2",
+  "private": true,
+  "type": "module",
+  "engines": {"node": ">=20"},
+  "scripts": {
+    "start": "node JM_CLOUD_CONTACT_SERVER_v0_4_2.mjs",
+    "test": "node JM_CLOUD_CONTACT_SERVER_LOCAL_QA_v0_4_2.mjs",
+    "test:public": "node JM_CLOUD_CONTACT_SERVER_PUBLIC_QA_v0_4_2.mjs",
+    "test:all": "npm test && npm run test:public"
+  }
+}
