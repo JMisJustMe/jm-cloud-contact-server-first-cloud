@@ -1,0 +1,14 @@
+{
+  "profile": "jm.phone-laptop-contact/0.2",
+  "relation": "First proof/client profile only; not the identity or limit of JM CLOUD CONTACT SERVER.",
+  "space": {
+    "kind": "device-contact",
+    "members": [
+      {"id":"phone","type":"device","capabilities":["event:write","command:autorun","command:pair","command:exchange","command:recover","command:revoke","command:block","command:ping","command:snapshot","signal:rtc-offer","signal:rtc-answer"]},
+      {"id":"laptop","type":"device","capabilities":["event:write","command:autorun","command:pair","command:exchange","command:recover","command:revoke","command:block","command:ping","command:snapshot","signal:rtc-offer","signal:rtc-answer"]}
+    ]
+  },
+  "legacy_ding_mapping": {
+    "DING.CONNECT":"contact.connect","DING.RECONNECT":"contact.reconnect","DING.PAIR":"contact.pair","DING.SIGNED_ACK":"contact.exchange","DING.RECOVER":"contact.recover","DING.REVOKE":"contact.revoke","DING.BLOCK":"contact.block"
+  }
+}
