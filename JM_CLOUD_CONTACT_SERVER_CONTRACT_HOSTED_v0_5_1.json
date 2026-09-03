@@ -1,0 +1,25 @@
+{
+  "schema": "jm.cloud-contact.server/0.5",
+  "name": "JM CLOUD CONTACT SERVER",
+  "version": "0.5.1-hosted",
+  "generation": "Hosted descendant of frozen v0.5.0 Profile Mounts",
+  "keeper": "SERVER FIRST. ROUTES MANY.",
+  "apiRoots": ["/v5", "/v4", "/v3"],
+  "publicSurfaces": ["/health", "/ready", "/meta", "/receipt-key", "/profiles", "/profiles/:id/control", "/profiles/:id/runner"],
+  "receipt": {
+    "schema": "jm.cloud-contact.space-receipt/0.5",
+    "canonicalHash": "SHA-256",
+    "compatibilitySignature": "HMAC-SHA256",
+    "publicSignature": "ECDSA-P256-SHA256-P1363",
+    "publicKeySurface": "/receipt-key"
+  },
+  "authority": {
+    "admin": "separate bearer token",
+    "member": "space-scoped session credential",
+    "rejoin": "member-scoped durable authority rotating both session credential and rejoin authority",
+    "commands": "target capability-gated",
+    "signals": "both endpoints capability-gated"
+  },
+  "carrierBoundary": "Cloud provides rendezvous/signalling/control/receipt. WebRTC DataChannel remains endpoint-to-endpoint.",
+  "claimBoundary": "Public server/profile proof is separate from real Phone↔Laptop endpoint consequence. NO DING, NO CLAIM remains route-specific."
+}
