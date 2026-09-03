@@ -1,0 +1,15 @@
+{
+  "schema": "jm.cloud-contact.profile-manifest/0.5-hosted-descendant",
+  "lineage": "Frozen v0.5.0 Profile Mounts -> hosted deployment descendant v0.5.1",
+  "profiles": {
+    "phone-laptop": {
+      "label": "JM Phone ↔ Laptop Contact",
+      "kind": "device-contact",
+      "profile": "JM_PHONE_LAPTOP_PROFILE_v0_5_0.json",
+      "control": "JM_PHONE_LAPTOP_GENERAL_CLOUD_CONTROL_v0_2.html",
+      "runner": "JM_PHONE_LAPTOP_CONTACT_RUNNER_v0_5_1_HOSTED_DESCENDANT.html",
+      "launchEnvelope": "JMC5",
+      "claimBoundary": "Hosted profile/server proof does not impersonate physical Phone↔Laptop consequence."
+    }
+  }
+}
