@@ -1,28 +1,48 @@
-# JM CLOUD CONTACT SERVER v0.4.2 — First Public Launch Body
+# JM CLOUD CONTACT SERVER v0.5.1-hosted — Hosted Descendant
 
 **SERVER FIRST. ROUTES MANY.**
 
-This repository is the already-published first public-launch carrier for JM CLOUD CONTACT SERVER. It serves the phone-safe hosted Ding console at `/` and `/console` and keeps physical/app/game/device consequences separately claim-gated.
+This branch is the public-hosting descendant above two preserved bodies:
 
-## Deploy now
+- `main` keeps the v0.4.2 carrier that earned the **First Public Cloud Server Ding**.
+- Frozen v0.5.0 Profile Mounts remains the software-scope parent with its original 27/27 integration QA and claim boundary.
+- `hosted-v0.5-descendant` carries the deployment-specific v0.5.1-hosted descendant used to earn the next public proof without rewriting either parent.
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2FJMisJustMe%2Fjm-cloud-contact-server-first-cloud)
+## Current route
 
-The root `render.yaml` uses the Docker deployment route, generates the admin/server secrets inside Render, checks `/ready`, and keeps auto-deploy disabled for the first controlled Ding.
+`v0.4.2 PUBLIC DING EARNED -> frozen v0.5.0 Profile Mounts -> v0.5.1-hosted -> PUBLIC v0.5 DING -> Phone↔Laptop physical consequence`
 
-After Render reports the service **Live**:
+The branch Render Blueprint deliberately creates a **separate** service:
 
-1. Open the generated `https://<service>.onrender.com/console` URL.
-2. In Render, reveal/copy the generated `JM_CLOUD_ADMIN_TOKEN` environment value.
-3. Paste it into the hosted console and run **First Public Cloud Ding**.
-4. Preserve the returned signed receipt.
+`jm-cloud-contact-server-v05`
+
+Use this branch when creating the Blueprint; do not repoint the already-crowned v0.4.2 service.
+
+## Hosted descendant surfaces
+
+- `/health`
+- `/ready`
+- `/meta`
+- `/receipt-key`
+- `/profiles`
+- `/profiles/phone-laptop/control`
+- `/profiles/phone-laptop/runner`
+- current API `/v5`, compatibility `/v4` + `/v3`
+
+The mounted Phone↔Laptop control creates JMC5 endpoint envelopes. The runner receives only endpoint-scoped member authority and rotating rejoin authority; the operator ADMIN credential never enters the endpoint runner.
+
+## Assistant-side qualification
+
+- Static/deploy QA: **9/9 PASS**
+- Server/profile/API integration QA: **34/34 PASS**
+- Server source Git-blob parity was checked against the locally tested source before handoff.
+
+These passes do **not** synthesize a public hosted v0.5 Ding or a physical Phone↔Laptop Ding.
 
 ## Claim boundary
 
-Repository publication is not the hosted Ding. A live public HTTPS server plus the external browser receipt earns the hosted server/browser Ding only. Phone↔Laptop v0.5 physical consequence remains a separate descendant and does not get silently crowned here.
+Cloud carries rendezvous, signalling, allow-listed command state and receipts. The Phone↔Laptop WebRTC DataChannel remains endpoint-to-endpoint. Public server/profile proof and physical endpoint consequence remain separately claim-gated.
 
-## Current lineage
+**NO DING, NO CLAIM.**
 
-- This repo currently carries the stable **v0.4.2 first-public-launch package**.
-- **JM CLOUD CONTACT SERVER v0.5.0 Profile Mounts** remains the current frozen software descendant and adds `/v5`, rotating cold rejoin authority, profile mounts, member-scoped ICE and public ECDSA receipt verification.
-- Do not overwrite the frozen v0.5 body with a partial copy merely to change the version label. Its exact deployment upgrade should inherit above this first hosted Ding.
+See `README_HOSTED_V0_5_1.md` for the deployment qualification checklist.
