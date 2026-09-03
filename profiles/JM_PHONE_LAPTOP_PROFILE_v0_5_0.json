@@ -1,0 +1,11 @@
+{
+  "profile": "jm.phone-laptop-contact/0.5.0",
+  "rootServer": "JM CLOUD CONTACT SERVER v0.5+",
+  "route": "PROFILE CONTROL -> SPACE -> PHONE/LAPTOP MEMBERS -> SIGNAL -> WEBRTC -> CLOUD AUTORUN -> ACK -> RUNNER CONSEQUENCE -> RESULT -> TRACE -> CLOSE -> RECEIPT",
+  "launchEnvelope": "JMC5 = server URL + space ID + member ID + session member credential + durable rotating rejoin secret + shared pair seed",
+  "coldRejoin": "Session member credential and durable rejoin authority both rotate after successful cold rejoin; old values cease to authorize.",
+  "rendezvous": "PHONE deterministically offers; LAPTOP listens. General server SIGNAL carries SDP only; endpoint WebRTC DataChannel carries Runner protocol.",
+  "operatorCloseLaw": "Do not close until reciprocal BLOCK evidence exists and AUTORUN command RESULT is completed.",
+  "receipt": "Operator recomputes canonical receipt hash and verifies public ECDSA signature.",
+  "claimBoundary": "Assistant-side two-browser network execution was blocked by browser policy; no v0.5 browser or owner physical WebRTC crown is claimed."
+}
