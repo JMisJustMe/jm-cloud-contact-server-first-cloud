@@ -1,12 +1,14 @@
 {
-  "name": "jm-cloud-contact-server",
-  "version": "0.4.2",
+  "name": "jm-cloud-contact-server-hosted-v05-descendant",
+  "version": "0.5.1-hosted",
   "private": true,
   "type": "module",
-  "engines": {"node": ">=20"},
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
-    "start": "node JM_CLOUD_CONTACT_SERVER_v0_4_2.mjs",
-    "test": "node --check JM_CLOUD_CONTACT_SERVER_v0_4_2.mjs",
+    "start": "node JM_CLOUD_CONTACT_SERVER_v0_5_1_HOSTED_DESCENDANT.mjs",
+    "test": "node --check JM_CLOUD_CONTACT_SERVER_v0_5_1_HOSTED_DESCENDANT.mjs && node qa/JM_CLOUD_CONTACT_SERVER_HOSTED_STATIC_QA_v0_5_1.mjs && node qa/JM_CLOUD_CONTACT_SERVER_HOSTED_QA_v0_5_1.mjs",
     "preflight": "npm test"
   }
 }
