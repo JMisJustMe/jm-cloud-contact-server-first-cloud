@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: jm-cloud-contact-server
+    runtime: docker
+    plan: free
+    region: frankfurt
+    autoDeploy: false
+    dockerfilePath: ./deploy/Dockerfile
+    dockerContext: .
+    healthCheckPath: /ready
+    maxShutdownDelaySeconds: 30
+    envVars:
+      - key: JM_CLOUD_MODE
+        value: production
+      - key: JM_CLOUD_ADMIN_TOKEN
+        generateValue: true
+      - key: JM_CLOUD_SERVER_SECRET
+        generateValue: true
+      - key: JM_CLOUD_ORIGINS
+        value: self
+      - key: JM_CLOUD_DATA
+        value: /data/JM_CLOUD_CONTACT_DATA_v0_4.json
+      - key: JM_CLOUD_PUBLIC
+        value: /app/public
+      - key: JM_CLOUD_RATE_WINDOW_MS
+        value: "60000"
+      - key: JM_CLOUD_RATE_MAX
+        value: "240"
