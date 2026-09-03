@@ -8,7 +8,6 @@ services:
     dockerfilePath: ./deploy/Dockerfile
     dockerContext: .
     healthCheckPath: /ready
-    maxShutdownDelaySeconds: 30
     envVars:
       - key: JM_CLOUD_MODE
         value: production
