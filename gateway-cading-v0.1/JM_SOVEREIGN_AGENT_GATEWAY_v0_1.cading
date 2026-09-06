@@ -1,0 +1,68 @@
+module JMSovereignAgentGateway {
+  let keeper: text = "YOUR DOOR. MANY AGENTS. YOUR AUTHORITY."
+  let authorityMode: text = "HUMAN_FINAL"
+  let nextTaskId: number = 1
+  let tasks: map = {}
+
+  func createTask(prompt: text, agent: text) -> text {
+    let id: text = "task-" + text(nextTaskId)
+    let task: map = {
+      id: id,
+      prompt: prompt,
+      agent: agent,
+      status: "AWAITING_APPROVAL",
+      approved: false,
+      dispatched: false
+    }
+    let stored: any = set(tasks, id, task)
+    nextTaskId = nextTaskId + 1
+    trace { event: "TASK_CREATED", task: id, agent: agent }
+    ding "TASK_CREATED"
+    return id
+  }
+
+  func approveTask(id: text) -> bool {
+    let task: any = get(tasks, id, null)
+    if task == null {
+      trace { event: "APPROVAL_HOLD_NO_TASK", task: id }
+      hold
+      return false
+    }
+    task.approved = true
+    task.status = "APPROVED"
+    trace { event: "AUTHORITY_APPROVED", task: id, authority: authorityMode }
+    ding "AUTHORITY_APPROVED"
+    return true
+  }
+
+  func dispatchTask(id: text) -> text {
+    let task: any = get(tasks, id, null)
+    if task == null {
+      trace { event: "DISPATCH_HOLD_NO_TASK", task: id }
+      hold
+      return "HOLD_NO_TASK"
+    }
+    if task.approved == false {
+      trace { event: "DISPATCH_HOLD_AUTHORITY_REQUIRED", task: id }
+      hold
+      return "HOLD_AUTHORITY_REQUIRED"
+    }
+    task.dispatched = true
+    task.status = "READY_FOR_AGENT_ROUTE"
+    trace { event: "DISPATCH_AUTHORISED", task: id, agent: task.agent }
+    ding "DISPATCH_AUTHORISED"
+    return task.status
+  }
+
+  func taskStatus(id: text) -> any {
+    return get(tasks, id, null)
+  }
+
+  func main() -> text {
+    let id: text = createTask("gateway-smoke", "unbound-agent")
+    let before: text = dispatchTask(id)
+    let approved: bool = approveTask(id)
+    let after: text = dispatchTask(id)
+    return before + "|" + after
+  }
+}

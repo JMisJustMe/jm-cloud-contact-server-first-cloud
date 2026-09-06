@@ -1,28 +1,49 @@
-# JM CLOUD CONTACT SERVER v0.4.2 — First Public Launch Body
+# JM SOVEREIGN AGENT GATEWAY v0.2 — Durable Cading Deployment Branch
 
-**SERVER FIRST. ROUTES MANY.**
+**YOUR DOOR. MANY AGENTS. YOUR AUTHORITY.**
 
-This repository is the already-published first public-launch carrier for JM CLOUD CONTACT SERVER. It serves the phone-safe hosted Ding console at `/` and `/console` and keeps physical/app/game/device consequences separately claim-gated.
+This branch promotes the existing JM Cloud Contact public-service rail into the durable JM Sovereign Agent Gateway descendant without deleting the historical v0.4.2 carrier files.
 
-## Deploy now
+## Source authority
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2FJMisJustMe%2Fjm-cloud-contact-server-first-cloud)
+The source body is:
 
-The root `render.yaml` uses the Docker deployment route, generates the admin/server secrets inside Render, checks `/ready`, and keeps auto-deploy disabled for the first controlled Ding.
+`gateway-cading-v0.2/JM_SOVEREIGN_AGENT_GATEWAY_v0_2.cading`
 
-After Render reports the service **Live**:
+JavaScript, Node, Docker, Render, HTTP and ACP are downstream carriers/adapters. They do not replace Cading as source authority.
 
-1. Open the generated `https://<service>.onrender.com/console` URL.
-2. In Render, reveal/copy the generated `JM_CLOUD_ADMIN_TOKEN` environment value.
-3. Paste it into the hosted console and run **First Public Cloud Ding**.
-4. Preserve the returned signed receipt.
+See `gateway-cading-v0.2/README.md` for the compiler, parity, persistence and claim-boundary receipts.
 
-## Claim boundary
+## Canonical service continuity
 
-Repository publication is not the hosted Ding. A live public HTTPS server plus the external browser receipt earns the hosted server/browser Ding only. Phone↔Laptop v0.5 physical consequence remains a separate descendant and does not get silently crowned here.
+The Render Blueprint deliberately preserves the established service identity:
 
-## Current lineage
+`jm-cloud-contact-server`
 
-- This repo currently carries the stable **v0.4.2 first-public-launch package**.
-- **JM CLOUD CONTACT SERVER v0.5.0 Profile Mounts** remains the current frozen software descendant and adds `/v5`, rotating cold rejoin authority, profile mounts, member-scoped ICE and public ECDSA receipt verification.
-- Do not overwrite the frozen v0.5 body with a partial copy merely to change the version label. Its exact deployment upgrade should inherit above this first hosted Ding.
+A descendant does not receive a new public root merely because its body evolved.
+
+## Durable deployment rail
+
+The root `render.yaml` now describes:
+
+- one Docker web-service instance;
+- paid `0.5c-512mb` compute;
+- one 1 GB persistent disk at `/data`;
+- generated client, human-authority and ACP bearer tokens;
+- `/ready` health checking;
+- ACP enabled at `/acp`;
+- `autoDeploy: false` for the first controlled hosted durability Ding.
+
+The deployed state file is intended to live at:
+
+`/data/JM_SOVEREIGN_AGENT_GATEWAY_STORE_v0_2.json`
+
+## Current proof state
+
+**PASS:** Cading compile/runtime, source-owned state roundtrip, JS-carrier parity, split authority, chained receipts, atomic persistence and two-process local restart recovery.
+
+**OPEN:** actual Render persistent-disk restart Ding, public HTTPS descendant contact, ACP live-wire Ding and first external coding-agent execution.
+
+Repository configuration is not itself a hosted durability claim.
+
+**No Ding, no claim.**
