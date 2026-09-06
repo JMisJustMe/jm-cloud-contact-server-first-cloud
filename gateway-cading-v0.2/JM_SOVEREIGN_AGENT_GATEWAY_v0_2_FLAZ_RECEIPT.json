@@ -1,0 +1,34 @@
+{
+  "schema": "jm.sovereign-agent-gateway.flaz-receipt/0.2",
+  "body": "JM SOVEREIGN AGENT GATEWAY",
+  "version": "0.2.0",
+  "closure_label": "Durable Cading Service - Perfect Polish / FLAZ",
+  "keeper": "YOUR DOOR. MANY AGENTS. YOUR AUTHORITY.",
+  "closed_local": "2026-09-06T13:30:55.716353+01:00",
+  "status": "PERFECT POLISH COMPLETE | FROZEN | LOCKED | ANCHORED | ZIONFOLDERED",
+  "scope": "DURABLE_CANDIDATE_PRE_PAID_HOSTED_CONTACT",
+  "source_authority": "Cading / JM Coding Estate",
+  "house": "06 - CODING / CADING / RUNTIME / OS",
+  "github": {
+    "repository": "JMisJustMe/jm-cloud-contact-server-first-cloud",
+    "branch": "jm-sovereign-agent-gateway-cading-v0.2-durable",
+    "draft_pr": 1,
+    "pr_state_at_closure": "OPEN_DRAFT_MERGEABLE_NOT_MERGED",
+    "technical_head_before_documentary_closure": "c13f0da9a01c7b4a00c0962c87c783694560b78e"
+  },
+  "flaz": {
+    "freeze": {"status":"SATISFIED","meaning":"v0.2 durable-candidate body and evidence set fixed for continuation at this scope."},
+    "lock": {"status":"SATISFIED","meaning":"Claim ceiling, source authority and carrier boundary explicitly locked."},
+    "anchor": {"status":"SATISFIED","meaning":"GitHub durable branch, Draft PR #1, Perfect Polish documents and this receipt form continuation anchors."},
+    "zionfolder": {"status":"SATISFIED","route":"/Zionfolder/JM Estate/Coding Cading Runtime OS/Cloud Contact/Sovereign Agent Gateway/v0.2 Durable Cading Service/","meaning":"Final Perfect Polish DOCX/PDF physically uploaded to the JM Estate Library route before closure receipt crown."}
+  },
+  "library_persistence": {
+    "route":"/Zionfolder/JM Estate/Coding Cading Runtime OS/Cloud Contact/Sovereign Agent Gateway/v0.2 Durable Cading Service/",
+    "docx":{"path":"/Zionfolder/JM Estate/Coding Cading Runtime OS/Cloud Contact/Sovereign Agent Gateway/v0.2 Durable Cading Service/JM_SOVEREIGN_AGENT_GATEWAY_v0_2_PERFECT_POLISH.docx","file_id":"file_000000009b3c81f4812593c8a3229df8","library_file_id":"libfile_ada92bc98e58819187f4558e6f7f00fb","sha256":"9ab5845efd3a8265d1f7dcd6590f0dc7b52fc7b5a69df769d4a347df10f1c08d"},
+    "pdf":{"path":"/Zionfolder/JM Estate/Coding Cading Runtime OS/Cloud Contact/Sovereign Agent Gateway/v0.2 Durable Cading Service/JM_SOVEREIGN_AGENT_GATEWAY_v0_2_PERFECT_POLISH.pdf","file_id":"file_00000000cdec81f4a787516004bd47ca","library_file_id":"libfile_dbda0979030c81919a5491ad36b7772c","sha256":"71fc5d365c0c99c68cb8383df4519cbcf92f480853a58f8088548987c55aca9f"}
+  },
+  "open_gates_not_crowned": ["Paid Render v0.2 deployment","Live persistent-disk restart proof","Canonical public HTTPS descendant contact and exact URL","Live ACP client-to-gateway wire Ding","First external coding-agent execution and returned-work receipt"],
+  "render_account_certainty": {"account_exists":"CONFIRMED","evidence":"Gmail contains Render activation and Blueprint Sync Failed messages dated 2026-09-03 and a welcome/get-started message dated 2026-09-05.","remembered_roughly_5_usd_render_payment":"NOT_PROVEN","billing_search":"No Render invoice, billing, payment, receipt or credit email found in targeted Gmail search.","boundary":"The remembered amount may be a card authorisation or another service; do not crown it as Render credit/payment without account billing evidence."},
+  "prepared_cost_boundary": {"web_service_usd_per_month":7.0,"persistent_disk_1gb_usd_per_month":0.25,"prepared_baseline_usd_per_month":7.25,"spent_by_this_closure_usd":0.0},
+  "law": ["NO DING, NO CLAIM","CAPABILITY != AUTHORITY","RETURN TO THIS BODY, NOT TO AN EARLIER STATE"]
+}
