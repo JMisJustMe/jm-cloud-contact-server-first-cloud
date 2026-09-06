@@ -1,0 +1,55 @@
+{
+  "schema": "jm.sovereign-agent-gateway.contract/0.1",
+  "name": "JM SOVEREIGN AGENT GATEWAY",
+  "version": "0.1.0",
+  "keeper": "YOUR DOOR. MANY AGENTS. YOUR AUTHORITY.",
+  "status": "FIRST WORKING DEVELOPMENT BODY",
+  "intended_parent": "JM CLOUD CONTACT SERVER v0.5.0 — Profile Mounts",
+  "carrier_note": "This first implementation is additive on a branch of the existing public cloud-server repository. It does not rewrite the frozen v0.4.2 carrier and does not claim byte-level integration with the exact v0.5.0 source until that carrier is recovered and reconciled.",
+  "core_model": [
+    "SPACE",
+    "MEMBER",
+    "CAPABILITY",
+    "EVENT",
+    "COMMAND",
+    "SIGNAL",
+    "RECEIPT",
+    "TASK",
+    "AUTHORITY_DECISION",
+    "AGENT_ROUTE"
+  ],
+  "authority": {
+    "human": "final authority",
+    "agents": "members/workers only",
+    "default_mutation_policy": "approval required before dispatch",
+    "law": "CAPABILITY DOES NOT EQUAL AUTHORITY"
+  },
+  "interfaces": {
+    "jm_api": {
+      "root": "/api/v1",
+      "routes": [
+        "GET /api/v1/meta",
+        "GET /api/v1/agents",
+        "POST /api/v1/tasks",
+        "GET /api/v1/tasks/:id",
+        "POST /api/v1/tasks/:id/approve",
+        "POST /api/v1/tasks/:id/dispatch",
+        "GET /api/v1/receipts/:id"
+      ]
+    },
+    "acp": {
+      "path": "/acp",
+      "protocol": "ACP v1",
+      "sdk": "@agentclientprotocol/sdk 1.4.0",
+      "transport": "HTTP/WebSocket through the SDK experimental server/node adapter surface",
+      "claim_boundary": "Stable ACP v1 semantics; remote HTTP/WebSocket adapter remains experimental in the SDK."
+    }
+  },
+  "security": {
+    "auth": "Bearer JM_GATEWAY_TOKEN for protected API and ACP routes",
+    "production_guard": "Production refuses startup without JM_GATEWAY_TOKEN",
+    "secrets": "No provider API keys are stored in source",
+    "receipts": "SHA-256 chained local receipts"
+  },
+  "claim_boundary": "v0.1 proves the first gateway/API/ACP control body and authority workflow when locally or publicly contacted. It does not prove Devin, Codex, Claude, GitHub or any other external worker has executed a software task until a provider adapter and corresponding Ding receipt exist."
+}
