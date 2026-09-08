@@ -1,0 +1,23 @@
+{
+  "body": "JM CLOUD CONTACT SERVER v0.5.1-hosted + JM Phone <-> Laptop physical cloud route",
+  "status": "PHYSICAL CLOUD ROUTE DING EARNED",
+  "capturedDate": "2026-09-08",
+  "publicOrigin": "https://jm-cloud-contact-server-v05.onrender.com",
+  "spaceId": "phone_laptop_1788893233069",
+  "spaceKind": "device-contact",
+  "spaceStatus": "closed",
+  "route": ["CONNECT","PAIR","EXCHANGE + SIGNED ACK","RECOVER","REVOKE","BLOCK","AUTORUN RESULT","CLOSE","RECEIPT VERIFY"],
+  "counts": {"eventCount": 22, "commandCount": 1, "signalCount": 4},
+  "chainHead": "397b8d9df897302fc572e4537e27d275260109e47cfdaaa951ee06d972525d59",
+  "receiptHash": "aabee1a53ad6dbe6c2b5c4582e01b97f56303ff0b99c1466dc35c749f82bbdb0",
+  "serverSig": "cceea680b1d2bf1f1a1099ba1de63711daabd985458a90d2cd5daf515ff5f0ee1",
+  "publicKeyId": "ff0c3c6014758a6ea0946a38",
+  "signatureAlgorithm": "ECDSA-P256-SHA256-P1363",
+  "verification": {"ok": true, "reason": "verified", "localHash": "aabee1a53ad6dbe6c2b5c4582e01b97f56303ff0b99c1466dc35c749f82bbdb0", "keyId": "ff0c3c6014758a6ea0946a38"},
+  "physicalEndpointEvidence": {
+    "phone": ["JMC5 PROFILE READY","RTC OFFER -> LAPTOP","RTC connected","DATA CHANNEL LIVE","CONNECT RECEIPT RETURNED","RECOVER RECEIPT RETURNED","REVOKE APPLIED","POST-REVOKE SEND REJECTED"],
+    "laptop": ["JMC5 PROFILE READY","RTC ANSWER -> PHONE","RTC connected","DATA CHANNEL LIVE","CONNECT RECEIPT RETURNED","AUTORUN COMMAND ACK","PAIR PROVED","EXCHANGE + SIGNED ACK PROVED","RECOVER RECEIPT RETURNED","REVOKE WITNESSED","BLOCK PROVED","AUTORUN RESULT RETURNED"]
+  },
+  "claimBoundary": "This closure proves the observed real phone <-> real laptop WebRTC/application consequence route and the control surface's final receipt-hash/public-ECDSA verification for this run. It does not generalize every network/NAT environment; TURN was not configured for this run.",
+  "sensitiveMaterialExcluded": ["JM_CLOUD_ADMIN_TOKEN","JMC5 launch fragments","member/rejoin credentials"]
+}
