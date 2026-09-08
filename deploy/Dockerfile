@@ -1,6 +1,8 @@
 FROM node:22-alpine
 WORKDIR /app
 COPY package.json ./
+COPY render.yaml ./
+COPY deploy ./deploy
 COPY JM_CLOUD_CONTACT_SERVER_v0_5_1_HOSTED_DESCENDANT.mjs ./
 COPY JM_CLOUD_CONTACT_SERVER_CONTRACT_HOSTED_v0_5_1.json ./
 COPY profiles ./profiles
