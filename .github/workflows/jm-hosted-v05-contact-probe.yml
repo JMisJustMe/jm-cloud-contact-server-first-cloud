@@ -1,0 +1,41 @@
+name: JM Hosted v0.5 Live Contact Probe
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "hosted-v0.5-descendant"
+    paths:
+      - ".github/workflows/jm-hosted-v05-contact-probe.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  live-contact:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Contact live Render public surfaces
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="https://jm-cloud-contact-server-v05.onrender.com"
+          for NAME in health ready meta receipt-key; do
+            curl --fail --silent --show-error --location --max-time 60 "$BASE/$NAME" -o "$NAME.json"
+          done
+          sha256sum health.json ready.json meta.json receipt-key.json > SHA256SUMS.txt
+          wc -c health.json ready.json meta.json receipt-key.json > BYTE_COUNTS.txt
+
+      - name: Preserve tiny return receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: jm-render-v05-live-contact-${{ github.sha }}
+          path: |
+            health.json
+            ready.json
+            meta.json
+            receipt-key.json
+            SHA256SUMS.txt
+            BYTE_COUNTS.txt
+          retention-days: 7
+          if-no-files-found: error
