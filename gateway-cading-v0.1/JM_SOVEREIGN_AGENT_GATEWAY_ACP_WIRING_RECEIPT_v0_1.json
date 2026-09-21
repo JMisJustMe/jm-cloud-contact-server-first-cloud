@@ -1,0 +1,14 @@
+{
+  "schema": "jm.sovereign-agent-gateway.acp-wiring/0.1",
+  "status": "WIRED_WITH_RUNTIME_HOLD",
+  "adapter": "JM_SOVEREIGN_AGENT_GATEWAY_ACP_STDIO_ADAPTER_v0_1.mjs",
+  "protocolTarget": "ACP v1 stable package entry point",
+  "sdk": "@agentclientprotocol/sdk 1.4.0",
+  "transport": "stdio / NDJSON",
+  "sourceAuthority": "Cading / JM Coding Estate",
+  "authorityRoute": "ACP prompt -> Cading createTask -> ACP requestPermission -> Cading approveTask -> Cading dispatchTask",
+  "syntax": "PASS",
+  "runtimeContact": "HOLD — ACP SDK is not installed in the current execution container, so no ACP wire Ding is claimed",
+  "externalAgentExecution": "NOT_CLAIMED",
+  "claimBoundary": "ACP_ADAPTER_SOURCE_AND_SYNTAX_PROVEN; ACP_WIRE_CONTACT_OPEN"
+}

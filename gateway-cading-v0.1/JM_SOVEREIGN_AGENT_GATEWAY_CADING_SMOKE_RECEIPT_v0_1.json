@@ -1,0 +1,60 @@
+{
+  "value": "null|READY_FOR_AGENT_ROUTE",
+  "status": {
+    "id": "task-1",
+    "prompt": "gateway-smoke",
+    "agent": "unbound-agent",
+    "status": "READY_FOR_AGENT_ROUTE",
+    "approved": true,
+    "dispatched": true
+  },
+  "irKind": "cading-ir",
+  "body": "cading",
+  "receipt": {
+    "build": "JM_CODING_ESTATE_REAL_BUILD_v1_0",
+    "version": "1.0.0",
+    "body": "cading",
+    "status": "PASS",
+    "eventCount": 26,
+    "dings": [
+      "TASK_CREATED",
+      "AUTHORITY_APPROVED",
+      "DISPATCH_AUTHORISED"
+    ],
+    "holds": [
+      "cading"
+    ],
+    "outputs": [],
+    "trace": [
+      {"seq":1,"at":2,"body":"cading","type":"init","module":"JMSovereignAgentGateway","globals":{"keeper":"YOUR DOOR. MANY AGENTS. YOUR AUTHORITY.","authorityMode":"HUMAN_FINAL","nextTaskId":1,"tasks":{}}},
+      {"seq":2,"at":3,"body":"cading","type":"call","function":"main","args":[]},
+      {"seq":3,"at":4,"body":"cading","type":"call","function":"createTask","args":["gateway-smoke","unbound-agent"]},
+      {"seq":4,"at":5,"body":"cading","type":"set","target":"nextTaskId","value":2},
+      {"seq":5,"at":6,"body":"cading","type":"trace","value":{"event":"TASK_CREATED","task":"task-1","agent":"unbound-agent"}},
+      {"seq":6,"at":7,"body":"cading","type":"ding","symbol":"TASK_CREATED","route":null},
+      {"seq":7,"at":10,"body":"cading","type":"return","function":"createTask","value":"task-1"},
+      {"seq":8,"at":11,"body":"cading","type":"call","function":"dispatchTask","args":["task-1"]},
+      {"seq":9,"at":12,"body":"cading","type":"trace","value":{"event":"DISPATCH_HOLD_AUTHORITY_REQUIRED","task":"task-1"}},
+      {"seq":10,"at":13,"body":"cading","type":"hold","route":"cading"},
+      {"seq":11,"at":14,"body":"cading","type":"return","function":"dispatchTask","value":null},
+      {"seq":12,"at":15,"body":"cading","type":"call","function":"approveTask","args":["task-1"]},
+      {"seq":13,"at":16,"body":"cading","type":"set","target":"task.approved","value":true},
+      {"seq":14,"at":17,"body":"cading","type":"set","target":"task.status","value":"APPROVED"},
+      {"seq":15,"at":18,"body":"cading","type":"trace","value":{"event":"AUTHORITY_APPROVED","task":"task-1","authority":"HUMAN_FINAL"}},
+      {"seq":16,"at":19,"body":"cading","type":"ding","symbol":"AUTHORITY_APPROVED","route":null},
+      {"seq":17,"at":22,"body":"cading","type":"return","function":"approveTask","value":true},
+      {"seq":18,"at":23,"body":"cading","type":"call","function":"dispatchTask","args":["task-1"]},
+      {"seq":19,"at":24,"body":"cading","type":"set","target":"task.dispatched","value":true},
+      {"seq":20,"at":25,"body":"cading","type":"set","target":"task.status","value":"READY_FOR_AGENT_ROUTE"},
+      {"seq":21,"at":26,"body":"cading","type":"trace","value":{"event":"DISPATCH_AUTHORISED","task":"task-1","agent":"unbound-agent"}},
+      {"seq":22,"at":27,"body":"cading","type":"ding","symbol":"DISPATCH_AUTHORISED","route":null},
+      {"seq":23,"at":30,"body":"cading","type":"return","function":"dispatchTask","value":"READY_FOR_AGENT_ROUTE"},
+      {"seq":24,"at":31,"body":"cading","type":"return","function":"main","value":"null|READY_FOR_AGENT_ROUTE"},
+      {"seq":25,"at":32,"body":"cading","type":"call","function":"taskStatus","args":["task-1"]},
+      {"seq":26,"at":33,"body":"cading","type":"return","function":"taskStatus","value":{"id":"task-1","prompt":"gateway-smoke","agent":"unbound-agent","status":"READY_FOR_AGENT_ROUTE","approved":true,"dispatched":true}}
+    ]
+  },
+  "claimBoundary": "CADING_SOURCE_IR_RUNTIME_AUTHORITY_GATE_PROVEN; HTTP_API_ACP_PROVIDER_ADAPTERS_NOT_YET_CLAIMED",
+  "sourceAuthority": "Cading / JM Coding Estate",
+  "hostRole": "JM_CODING_ESTATE_REAL_BUILD_v1_0 runtime carrier"
+}
