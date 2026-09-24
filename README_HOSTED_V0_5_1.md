@@ -27,3 +27,18 @@ After deployment, verify:
 The public v0.5 server proof and the Phone↔Laptop endpoint proof remain separate. The control page closes only after reciprocal BLOCK evidence plus completed AUTORUN, then independently verifies canonical receipt hash and ECDSA signature.
 
 The free Render carrier may recycle its writable filesystem when the service instance is recreated. Therefore the first hosted v0.5 proof qualifies a running public instance; long-term durable state/signing identity is a later persistence descendant unless a persistent disk or external durable store is mounted.
+
+
+## JM Game Live Service v0.3 mounted descendant
+
+The hosted v0.5.1 server now mounts a game-service descendant at `/game/v1`.
+
+The root remains sovereign:
+
+`PLAYER -> MATCHMAKING -> CLOUD SPACE -> MEMBER -> SIGNAL -> RESULT -> SIGNED RECEIPT`
+
+Matchmaking creates a real v5 cloud space. Each participant receives a bounded cloud member credential for that match, so WebRTC offer/answer/candidate traffic uses the existing generic SIGNAL organ rather than a second signalling server. Match completion appends a result event, closes the cloud space, and preserves the signed cloud receipt.
+
+Clan membership, player inventory and DEV_ONLY entitlement state are game-profile state. Real-money verification is intentionally not enabled by this descendant.
+
+QA: `qa/JM_GAME_LIVE_PROFILE_QA_v0_3.mjs` exercises player registration, matchmaking, cloud-space mounting, member credentials, cloud signalling, clans, inventory, host authority, cloud close and signed receipt return.
