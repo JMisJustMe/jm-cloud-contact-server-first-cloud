@@ -1,0 +1,15 @@
+{
+  "schema": "jm.service-mesh.profile/0.1",
+  "id": "service-mesh",
+  "label": "JM Service Mesh / Authuser Cloud Profile",
+  "keeper": "MESH ≠ MERGE",
+  "mountedBodies": [
+    "JM RouteVault",
+    "JM Receipt Generator",
+    "JM Active Keeper Dashboard"
+  ],
+  "route": "AUTHUSER -> WORKSPACE -> SAVE -> VERIFY -> OBSERVE -> RECEIPT",
+  "mount": "/mesh/v1",
+  "cloudRoot": "/v5",
+  "boundary": "Cloud participation extends sovereign standalone bodies; it does not replace them."
+}
