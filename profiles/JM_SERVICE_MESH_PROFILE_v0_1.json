@@ -1,15 +1,27 @@
 {
-  "schema": "jm.service-mesh.profile/0.1",
+  "schema": "jm.service-mesh.profile/0.2",
   "id": "service-mesh",
-  "label": "JM Service Mesh / Authuser Cloud Profile",
+  "label": "JM Service Mesh / Authuser Cloud Profile v0.2",
   "keeper": "MESH ≠ MERGE",
   "mountedBodies": [
     "JM RouteVault",
     "JM Receipt Generator",
-    "JM Active Keeper Dashboard"
+    "JM Active Keeper Dashboard",
+    "JM Collector Protocol App",
+    "JM Gem Extraction App",
+    "JM FlowTalk Claim Checker",
+    "JM Public Output Tool"
   ],
-  "route": "AUTHUSER -> WORKSPACE -> SAVE -> VERIFY -> OBSERVE -> RECEIPT",
+  "route": [
+    "AUTHUSER -> WORKSPACE -> SAVE -> VERIFY -> OBSERVE -> RECEIPT",
+    "SOURCE -> COLLECT -> GEM -> CLAIM -> PUBLIC OUTPUT -> SIGNED RECEIPT"
+  ],
   "mount": "/mesh/v1",
   "cloudRoot": "/v5",
-  "boundary": "Cloud participation extends sovereign standalone bodies; it does not replace them."
+  "boundary": "Cloud participation extends sovereign standalone bodies; it does not replace them.",
+  "packetSchema": "jm.packet/1.0",
+  "mounts": [
+    "/mesh/v1",
+    "/mesh/v2"
+  ]
 }

@@ -51,3 +51,23 @@ Mounted at `/mesh` and `/mesh/v1`. It preserves sovereign standalone app bodies 
 Route: `AUTHUSER -> WORKSPACE -> SAVE -> VERIFY -> OBSERVE -> RECEIPT`.
 
 Workspace creation mounts a real `/v5` cloud space; saves become cloud events; the profile returns both its mesh receipt and the underlying signed cloud receipt. `qa/JM_SERVICE_MESH_QA_v0_1.mjs` proves SAVE -> VERIFY -> OBSERVE plus restore/readback.
+
+
+## JM Service Mesh v0.2 — App-to-App Packet Pipeline
+
+The Service Mesh now adds a second route without replacing v0.1 workspace continuity:
+
+`SOURCE -> COLLECT -> GEM -> CLAIM -> PUBLIC OUTPUT -> SIGNED RECEIPT`
+
+Mounted organs:
+- JM Collector Protocol App — preserves source trail and declared selection decisions.
+- JM Gem Extraction App v0.1 — exact recovered `jm.packet/1.0` gem semantics.
+- JM FlowTalk Claim Checker v0.1 — exact recovered claim-class/evidence/scope gate semantics.
+- JM Public Output Tool — bounded release descendant using its recovered private/source -> public-safe intent.
+- Receipt Generator / Active Keeper remain verification and observation organs.
+
+No stage silently invents the user's selection. Gem requires an explicit selected gem. Public Output requires explicit public text. Held claims require explicit acknowledgement before a labelled unresolved public packet may be produced.
+
+Each pipeline gets a real `/v5` cloud space. Every stage appends a cloud event. Completion closes the space and returns the cloud's signed receipt. The entire packet trace remains `jm.packet/1.0`.
+
+QA: `qa/JM_SERVICE_MESH_PIPELINE_QA_v0_2.mjs`.

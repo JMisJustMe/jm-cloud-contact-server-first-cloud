@@ -1,0 +1,17 @@
+import {spawn} from 'node:child_process';import fs from 'node:fs';import os from 'node:os';import path from 'node:path';
+const port=18975,base='http://127.0.0.1:'+port,tmp=fs.mkdtempSync(path.join(os.tmpdir(),'jm-mesh-v02-'));
+const env={...process.env,PORT:String(port),HOST:'127.0.0.1',JM_CLOUD_MODE:'development',JM_CLOUD_ADMIN_TOKEN:'A'.repeat(40),JM_CLOUD_SERVER_SECRET:'S'.repeat(40),JM_CLOUD_DATA:path.join(tmp,'cloud.json'),JM_CLOUD_RECEIPT_SIGNING_KEY:path.join(tmp,'key.pem'),JM_GAME_DATA:path.join(tmp,'game.json'),JM_SERVICE_MESH_DATA:path.join(tmp,'mesh.json'),JM_CLOUD_PROFILE_DIR:path.resolve('./profiles'),JM_CLOUD_PROFILE_MANIFEST:path.resolve('./profiles/JM_CLOUD_PROFILE_MANIFEST_HOSTED_v0_5_1.json')};
+const child=spawn(process.execPath,['JM_CLOUD_CONTACT_SERVER_v0_5_1_HOSTED_DESCENDANT.mjs'],{env,stdio:['ignore','pipe','pipe']});const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+async function req(method,url,token,b){const h={'content-type':'application/json'};if(token)h.authorization='Bearer '+token;const r=await fetch(base+url,{method,headers:h,body:b==null?undefined:JSON.stringify(b)}),j=await r.json();if(!r.ok)throw Error(method+' '+url+' '+r.status+' '+JSON.stringify(j));return j}
+async function wait(){for(let i=0;i<80;i++){try{if((await fetch(base+'/ready')).ok)return}catch{}await sleep(100)}throw Error('not ready')}
+try{
+ await wait();const a=await req('POST','/mesh/v1/auth/register',null,{handle:'PipelineQA'});
+ const p=await req('POST','/mesh/v2/pipelines',a.token,{source:'The source says the route is bounded. This second sentence is extra context.',sourceLabel:'QA Source',lane:'Public Output'});
+ const id=p.pipeline.pipelineId;if(p.pipeline.packets.collector.schema!=='jm.packet/1.0')throw Error('collector packet schema');
+ const g=await req('POST','/mesh/v2/pipelines/'+id+'/gem',a.token,{gem:'The route is bounded.',why:'Scoped claim',keeper:'Bounded Route',homes:['Public Output'],tags:['qa']});if(g.packet.kind!=='gem.extraction')throw Error('gem stage');
+ const cl=await req('POST','/mesh/v2/pipelines/'+id+'/claim',a.token,{claim:'The route is bounded.',class:'Personal / lived report',evidence:'Observation',confidence:'Medium',support:'QA observation',recourse:'Contradictory contact',radius:'This QA route only'});if(!cl.packet.payload.verdict.startsWith('VALID AS REPORT'))throw Error('claim verdict');
+ const po=await req('POST','/mesh/v2/pipelines/'+id+'/public',a.token,{title:'Bounded Route',publicText:'A bounded QA statement.'});if(po.status!=='complete'||po.packet.kind!=='public.output'||!po.cloudReceipt.publicSig)throw Error('public/receipt stage');
+ const trace=await req('GET','/mesh/v2/pipelines/'+id,a.token);if(!trace.pipeline.packets.collector||!trace.pipeline.packets.gem||!trace.pipeline.packets.claim||!trace.pipeline.packets.public)throw Error('trace incomplete');
+ const dash=await req('GET','/mesh/v1/dashboard',a.token);if(dash.dashboard.pipelineCount!==1)throw Error('dashboard pipeline visibility');
+ console.log(JSON.stringify({pass:true,tests:['collector-packet','gem-packet','claim-checker-verdict','public-output-explicit','cloud-events','cloud-close','signed-cloud-receipt','full-trace','dashboard-visibility','jm.packet/1.0-continuity'],pipelineId:id,cloudReceiptHash:po.cloudReceipt.receiptHash},null,2));
+}finally{child.kill('SIGTERM');await sleep(150)}
