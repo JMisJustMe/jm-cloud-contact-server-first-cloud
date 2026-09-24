@@ -42,3 +42,12 @@ Matchmaking creates a real v5 cloud space. Each participant receives a bounded c
 Clan membership, player inventory and DEV_ONLY entitlement state are game-profile state. Real-money verification is intentionally not enabled by this descendant.
 
 QA: `qa/JM_GAME_LIVE_PROFILE_QA_v0_3.mjs` exercises player registration, matchmaking, cloud-space mounting, member credentials, cloud signalling, clans, inventory, host authority, cloud close and signed receipt return.
+
+
+## JM Service Mesh v0.1
+
+Mounted at `/mesh` and `/mesh/v1`. It preserves sovereign standalone app bodies while adding optional shared cloud organs for Authuser identity, versioned workspaces, RouteVault-style save/restore, Receipt Generator verification and Active Keeper Dashboard observation.
+
+Route: `AUTHUSER -> WORKSPACE -> SAVE -> VERIFY -> OBSERVE -> RECEIPT`.
+
+Workspace creation mounts a real `/v5` cloud space; saves become cloud events; the profile returns both its mesh receipt and the underlying signed cloud receipt. `qa/JM_SERVICE_MESH_QA_v0_1.mjs` proves SAVE -> VERIFY -> OBSERVE plus restore/readback.
