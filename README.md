@@ -253,3 +253,36 @@ Default stress grid:
 The output reports forward and reverse survival counts, lag histograms, baseline-lag repeat counts, rolling-regime survival, and placebo survival. Repetition is evidence about stability only; it is not causation, execution proof, or capital authority.
 
 Keeper: **A SURVIVOR MUST SURVIVE BEING MOVED.**
+
+
+## JM Market Ecosystem Lab v1.10 — Null Field / false-discovery pressure
+
+The clock lab now carries the discovery search itself into the null test instead of treating a selected survivor as if it had been tested alone.
+
+New route:
+- `/market/v1/clock-null-field`
+
+Two nested null layers are used:
+
+1. **Whole-screen family null**
+   - fetch each whitelisted series once,
+   - deterministically circular-shift each series by different non-zero offsets,
+   - rerun the same ordered-pair clock screen,
+   - repeat across multiple null rounds,
+   - measure how often the broken-alignment screen produces at least as many mismatched-clock survivors as the real screen.
+
+2. **Selected-pair null**
+   - for every real non-zero survivor, rotate the target through many deterministic shifts,
+   - rerun the exact pair machinery,
+   - count any mismatched survivor,
+   - separately count exact-baseline-lag and ±2-bar survivors.
+
+Default live calibration:
+- 42 ordered FRED pairs,
+- 24 whole-screen null rounds,
+- 64 pair-level placebo shifts per observed non-zero survivor,
+- minimum 20-bar circular displacement.
+
+The reported rates are empirical diagnostics from this deterministic shift family. They are not assumptions of independent observations, not universal p-values, and not causal or capital evidence.
+
+Keeper: **THE SEARCH ITSELF MUST ENTER THE NULL.**
