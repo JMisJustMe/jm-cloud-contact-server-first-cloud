@@ -349,3 +349,28 @@ A window earns split survival only when all three directional association means 
 This is retrospective independent historical confirmation because the frozen rule is applied after discovery to older non-overlapping data. It is not prospective live proof, causation, execution proof, or capital authority.
 
 Keeper: **FREEZE BEFORE CONTACT.**
+
+
+## JM Market Ecosystem Lab v1.12.1 — Frozen Confirmation Contact Recovery
+
+The first frozen-lag runtime contact exposed a transport failure in the oldest confirmation window. The rule itself was already frozen correctly; the data request timed out before that window could be judged.
+
+v1.12.1 separates **transport completion** from **confirmation survival**.
+
+For frozen confirmation only:
+- try the requested historical window directly,
+- if direct source contact fails, split that same requested window into two non-overlapping date ranges,
+- fetch both bounded ranges,
+- merge/de-duplicate by timestamp,
+- evaluate the original full confirmation window with the already frozen lag/direction,
+- record whether contact was direct or recovered.
+
+No lag, direction, threshold, window boundary or survival gate is changed by recovery.
+
+The runtime receipt now reports:
+- `pass` = all requested confirmation windows made data contact,
+- `confirmationSurvival` = all contacted windows pass the predeclared split-survival gate.
+
+This prevents a transport timeout from impersonating a failed relationship, and prevents successful transport from impersonating confirmation.
+
+Keeper: **RECOVER CONTACT; DO NOT MOVE THE RULE.**
