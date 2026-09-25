@@ -188,3 +188,21 @@ Returned diagnostics:
 The startup DGS10 → SP500 calibration logs these diagnostics beside the clock result. This exists to catch scale, parser or transform errors before a suspicious effect size can be multiplied across many routes.
 
 Keeper: **A CLOCK RESULT DOES NOT OUTRANK A BROKEN MEASURING STICK.**
+
+
+## JM Market Ecosystem Lab v1.7.2 — missing-observation correction
+
+Runtime diagnostics exposed the real cause of the oversized DGS10 → SP500 effect: missing historical observations were arriving as blank fields and JavaScript's numeric coercion turned blank text into zero.
+
+That created false:
+- zero-valued Treasury yields,
+- zero-valued S&P 500 observations,
+- ±400+ bp rate jumps,
+- -100% index returns,
+- inflated downstream association and paper statistics.
+
+v1.7.2 introduces a strict historical numeric parser shared by FRED and Bank of England adapters. Blank, dot, NA/N/A, NULL and NaN markers are rejected as missing instead of being coerced to zero. Comma-formatted valid numbers remain accepted.
+
+The existing input diagnostics remain live so this correction is checked at runtime, not merely assumed.
+
+Keeper: **MISSING ≠ ZERO.**
