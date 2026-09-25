@@ -735,3 +735,25 @@ Returning to a previously hidden/suspended page triggers the existing watch tick
 No background daemon is claimed.
 
 Keeper: **STRONG HISTORY ≠ CURRENT CONTACT.**
+
+
+## JM Quick Flip v1.8 — Visible Polish / Smooth Route
+
+The simple front door now gets a dedicated interaction and mobile polish pass without changing the underlying market or JM Coding Estate logic.
+
+Visible changes:
+- FIND ONE THAT STAYS is the clear primary action,
+- the other checks are visually secondary,
+- tighter mobile layout with dynamic viewport sizing,
+- smoother result arrival,
+- touch-friendly controls,
+- clearer focus states,
+- reduced-motion support,
+- live status regions for changing results,
+- duplicate taps are blocked while a check is running,
+- the button itself says what it is doing while busy,
+- pair / amount / fee settings are remembered on the device.
+
+No research threshold, cost math, watch-memory rule, execution boundary, or JM Coding Estate body is changed by this pass.
+
+Keeper: **SMOOTH ON CONTACT; SAME PROOF UNDERNEATH.**
