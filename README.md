@@ -480,3 +480,37 @@ A successful contact still returns:
 This protects against silently feeding revised monthly/quarterly observations into a daily lag engine as if their observation dates were the dates the information became knowable.
 
 Keeper: **CONTACT THE SOURCE; DO NOT PROMOTE THE CLOCK.**
+
+
+## JM Quick Flip Lab v1.0 — visible build using actual JM Coding Estate
+
+The original quick-flip front door is now a dedicated visible build at:
+
+- `/market/flip`
+
+It does not replace the Market Ecosystem Lab. It gives the long research line a simple usable surface again.
+
+Runtime route:
+1. fetch public Kraken + Coinbase executable books,
+2. walk full depth for the chosen paper notional,
+3. subtract user-entered friction assumptions,
+4. pass the resulting candidate through the exact mounted `JM_CODING_ESTATE_REAL_BUILD_v1_0` donor,
+5. return JMLogic / Route-Code / ContactCode / TraceBox receipts.
+
+Mounted coding bodies:
+- JMLogic — paper-candidate vs friction/capacity HOLD gate
+- Route-Code — candidate state route
+- ContactCode — venue-to-venue contact proof
+- TraceBox — per-body execution receipts
+
+The donor is mounted byte-for-body from the user's Library source as:
+- `market/vendor/JM_CODING_ESTATE_REAL_BUILD_v1_0.mjs`
+
+New routes:
+- `/market/flip`
+- `/market/v1/quick-flip`
+- `/market/v1/quick-flip/manifest`
+
+No order placement is implemented. The visible verdict is explicitly PAPER_CANDIDATE / HOLD_CAPACITY / HOLD_FRICTION and remains behind the standing boundary **LAB DING != MONEY DING**.
+
+Keeper: **USE THE ESTATE TO BUILD THE BUILD.**
