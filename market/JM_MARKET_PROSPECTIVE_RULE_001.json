@@ -1,0 +1,33 @@
+{
+  "schema": "JM.MarketProspectiveClockRule/0.1",
+  "body": "JM MARKET ECOSYSTEM LAB — Prospective Clock Rule 001",
+  "frozenOn": "2026-09-25",
+  "evidenceStartDate": "2026-09-26",
+  "source": {
+    "provider": "fred",
+    "series": "VIXCLS",
+    "transform": "pct_return",
+    "threshold": 0.02
+  },
+  "target": {
+    "provider": "fred",
+    "series": "DGS10",
+    "transform": "delta_bps"
+  },
+  "lagBars": 8,
+  "direction": "same",
+  "minimumResolvedSignals": 20,
+  "promotionGate": "resolved >= 20 AND whole association mean > 0 AND first chronological half mean > 0 AND second chronological half mean > 0",
+  "selectionPerformedAfterFreeze": false,
+  "discoveryLineage": {
+    "screenedOrderedPairs": 42,
+    "discoveryWindow": "2021-09-25..2026-09-25",
+    "lagRarityNullShifts": 256,
+    "frozenHistoricalWindows": [
+      "2006-09-25..2011-09-24",
+      "2011-09-25..2016-09-24",
+      "2016-09-25..2021-09-24"
+    ]
+  },
+  "claimBoundary": "This rule is frozen before post-anchor observations. Future survival is prospective historical-series evidence only; it is not causation, live execution, profit proof, or capital authority."
+}
