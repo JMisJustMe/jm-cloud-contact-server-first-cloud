@@ -52,3 +52,15 @@ Cloud carries rendezvous, signalling, allow-listed command state and receipts. T
 **NO DING, NO CLAIM.**
 
 See `README_HOSTED_V0_5_1.md` for the deployment qualification checklist.
+
+
+## JM Market Ecosystem Lab mounted descendant
+
+- Hosted UI: `/market`
+- Profile meta: `/market/v1/meta`
+- Readiness: `/market/v1/ready`
+- Public quote relay: `/market/v1/quotes?symbol=BTC/GBP`
+- Supported seed pairs: BTC/GBP, ETH/GBP, BTC/USD, ETH/USD
+- Same sovereign-cloud law: **SERVER FIRST. ROUTES MANY.**
+- Market law: **LAB DING ≠ MONEY DING.** Historical or live-paper evidence does not silently become a capital instruction.
+- The route reuses the existing cloud carrier instead of creating a parallel server. Quote contact is same-origin through the cloud profile; user/account-specific fees remain explicit inputs.

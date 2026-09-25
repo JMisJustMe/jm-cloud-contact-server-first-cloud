@@ -8,6 +8,7 @@ COPY JM_CLOUD_CONTACT_SERVER_CONTRACT_HOSTED_v0_5_1.json ./
 COPY profiles ./profiles
 COPY game ./game
 COPY mesh ./mesh
+COPY market ./market
 COPY qa ./qa
 RUN npm test && rm -rf .qa-data
 RUN mkdir -p /data && chown -R node:node /app /data
