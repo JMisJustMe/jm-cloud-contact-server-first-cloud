@@ -139,3 +139,18 @@ Routes:
 The server is deliberately a whitelist, not an arbitrary URL proxy. Retrieved rows normalize to `timestamp · qualified series · value` and feed the existing 60/20/20 lag laboratory. A production startup calibration contacts one FRED and one Bank of England series to keep source-runtime proof separate from build QA.
 
 Keeper: **THE PAST ENTERS THROUGH NAMED SOURCES; IT DOES NOT ENTER THROUGH AN UNBOUNDED PROXY.**
+
+
+## JM Market Ecosystem Lab v1.6 — mismatched-clock quantifier
+
+The lag hunt is now a first-class server-side research route instead of only a browser-side description.
+
+- Pure engine: `market/JM_MARKET_CLOCK_ENGINE_v0_1.mjs`.
+- Hosted route: `/market/v1/clock-test`.
+- Source and target must both come from the existing historical whitelist.
+- The route aligns timestamped observations, converts them to returns, chooses the lag on the first 60% only, freezes direction + lag, then evaluates the next 20% and untouched final 20%.
+- Results report lag bars, median source cadence, observed lag hours, FAST / MID / SLOW clock band, validation/test sample counts, hit rates and friction-aware mean outcomes.
+- Synthetic QA contains a known three-bar delayed response and a same-bar control, so lag recovery is tested independently of external market data.
+- A non-zero lag that survives later partitions is only a `MISMATCHED-CLOCK CANDIDATE`; historical association does not establish causation, live persistence or capital authority.
+
+Keeper: **DO NOT JUST FIND WHAT MOVED. MEASURE WHEN THE CONNECTED FIELD RECEIVED IT.**
