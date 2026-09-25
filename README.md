@@ -374,3 +374,37 @@ The runtime receipt now reports:
 This prevents a transport timeout from impersonating a failed relationship, and prevents successful transport from impersonating confirmation.
 
 Keeper: **RECOVER CONTACT; DO NOT MOVE THE RULE.**
+
+
+## JM Market Ecosystem Lab v1.13 — Prospective Clock Rule 001
+
+The VIXCLS → DGS10 8-bar relationship now has a precommitted forward evidence lane.
+
+Frozen before future contact:
+- frozen on: 2026-09-25
+- prospective evidence begins: 2026-09-26
+- source: VIXCLS
+- source transform: percentage return
+- source threshold: |2%|
+- target: DGS10
+- target transform: basis-point change
+- lag: 8 aligned bars
+- direction: same
+- minimum resolved source signals before promotion eligibility: 20
+- gate: whole mean > 0, first chronological half mean > 0, second chronological half mean > 0
+
+Files:
+- `market/JM_MARKET_PROSPECTIVE_RULE_001.json`
+- `market/JM_MARKET_PROSPECTIVE_CLOCK_v0_1.mjs`
+
+Routes:
+- `/market/v1/prospective/rule`
+- `/market/v1/prospective`
+
+The prospective evaluator may fetch a short pre-anchor buffer only to calculate the first post-anchor transformed change. It never counts a signal dated before 2026-09-26 as prospective evidence.
+
+Because the rule and start boundary live in source, a service restart can reconstruct post-anchor evidence without changing the rule or pretending older observations were prospective.
+
+This is forward historical-series evidence, not causation, live execution, profit proof, or capital authority.
+
+Keeper: **FREEZE TODAY; LET TOMORROW ANSWER.**
