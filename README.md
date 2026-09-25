@@ -111,3 +111,31 @@ The lab can now walk returned public order books for a chosen paper notional ins
 - Notional is clamped to 1–100,000 quote units per request.
 
 Keeper: **TOP PRICE → TOP SIZE → FULL DEPTH → FRICTION → ONLY THEN SURVIVING PAPER EDGE.**
+
+
+## JM Market Ecosystem Lab v1.5 — historical source library
+
+The lab can now import selected historical series directly through the same JM cloud body.
+
+### FRED whitelist
+- DGS10 — US 10-Year Treasury Yield
+- DFF — Effective Federal Funds Rate
+- DTWEXBGS — Broad US Dollar Index
+- DCOILWTICO — WTI Crude Oil
+- VIXCLS — CBOE VIX
+- SP500 — S&P 500
+- DEXUSUK — USD per GBP spot rate
+
+### Bank of England IADB whitelist
+- IUDBEDR — Official Bank Rate
+- IUDSOIA — Daily SONIA
+- XUDLUSS — US Dollar into Sterling spot rate
+- XUDLERS — Euro into Sterling spot rate
+
+Routes:
+- `/market/v1/history/catalog`
+- `/market/v1/history?source=fred&series=DGS10&from=2021-01-01&to=2026-09-25`
+
+The server is deliberately a whitelist, not an arbitrary URL proxy. Retrieved rows normalize to `timestamp · qualified series · value` and feed the existing 60/20/20 lag laboratory. A production startup calibration contacts one FRED and one Bank of England series to keep source-runtime proof separate from build QA.
+
+Keeper: **THE PAST ENTERS THROUGH NAMED SOURCES; IT DOES NOT ENTER THROUGH AN UNBOUNDED PROXY.**
