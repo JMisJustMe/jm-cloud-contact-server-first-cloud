@@ -573,3 +573,32 @@ Verdicts remain deliberately simple:
 No order is placed. Ranking is a current public-book paper scan only.
 
 Keeper: **DON'T MAKE ME PICK FIRST — CHECK THE LOT.**
+
+
+## JM Quick Flip v1.2 — Does It Stay?
+
+A one-snapshot paper gap is now forced to repeat before it earns a stronger visible label.
+
+New route:
+- `/market/v1/quick-flip/stay`
+
+New visible control:
+- `DOES IT STAY?`
+
+Default behavior:
+- selected pair only,
+- 3 separate live checks,
+- 1.5 seconds between checks,
+- every check still runs through full-depth amount contact, entered costs, JMLogic, Route-Code, ContactCode and TraceBox.
+
+Plain outcomes:
+- **STAYED THERE** — every completed check remained a paper candidate,
+- **FLICKERED** — the condition appeared in only some checks,
+- **NEVER THERE** — none of the completed checks survived costs/size,
+- **NO CONTACT** — no completed check.
+
+The result also reports average / low / high net paper gap across the repeated checks.
+
+This is persistence evidence only. It is not a recommendation, fill guarantee, or money Ding.
+
+Keeper: **ONE FLASH ISN'T A ROUTE.**
