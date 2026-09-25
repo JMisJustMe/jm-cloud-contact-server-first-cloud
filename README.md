@@ -154,3 +154,20 @@ The lag hunt is now a first-class server-side research route instead of only a b
 - A non-zero lag that survives later partitions is only a `MISMATCHED-CLOCK CANDIDATE`; historical association does not establish causation, live persistence or capital authority.
 
 Keeper: **DO NOT JUST FIND WHAT MOVED. MEASURE WHEN THE CONNECTED FIELD RECEIVED IT.**
+
+
+## JM Market Ecosystem Lab v1.7 — series semantics before clock sweep
+
+The mismatched-clock engine now distinguishes the kind of quantity being observed before it compares timing.
+
+- Rates and yields use **basis-point changes** (`delta_bps`), not percentage returns on the quoted rate level.
+- Prices, indexes and FX use **percentage returns** (`pct_return`).
+- Each whitelisted historical series carries an explicit transform and default source-signal threshold.
+- Lag selection remains training-only; validation and untouched test remain later partitions.
+- Historical directional association is reported separately from friction-aware paper evidence.
+- Paper friction is only applied when the target is a price/index/FX return series; rate-to-rate relationships cannot accidentally masquerade as executable trades.
+- Synthetic QA includes a rate-pressure → delayed-price response with a known two-bar lag, a rate same-bar control, and a price same-bar control.
+
+This corrects the v1.6 calibration ambiguity where a yield level was treated as if it were an ordinary asset price.
+
+Keeper: **MEASURE THE THING IN ITS OWN UNIT BEFORE MEASURING HOW FAST IT TRAVELS.**
