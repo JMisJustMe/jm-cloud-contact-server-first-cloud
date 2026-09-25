@@ -317,3 +317,35 @@ Default live calibration:
 This is an empirical lag-identity diagnostic under a deterministic shift family. It is not a universal p-value, causal proof, execution proof, or capital authority.
 
 Keeper: **THE LAG MUST BE RARER THAN THE SURVIVOR.**
+
+
+## JM Market Ecosystem Lab v1.12 — Frozen-Lag Confirmation
+
+The lag-rarity result is now separated from independent historical confirmation.
+
+New route:
+- `/market/v1/clock-frozen-confirm`
+
+This route performs **no lag search**. Lag, direction and source threshold are fixed before the confirmation windows are fetched.
+
+Default live confirmation rule:
+- source: VIXCLS
+- target: DGS10
+- lag: 8 bars
+- direction: same
+- source threshold: existing VIXCLS default
+- three non-overlapping five-year windows ending before the discovery window:
+  - 2006-09-25 → 2011-09-24
+  - 2011-09-25 → 2016-09-24
+  - 2016-09-25 → 2021-09-24
+
+Each confirmation window is evaluated as:
+- whole period
+- first half
+- second half
+
+A window earns split survival only when all three directional association means are positive and sample floors are met. No parameter can be reselected inside the confirmation window.
+
+This is retrospective independent historical confirmation because the frozen rule is applied after discovery to older non-overlapping data. It is not prospective live proof, causation, execution proof, or capital authority.
+
+Keeper: **FREEZE BEFORE CONTACT.**
