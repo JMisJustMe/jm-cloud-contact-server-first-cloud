@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node JM_CLOUD_CONTACT_SERVER_v0_5_1_HOSTED_DESCENDANT.mjs",
-    "test": "node --check JM_CLOUD_CONTACT_SERVER_v0_5_1_HOSTED_DESCENDANT.mjs && node qa/JM_CLOUD_CONTACT_SERVER_HOSTED_STATIC_QA_v0_5_1.mjs && node qa/JM_CLOUD_CONTACT_SERVER_HOSTED_QA_v0_5_1.mjs && node qa/JM_GAME_LIVE_PROFILE_QA_v0_3.mjs && node qa/JM_SERVICE_MESH_QA_v0_1.mjs && node qa/JM_SERVICE_MESH_PIPELINE_QA_v0_2.mjs && node qa/JM_MARKET_LAB_QA_v0_7.mjs",
+    "test": "node --check JM_CLOUD_CONTACT_SERVER_v0_5_1_HOSTED_DESCENDANT.mjs && node qa/JM_CLOUD_CONTACT_SERVER_HOSTED_STATIC_QA_v0_5_1.mjs && node qa/JM_CLOUD_CONTACT_SERVER_HOSTED_QA_v0_5_1.mjs && node qa/JM_GAME_LIVE_PROFILE_QA_v0_3.mjs && node qa/JM_SERVICE_MESH_QA_v0_1.mjs && node qa/JM_SERVICE_MESH_PIPELINE_QA_v0_2.mjs && node qa/JM_MARKET_LAB_QA_v0_8.mjs",
     "preflight": "npm test"
   }
 }
