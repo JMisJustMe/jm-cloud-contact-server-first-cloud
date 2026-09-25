@@ -171,3 +171,20 @@ The mismatched-clock engine now distinguishes the kind of quantity being observe
 This corrects the v1.6 calibration ambiguity where a yield level was treated as if it were an ordinary asset price.
 
 Keeper: **MEASURE THE THING IN ITS OWN UNIT BEFORE MEASURING HOW FAST IT TRAVELS.**
+
+
+## JM Market Ecosystem Lab v1.7.1 — clock input diagnostics
+
+Before the clock engine is fanned across the wider mesh, the transform-aware route now exposes distribution diagnostics for the exact aligned inputs it actually used.
+
+Returned diagnostics:
+- source value distribution
+- target value distribution
+- source transformed-change distribution
+- target transformed-change distribution
+- min / max / mean / median
+- mean absolute / median absolute / p95 absolute / p99 absolute
+
+The startup DGS10 → SP500 calibration logs these diagnostics beside the clock result. This exists to catch scale, parser or transform errors before a suspicious effect size can be multiplied across many routes.
+
+Keeper: **A CLOCK RESULT DOES NOT OUTRANK A BROKEN MEASURING STICK.**
