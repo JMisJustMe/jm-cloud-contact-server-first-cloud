@@ -101,7 +101,7 @@ function renderQuoteGrid(q){
 }
 function quoteCard(name,x){
  if(!x||!x.ok)return card(name,'<div class="bad">Unavailable</div><div class="small muted">'+esc(x?.error||'no quote')+'</div>');
- return card(name,'<div class="row"><div class="c6"><span class="muted small">BID</span><div class="kpi">'+fmt(x.bid,2)+'</div><div class="small muted">amount '+fmt(x.bidSize,6)+' · at this price ''+fmt(x.bidQuoteCapacity,2)+'</div></div><div class="c6"><span class="muted small">ASK</span><div class="kpi">'+fmt(x.ask,2)+'</div><div class="small muted">amount '+fmt(x.askSize,6)+' · at this price ''+fmt(x.askQuoteCapacity,2)+'</div></div></div><div class="small muted">their own buy/sell gap '+fmt((x.ask/x.bid-1)*10000,2)+' bps · checked in ''+fmt(x.durationMs,0)+' ms</div>');
+ return card(name,'<div class="row"><div class="c6"><span class="muted small">THEY BUY AT</span><div class="kpi">'+fmt(x.bid,2)+'</div><div class="small muted">amount '+fmt(x.bidSize,6)+' · at this price '+fmt(x.bidQuoteCapacity,2)+'</div></div><div class="c6"><span class="muted small">THEY SELL AT</span><div class="kpi">'+fmt(x.ask,2)+'</div><div class="small muted">amount '+fmt(x.askSize,6)+' · at this price '+fmt(x.askQuoteCapacity,2)+'</div></div></div><div class="small muted">their own buy/sell gap '+fmt((x.ask/x.bid-1)*10000,2)+' bps · checked in '+fmt(x.durationMs,0)+' ms</div>');
 }
 function edge(q){
  if(!q?.venues?.kraken?.ok||!q?.venues?.coinbase?.ok)return null;
