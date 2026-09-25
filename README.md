@@ -408,3 +408,44 @@ Because the rule and start boundary live in source, a service restart can recons
 This is forward historical-series evidence, not causation, live execution, profit proof, or capital authority.
 
 Keeper: **FREEZE TODAY; LET TOMORROW ANSWER.**
+
+
+## JM Market Ecosystem Lab v1.14 — 32-Edge Measurement Coverage
+
+The original 32 conceptual relationships now have an explicit measurement-readiness layer instead of being treated as equally measurable.
+
+New registry:
+- `market/JM_MARKET_MESH_COVERAGE_v0_1.json`
+
+New route:
+- `/market/v1/mesh-coverage`
+
+Coverage classes:
+- ACTIVE — both sides have cadence-compatible runtime historical carriers now
+- ACTIVE_LIVE_ONLY — live carriers exist but comparable historical depth is not yet sufficient
+- CANDIDATE — both sides have identified public series/proxies, but cadence/release/proxy controls still block activation
+- PARTIAL — one side or only a broad proxy is identified
+- GAP — no sufficiently specific route has been accepted
+
+The source frontier now records candidate public series separately from the active clock whitelist. Monthly and quarterly candidates are deliberately **not** dropped into the daily matrix. They must first pass:
+- provider parser/contact proof,
+- declared observation frequency,
+- release timestamp or vintage provenance,
+- no-lookahead alignment,
+- cadence-compatible comparison or an explicit cross-cadence bridge,
+- visible proxy labelling,
+- inherited null / false-discovery controls.
+
+Initial candidate frontier includes:
+- FRED PCOPPUSDM — monthly global copper price
+- FRED IPG3344S — monthly semiconductor/electronic-component industrial production
+- FRED IPG2211S / IPG22111S — monthly electric-power industrial production
+- FRED CPIAUCSL / CUSR0000SAF11 — monthly consumer-price indices
+- FRED WPS117 — monthly electrical-machinery PPI
+- FRED WPU3012 — monthly truck-freight PPI
+- FRED A679RX1Q020SBEA — quarterly real information-processing equipment/software investment
+- ONS D7C8 / D7DT / D7CH — monthly UK food/electricity/household-energy CPI indices
+
+The hosted-page QA now parses the inline JavaScript as source code before build completion, closing a gap that could otherwise allow a browser-only syntax regression through static string checks.
+
+Keeper: **MEASURE THE FIELD WITHOUT PRETENDING THE PROXY IS THE THING.**
