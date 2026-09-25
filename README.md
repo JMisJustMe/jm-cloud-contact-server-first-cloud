@@ -227,3 +227,29 @@ For every ordered pair in the chosen source library, the server:
 The matrix is a research screen, not a trading recommendation or capital instruction.
 
 Keeper: **SWEEP THE FIELD; DO NOT FORCE THE FIELD TO PASS.**
+
+
+## JM Market Ecosystem Lab v1.9 — survivor stress lab
+
+The first non-zero clock candidate is no longer allowed to stand on one selected configuration.
+
+A new bounded route, `/market/v1/clock-stress`, stress-tests a selected relationship across:
+- multiple history windows,
+- multiple maximum-lag caps,
+- source-threshold perturbations,
+- reverse direction,
+- rolling regime windows,
+- deterministic circular-shift placebo alignments.
+
+The stress body preserves the original discovery context (for example, 42 ordered pairs screened in the first FRED matrix) so post-selection evidence cannot quietly forget that the candidate was chosen from a larger search.
+
+Default stress grid:
+- windows: 3 / 5 / 8 years,
+- lag caps: 5 / 10 / 20 bars,
+- source-threshold multipliers: 0.5× / 1× / 1.5×,
+- rolling windows: 2 years stepped by 1 year,
+- placebo shifts: 20 / 40 / 60 / 80 / 100 / 140 / 180 / 220 bars.
+
+The output reports forward and reverse survival counts, lag histograms, baseline-lag repeat counts, rolling-regime survival, and placebo survival. Repetition is evidence about stability only; it is not causation, execution proof, or capital authority.
+
+Keeper: **A SURVIVOR MUST SURVIVE BEING MOVED.**
