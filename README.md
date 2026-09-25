@@ -542,3 +542,34 @@ The technical route remains visible underneath where useful:
 `SOURCE → SIGNAL → CONTACT FIELD → ROUTE PRESSURE → STATE CHANGE → DING → TRACE → RECOVERY → OUTPUT`
 
 Keeper: **PLAIN ON TOP; PRECISE UNDERNEATH.**
+
+
+## JM Quick Flip v1.1 — Check Them All
+
+The visible Quick Flip front door can now scan every supported pair in one go.
+
+New route:
+- `/market/v1/quick-flip/all`
+
+Visible control:
+- `CHECK THEM ALL`
+
+For each supported pair the route reuses the same existing mechanics:
+1. public Kraken + Coinbase quote contact,
+2. full-depth notional sweep,
+3. entered fee/friction subtraction,
+4. JM Coding Estate decision through JMLogic,
+5. Route-Code route state,
+6. ContactCode venue contact,
+7. TraceBox/body receipts.
+
+The returned set is sorted by net paper result after the entered costs and keeps failed contacts visible.
+
+Verdicts remain deliberately simple:
+- WORTH A LOOK
+- NOT ENOUGH THERE
+- COSTS EAT IT
+
+No order is placed. Ranking is a current public-book paper scan only.
+
+Keeper: **DON'T MAKE ME PICK FIRST — CHECK THE LOT.**
