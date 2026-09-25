@@ -757,3 +757,17 @@ Visible changes:
 No research threshold, cost math, watch-memory rule, execution boundary, or JM Coding Estate body is changed by this pass.
 
 Keeper: **SMOOTH ON CONTACT; SAME PROOF UNDERNEATH.**
+
+
+## Current-head carrier policy
+
+The actively evolving Market Lab / Quick Flip hosted surfaces now use stable **CURRENT** carrier filenames in the working tree:
+
+- `market/JM_MARKET_LAB_PROFILE_CURRENT.mjs`
+- `market/JM_MARKET_ECOSYSTEM_LAB_CURRENT.html`
+- `market/JM_QUICK_FLIP_CURRENT.html`
+- `qa/JM_MARKET_LAB_QA_CURRENT.mjs`
+
+Version identity remains inside the body and in Git history. New polish descendants update these carriers in place instead of accumulating another full sibling file. A versioned current predecessor is retained only until the CURRENT carrier earns deployment proof, then it is retired from the active tree.
+
+Keeper: **CURRENT BODY HERE; LINEAGE IN GIT; NO DEAD DESCENDANT PILE.**
