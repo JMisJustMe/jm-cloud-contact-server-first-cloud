@@ -449,3 +449,34 @@ Initial candidate frontier includes:
 The hosted-page QA now parses the inline JavaScript as source code before build completion, closing a gap that could otherwise allow a browser-only syntax regression through static string checks.
 
 Keeper: **MEASURE THE FIELD WITHOUT PRETENDING THE PROXY IS THE THING.**
+
+
+## JM Market Ecosystem Lab v1.15 — Candidate Source Contact
+
+The mesh frontier can now make bounded source contact with registered FRED candidates without activating them in the clock engine.
+
+New route:
+- `/market/v1/mesh-candidate-contact`
+
+Current candidate-contact behavior:
+- only registered candidate sources are accepted,
+- FRED contact is supported first,
+- raw historical observations are parsed,
+- cadence is measured independently,
+- declared frequency is compared with measured cadence,
+- contact success remains separate from clock activation,
+- release-aware provenance remains a hard HOLD.
+
+Runtime startup probes currently include:
+- PCOPPUSDM — copper
+- IPG3344S — semiconductor/electronic-component output
+- IPG2211S — electric-power output
+- A679RX1Q020SBEA — information-processing equipment/software investment
+
+A successful contact still returns:
+- `activationEligible: false`
+- `clockActivation: HOLD_RELEASE_AWARE_PROVENANCE`
+
+This protects against silently feeding revised monthly/quarterly observations into a daily lag engine as if their observation dates were the dates the information became knowable.
+
+Keeper: **CONTACT THE SOURCE; DO NOT PROMOTE THE CLOCK.**
