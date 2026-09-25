@@ -682,3 +682,30 @@ The watchlist is ranked by return evidence first, then the latest remaining pape
 This is still device-local paper evidence. Time-spaced recurrence is stronger than three snapshots in a few seconds, but it is not execution proof or a money Ding.
 
 Keeper: **COMING BACK LATER ≠ STAYING THERE FOR THREE SECONDS.**
+
+
+## JM Quick Flip v1.6 — Watch For Me
+
+Quick Flip can now recheck remembered routes automatically while the page stays open.
+
+New visible control:
+- `WATCH FOR ME`
+- toggles to `STOP WATCHING`
+
+Behavior:
+- minimum watch interval: 15 minutes,
+- remembered routes are re-run through the existing `/market/v1/quick-flip/stay` route,
+- every underlying check still passes through JMLogic → Route-Code → ContactCode → TraceBox,
+- the next due time is stored locally,
+- if the page is reopened after that due time, one catch-up check runs,
+- concurrent watch runs are blocked.
+
+Important boundary:
+- this is **not** background server monitoring,
+- it runs only while the page is open,
+- closing/suspending the browser stops active checking,
+- reopening can recover the locally stored due time and perform one fresh catch-up contact.
+
+This means return-memory can now grow without manually pressing CHECK WATCHLIST every time, while still refusing to pretend browser-local memory is a cloud daemon.
+
+Keeper: **WATCH WHILE OPEN; CATCH UP WHEN BACK.**
