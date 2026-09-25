@@ -709,3 +709,29 @@ Important boundary:
 This means return-memory can now grow without manually pressing CHECK WATCHLIST every time, while still refusing to pretend browser-local memory is a cloud daemon.
 
 Keeper: **WATCH WHILE OPEN; CATCH UP WHEN BACK.**
+
+
+## JM Quick Flip v1.7 — History ≠ Right Now
+
+The watchlist now keeps two separate truths visible:
+
+- **history** — how often a route has survived across time,
+- **freshness** — how old the latest live contact actually is.
+
+Freshness labels:
+- FRESH NOW — checked within 5 minutes
+- RECENT — checked within 20 minutes
+- DUE A RECHECK — checked within 60 minutes
+- OLD — RECHECK — older than 60 minutes
+
+Historical return labels such as CAME BACK LATER / KEEPS COMING BACK are no longer allowed to visually impersonate current live contact.
+
+The strongest remembered route now reports both:
+- History: <return label>
+- Now: <freshness label + age>
+
+Returning to a previously hidden/suspended page triggers the existing watch tick immediately, so an overdue local watch can catch up as soon as the page is visible again.
+
+No background daemon is claimed.
+
+Keeper: **STRONG HISTORY ≠ CURRENT CONTACT.**
