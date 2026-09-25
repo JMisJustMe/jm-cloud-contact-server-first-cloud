@@ -64,3 +64,20 @@ See `README_HOSTED_V0_5_1.md` for the deployment qualification checklist.
 - Same sovereign-cloud law: **SERVER FIRST. ROUTES MANY.**
 - Market law: **LAB DING ≠ MONEY DING.** Historical or live-paper evidence does not silently become a capital instruction.
 - The route reuses the existing cloud carrier instead of creating a parallel server. Quote contact is same-origin through the cloud profile; user/account-specific fees remain explicit inputs.
+
+
+## JM Market Ecosystem Lab v1.2 — autonomous cloud pulse
+
+The hosted market body now gathers bounded public bid/ask snapshots on the server itself instead of requiring the browser to initiate every observation.
+
+- UI descendant: `/market` → v1.2
+- Pulse status: `/market/v1/pulse`
+- Bounded history: `/market/v1/snapshots`
+- Default cloud cadence: 60 seconds
+- Default pulse pairs: BTC/GBP and ETH/GBP
+- Max retained snapshots: 20,000
+- Raw venue difference is stored; account-specific fees remain a local/user parameter.
+- Runtime data contact is separately reported from build QA.
+- Historical Lab can ingest the cloud pulse observations without a file handoff.
+
+Keeper: **THE CLOUD OBSERVES; THE LAB TESTS; CAPITAL REMAINS A SEPARATE GATE.**
