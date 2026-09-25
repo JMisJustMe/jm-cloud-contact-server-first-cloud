@@ -1,0 +1,649 @@
+{
+  "schema": "JM.MarketMeshCoverage/0.1",
+  "body": "JM MARKET ECOSYSTEM LAB — 32-Edge Measurement Coverage",
+  "savedOn": "2026-09-25",
+  "law": "MEASURE THE FIELD WITHOUT PRETENDING THE PROXY IS THE THING",
+  "statuses": {
+    "ACTIVE": "Both sides have cadence-compatible runtime historical carriers now.",
+    "ACTIVE_LIVE_ONLY": "The route has live carriers but not enough comparable historical depth for the clock lab.",
+    "CANDIDATE": "Both sides have identified public series/proxies, but activation is blocked by cadence/release/proxy controls.",
+    "PARTIAL": "Only one side, or only a weak broad proxy, is identified.",
+    "GAP": "No sufficiently specific measurement route is yet accepted."
+  },
+  "activeSources": [
+    {
+      "provider": "fred",
+      "series": "DGS10",
+      "label": "US 10-Year Treasury Yield",
+      "frequency": "daily",
+      "transform": "delta_bps"
+    },
+    {
+      "provider": "fred",
+      "series": "DFF",
+      "label": "Effective Federal Funds Rate",
+      "frequency": "daily",
+      "transform": "delta_bps"
+    },
+    {
+      "provider": "fred",
+      "series": "DTWEXBGS",
+      "label": "Broad US Dollar Index",
+      "frequency": "daily",
+      "transform": "pct_return"
+    },
+    {
+      "provider": "fred",
+      "series": "DCOILWTICO",
+      "label": "WTI Crude Oil",
+      "frequency": "daily",
+      "transform": "pct_return"
+    },
+    {
+      "provider": "fred",
+      "series": "VIXCLS",
+      "label": "CBOE VIX",
+      "frequency": "daily",
+      "transform": "pct_return"
+    },
+    {
+      "provider": "fred",
+      "series": "SP500",
+      "label": "S&P 500",
+      "frequency": "daily",
+      "transform": "pct_return"
+    },
+    {
+      "provider": "fred",
+      "series": "DEXUSUK",
+      "label": "USD per GBP spot rate",
+      "frequency": "daily",
+      "transform": "pct_return"
+    },
+    {
+      "provider": "boe",
+      "series": "IUDBEDR",
+      "label": "Official Bank Rate",
+      "frequency": "daily",
+      "transform": "delta_bps"
+    },
+    {
+      "provider": "boe",
+      "series": "IUDSOIA",
+      "label": "Daily SONIA",
+      "frequency": "daily",
+      "transform": "delta_bps"
+    },
+    {
+      "provider": "boe",
+      "series": "XUDLUSS",
+      "label": "US Dollar into Sterling spot rate",
+      "frequency": "daily",
+      "transform": "pct_return"
+    },
+    {
+      "provider": "boe",
+      "series": "XUDLERS",
+      "label": "Euro into Sterling spot rate",
+      "frequency": "daily",
+      "transform": "pct_return"
+    },
+    {
+      "provider": "cloud",
+      "series": "BTC/GBP;ETH/GBP;BTC/USD;ETH/USD",
+      "label": "Kraken + Coinbase public executable crypto quotes",
+      "frequency": "pulse",
+      "transform": "executable_bid_ask"
+    }
+  ],
+  "candidateSources": [
+    {
+      "provider": "fred",
+      "series": "PCOPPUSDM",
+      "label": "Global price of Copper",
+      "frequency": "monthly",
+      "transform": "pct_return",
+      "role": [
+        "copper/metals"
+      ],
+      "releaseAwareRequired": true
+    },
+    {
+      "provider": "fred",
+      "series": "IPG3344S",
+      "label": "Industrial Production: Semiconductor and Other Electronic Component Manufacturing",
+      "frequency": "monthly",
+      "transform": "pct_return",
+      "role": [
+        "foundry",
+        "semiconductor output"
+      ],
+      "releaseAwareRequired": true
+    },
+    {
+      "provider": "fred",
+      "series": "IPG2211S",
+      "label": "Industrial Production: Electric Power Generation, Transmission, and Distribution",
+      "frequency": "monthly",
+      "transform": "pct_return",
+      "role": [
+        "electricity",
+        "grid"
+      ],
+      "releaseAwareRequired": true
+    },
+    {
+      "provider": "fred",
+      "series": "IPG22111S",
+      "label": "Industrial Production: Electric Power Generation",
+      "frequency": "monthly",
+      "transform": "pct_return",
+      "role": [
+        "electricity generation"
+      ],
+      "releaseAwareRequired": true
+    },
+    {
+      "provider": "fred",
+      "series": "CPIAUCSL",
+      "label": "US CPI All Items",
+      "frequency": "monthly",
+      "transform": "pct_return",
+      "role": [
+        "inflation"
+      ],
+      "releaseAwareRequired": true
+    },
+    {
+      "provider": "fred",
+      "series": "CUSR0000SAF11",
+      "label": "US CPI Food at Home",
+      "frequency": "monthly",
+      "transform": "pct_return",
+      "role": [
+        "consumer food"
+      ],
+      "releaseAwareRequired": true
+    },
+    {
+      "provider": "fred",
+      "series": "WPS117",
+      "label": "PPI Electrical Machinery and Equipment",
+      "frequency": "monthly",
+      "transform": "pct_return",
+      "role": [
+        "grid equipment",
+        "equipment build cost"
+      ],
+      "releaseAwareRequired": true
+    },
+    {
+      "provider": "fred",
+      "series": "WPU3012",
+      "label": "PPI Truck Transportation of Freight",
+      "frequency": "monthly",
+      "transform": "pct_return",
+      "role": [
+        "freight proxy"
+      ],
+      "releaseAwareRequired": true
+    },
+    {
+      "provider": "fred",
+      "series": "A679RX1Q020SBEA",
+      "label": "Real private fixed investment: information processing equipment and software",
+      "frequency": "quarterly",
+      "transform": "pct_return",
+      "role": [
+        "compute investment",
+        "broad AI/capex proxy"
+      ],
+      "releaseAwareRequired": true
+    },
+    {
+      "provider": "ons",
+      "series": "D7C8",
+      "label": "UK CPI Food index",
+      "frequency": "monthly",
+      "transform": "pct_return",
+      "role": [
+        "UK consumer food"
+      ],
+      "releaseAwareRequired": true
+    },
+    {
+      "provider": "ons",
+      "series": "D7DT",
+      "label": "UK CPI Electricity index",
+      "frequency": "monthly",
+      "transform": "pct_return",
+      "role": [
+        "UK electricity cost"
+      ],
+      "releaseAwareRequired": true
+    },
+    {
+      "provider": "ons",
+      "series": "D7CH",
+      "label": "UK CPI Electricity, Gas and Other Fuels",
+      "frequency": "monthly",
+      "transform": "pct_return",
+      "role": [
+        "UK household energy"
+      ],
+      "releaseAwareRequired": true
+    }
+  ],
+  "activationGate": [
+    "Parser/contact proof for provider",
+    "Observation frequency declared",
+    "Release timestamp or vintage provenance available",
+    "No-lookahead alignment proved",
+    "Cadence-compatible comparison or explicit cross-cadence bridge",
+    "Proxy label remains visible",
+    "Null/false-discovery controls carried forward"
+  ],
+  "edges": [
+    {
+      "id": 1,
+      "centre": "AI compute",
+      "target": "Foundry capacity",
+      "relation": "demand",
+      "expectedClock": "MID",
+      "status": "PARTIAL",
+      "series": [
+        "A679RX1Q020SBEA",
+        "IPG3344S"
+      ],
+      "note": "Broad compute investment + semiconductor output identified; neither is a direct hyperscaler-to-foundry measure."
+    },
+    {
+      "id": 2,
+      "centre": "AI compute",
+      "target": "HBM / memory",
+      "relation": "demand",
+      "expectedClock": "MID",
+      "status": "GAP",
+      "series": [],
+      "note": "No accepted HBM/memory series yet."
+    },
+    {
+      "id": 3,
+      "centre": "AI compute",
+      "target": "Hyperscaler capex",
+      "relation": "demand",
+      "expectedClock": "MID",
+      "status": "PARTIAL",
+      "series": [
+        "A679RX1Q020SBEA"
+      ],
+      "note": "Quarterly information-processing investment is broad, not hyperscaler-specific."
+    },
+    {
+      "id": 4,
+      "centre": "AI compute",
+      "target": "Power & cooling",
+      "relation": "demand",
+      "expectedClock": "SLOW",
+      "status": "CANDIDATE",
+      "series": [
+        "A679RX1Q020SBEA",
+        "IPG2211S"
+      ],
+      "note": "Quarterly compute-investment proxy vs monthly power output needs release-aware cross-cadence alignment."
+    },
+    {
+      "id": 5,
+      "centre": "Foundry",
+      "target": "Semicap equipment",
+      "relation": "demand",
+      "expectedClock": "MID",
+      "status": "CANDIDATE",
+      "series": [
+        "IPG3344S",
+        "WPS117"
+      ],
+      "note": "Monthly semiconductor output and electrical-machinery PPI are measurable proxies; semicap specificity remains limited."
+    },
+    {
+      "id": 6,
+      "centre": "Foundry",
+      "target": "Advanced packaging",
+      "relation": "constraint",
+      "expectedClock": "MID",
+      "status": "PARTIAL",
+      "series": [
+        "IPG3344S"
+      ],
+      "note": "Semiconductor output available; advanced-packaging capacity series still missing."
+    },
+    {
+      "id": 7,
+      "centre": "Foundry",
+      "target": "Memory demand",
+      "relation": "demand",
+      "expectedClock": "MID",
+      "status": "PARTIAL",
+      "series": [
+        "IPG3344S"
+      ],
+      "note": "Foundry-side proxy only; memory demand source missing."
+    },
+    {
+      "id": 8,
+      "centre": "Foundry",
+      "target": "Cloud / AI buildout",
+      "relation": "demand",
+      "expectedClock": "MID",
+      "status": "PARTIAL",
+      "series": [
+        "IPG3344S",
+        "A679RX1Q020SBEA"
+      ],
+      "note": "Both broad proxies identified but different cadences and neither is direct cloud buildout."
+    },
+    {
+      "id": 9,
+      "centre": "Memory",
+      "target": "GPU/server availability",
+      "relation": "constraint",
+      "expectedClock": "MID",
+      "status": "GAP",
+      "series": [],
+      "note": "No accepted memory or server-availability series yet."
+    },
+    {
+      "id": 10,
+      "centre": "Memory",
+      "target": "Server cost",
+      "relation": "cost",
+      "expectedClock": "MID",
+      "status": "PARTIAL",
+      "series": [
+        "WPS117"
+      ],
+      "note": "Broad electrical-machinery price proxy only."
+    },
+    {
+      "id": 11,
+      "centre": "Memory",
+      "target": "Cloud margins",
+      "relation": "cost",
+      "expectedClock": "MID",
+      "status": "GAP",
+      "series": [],
+      "note": "No accepted memory-cost/cloud-margin route yet."
+    },
+    {
+      "id": 12,
+      "centre": "Memory",
+      "target": "Fabrication capex",
+      "relation": "demand",
+      "expectedClock": "SLOW",
+      "status": "PARTIAL",
+      "series": [
+        "A679RX1Q020SBEA"
+      ],
+      "note": "Broad information-processing investment is not fabrication capex."
+    },
+    {
+      "id": 13,
+      "centre": "Electricity",
+      "target": "Data centres",
+      "relation": "capacity",
+      "expectedClock": "SLOW",
+      "status": "PARTIAL",
+      "series": [
+        "IPG2211S",
+        "A679RX1Q020SBEA"
+      ],
+      "note": "Power output + broad compute investment identified; data-centre load series still missing."
+    },
+    {
+      "id": 14,
+      "centre": "Electricity",
+      "target": "Grid equipment",
+      "relation": "capacity",
+      "expectedClock": "SLOW",
+      "status": "CANDIDATE",
+      "series": [
+        "IPG2211S",
+        "WPS117"
+      ],
+      "note": "Monthly power/grid output and electrical-machinery PPI can form a same-cadence proxy pair once release provenance is enforced."
+    },
+    {
+      "id": 15,
+      "centre": "Electricity",
+      "target": "Fuel prices",
+      "relation": "cost",
+      "expectedClock": "FAST",
+      "status": "CANDIDATE",
+      "series": [
+        "IPG22111S",
+        "DCOILWTICO"
+      ],
+      "note": "Monthly power generation vs daily WTI requires an explicit cross-cadence bridge; FAST cannot be inferred from monthly power observations."
+    },
+    {
+      "id": 16,
+      "centre": "Electricity",
+      "target": "Regulation / permits",
+      "relation": "constraint",
+      "expectedClock": "SLOW",
+      "status": "GAP",
+      "series": [],
+      "note": "No accepted structured regulation/permit series yet."
+    },
+    {
+      "id": 17,
+      "centre": "Copper / metals",
+      "target": "Grid build",
+      "relation": "input",
+      "expectedClock": "MID",
+      "status": "CANDIDATE",
+      "series": [
+        "PCOPPUSDM",
+        "WPS117"
+      ],
+      "note": "Monthly copper price and electrical-machinery PPI are same-cadence proxies; release-time handling still required."
+    },
+    {
+      "id": 18,
+      "centre": "Copper / metals",
+      "target": "EV build",
+      "relation": "input",
+      "expectedClock": "MID",
+      "status": "PARTIAL",
+      "series": [
+        "PCOPPUSDM"
+      ],
+      "note": "Copper side identified; EV-build series missing."
+    },
+    {
+      "id": 19,
+      "centre": "Copper / metals",
+      "target": "Mine/refinery disruption",
+      "relation": "supply",
+      "expectedClock": "FAST",
+      "status": "PARTIAL",
+      "series": [
+        "PCOPPUSDM"
+      ],
+      "note": "Monthly copper price cannot resolve FAST mine/refinery disruption by itself."
+    },
+    {
+      "id": 20,
+      "centre": "Copper / metals",
+      "target": "Equipment build cost",
+      "relation": "cost",
+      "expectedClock": "MID",
+      "status": "CANDIDATE",
+      "series": [
+        "PCOPPUSDM",
+        "WPS117"
+      ],
+      "note": "Monthly copper and machinery-price proxies identified."
+    },
+    {
+      "id": 21,
+      "centre": "Oil / logistics",
+      "target": "Bunker fuel",
+      "relation": "cost",
+      "expectedClock": "FAST",
+      "status": "PARTIAL",
+      "series": [
+        "DCOILWTICO"
+      ],
+      "note": "Daily WTI is active; bunker-fuel series missing."
+    },
+    {
+      "id": 22,
+      "centre": "Oil / logistics",
+      "target": "Shipping rates",
+      "relation": "cost",
+      "expectedClock": "MID",
+      "status": "PARTIAL",
+      "series": [
+        "DCOILWTICO",
+        "WPU3012"
+      ],
+      "note": "WTI plus US truck-freight PPI is only a broad logistics proxy, not ocean shipping."
+    },
+    {
+      "id": 23,
+      "centre": "Oil / logistics",
+      "target": "Imported goods",
+      "relation": "cost",
+      "expectedClock": "SLOW",
+      "status": "PARTIAL",
+      "series": [
+        "DCOILWTICO"
+      ],
+      "note": "Oil side active; accepted import-price series not yet routed."
+    },
+    {
+      "id": 24,
+      "centre": "Oil / logistics",
+      "target": "Inflation / rates",
+      "relation": "macro",
+      "expectedClock": "SLOW",
+      "status": "ACTIVE",
+      "series": [
+        "DCOILWTICO",
+        "DGS10",
+        "DFF"
+      ],
+      "note": "Daily oil-to-rates proxy is active. Inflation itself remains a separate monthly candidate via CPIAUCSL."
+    },
+    {
+      "id": 25,
+      "centre": "UK consumer",
+      "target": "Food commodities",
+      "relation": "input",
+      "expectedClock": "SLOW",
+      "status": "PARTIAL",
+      "series": [
+        "D7C8"
+      ],
+      "note": "UK food CPI identified as response-side consumer measure; commodity-input source still missing."
+    },
+    {
+      "id": 26,
+      "centre": "UK consumer",
+      "target": "Energy / freight",
+      "relation": "cost",
+      "expectedClock": "SLOW",
+      "status": "PARTIAL",
+      "series": [
+        "D7CH",
+        "D7DT"
+      ],
+      "note": "UK household energy indices identified; UK freight source still missing."
+    },
+    {
+      "id": 27,
+      "centre": "UK consumer",
+      "target": "Wages / regulation",
+      "relation": "cost",
+      "expectedClock": "SLOW",
+      "status": "GAP",
+      "series": [],
+      "note": "No accepted wage/regulation pair yet."
+    },
+    {
+      "id": 28,
+      "centre": "UK consumer",
+      "target": "Household pressure",
+      "relation": "demand",
+      "expectedClock": "SLOW",
+      "status": "PARTIAL",
+      "series": [
+        "D7C8",
+        "D7CH"
+      ],
+      "note": "Food and household-energy pressure components identified; aggregate household-pressure measure not yet accepted."
+    },
+    {
+      "id": 29,
+      "centre": "Money / liquidity",
+      "target": "Gold",
+      "relation": "rates/USD",
+      "expectedClock": "FAST",
+      "status": "GAP",
+      "series": [],
+      "note": "No accepted directly usable gold-price carrier has been activated."
+    },
+    {
+      "id": 30,
+      "centre": "Money / liquidity",
+      "target": "Crypto / risk",
+      "relation": "liquidity",
+      "expectedClock": "FAST",
+      "status": "ACTIVE_LIVE_ONLY",
+      "series": [
+        "DFF",
+        "DGS10",
+        "DTWEXBGS",
+        "BTC/GBP",
+        "ETH/GBP",
+        "BTC/USD",
+        "ETH/USD"
+      ],
+      "note": "Rates/dollar and executable crypto quotes are live; long comparable crypto history is not yet in the historical clock library."
+    },
+    {
+      "id": 31,
+      "centre": "Money / liquidity",
+      "target": "FX",
+      "relation": "rates",
+      "expectedClock": "FAST",
+      "status": "ACTIVE",
+      "series": [
+        "DFF",
+        "DGS10",
+        "IUDBEDR",
+        "IUDSOIA",
+        "DEXUSUK",
+        "XUDLUSS",
+        "XUDLERS"
+      ],
+      "note": "Daily rate and FX carriers are active and cadence-compatible."
+    },
+    {
+      "id": 32,
+      "centre": "Money / liquidity",
+      "target": "Equity multiples",
+      "relation": "discount-rate",
+      "expectedClock": "MID",
+      "status": "ACTIVE",
+      "series": [
+        "DGS10",
+        "DFF",
+        "SP500",
+        "VIXCLS"
+      ],
+      "note": "Daily rates, equity index and volatility carriers are active; current 8-bar VIX→DGS10 research lineage sits here as a proxy relation."
+    }
+  ]
+}
