@@ -629,3 +629,32 @@ JMLogic → Route-Code → ContactCode → TraceBox.
 No order placement. No money Ding.
 
 Keeper: **FIND IT → THEN MAKE IT STAY.**
+
+
+## JM Quick Flip v1.4 — Remember What Stayed
+
+Quick Flip now keeps a small local watchlist on the device using the page.
+
+When a repeated check runs through:
+- DOES IT STAY?
+- FIND ONE THAT STAYS
+
+the route/result is remembered locally with:
+- pair,
+- direction,
+- last status,
+- last net paper gap,
+- first/last seen time,
+- remembered-check count,
+- stayed / flickered / fell-away counts.
+
+New visible control:
+- `CHECK WATCHLIST`
+
+That control recontacts fresh live books for every remembered route using the same current amount and cost settings, then updates the local history.
+
+This memory is deliberately device-local. It does not pretend the free hosted service has durable cross-deploy storage.
+
+The stay classifier also advances to v0.2 so it can classify both full Quick Flip scan wrappers and direct JM Coding Estate decision receipts in QA.
+
+Keeper: **REMEMBER WHAT SURVIVED; MAKE IT MEET REALITY AGAIN.**
