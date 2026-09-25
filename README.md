@@ -95,3 +95,19 @@ The live route now contacts public level-1 order books instead of price-only tic
 - Deeper-book slippage is still a later gate; top-level capacity is not allowed to impersonate full-book execution.
 
 Keeper: **PRICE WITHOUT SIZE IS NOT YET AN EXECUTABLE ROUTE.**
+
+
+## JM Market Ecosystem Lab v1.4 — full-depth VWAP sweep
+
+The lab can now walk returned public order books for a chosen paper notional instead of stopping at the first price level.
+
+- `/market/v1/sweep?symbol=ETH/GBP&notional=1000`
+- Kraken depth: up to 100 public levels.
+- Coinbase Exchange depth: public level-2 book.
+- Buy-side simulation spends the requested quote notional across asks.
+- Sell-side simulation disposes the acquired base quantity across bids.
+- Returned route carries fill state, base quantity, buy VWAP, sell VWAP, levels used, gross bps and cross-source receive skew.
+- Browser then applies the user-entered fee + extra-friction assumptions and records a FULL_DEPTH_SWEEP trace.
+- Notional is clamped to 1–100,000 quote units per request.
+
+Keeper: **TOP PRICE → TOP SIZE → FULL DEPTH → FRICTION → ONLY THEN SURVIVING PAPER EDGE.**
