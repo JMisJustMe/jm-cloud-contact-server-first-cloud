@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JM Quick Flip Lab v1.0</title>
+<style>
+:root{font-family:Inter,system-ui,sans-serif;color-scheme:dark;background:#0b0d10;color:#f5f7fa}
+*{box-sizing:border-box}body{margin:0;padding:14px;background:#0b0d10}.wrap{max-width:900px;margin:auto}
+h1{font-size:clamp(30px,8vw,52px);margin:4px 0}.sub{color:#aeb7c2;margin:0 0 18px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.card{background:#14181d;border:1px solid #29313b;border-radius:18px;padding:14px}.row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+label{display:block;font-size:12px;color:#9ba7b4;margin-bottom:5px}select,input,button{width:100%;border:1px solid #303946;background:#0f1318;color:#fff;padding:12px;border-radius:12px;font-size:16px}
+button{font-weight:900;background:#f4f6f8;color:#111;border:0;cursor:pointer}.big{font-size:19px;padding:15px}.kpi{font-size:28px;font-weight:900;line-height:1.05}.small{font-size:12px}.muted{color:#95a1af}.good{color:#78e3a7}.bad{color:#ff8c91}.warn{color:#ffd479}.pill{display:inline-block;padding:5px 8px;border:1px solid #35404c;border-radius:999px;margin:0 4px 5px 0;font-size:12px}.status{margin-top:10px;padding:12px;border-radius:12px;background:#0f1318;border:1px solid #303946}.mono{font-family:ui-monospace,Consolas,monospace;word-break:break-word}.top{padding:12px 0 18px}@media(max-width:560px){.row{grid-template-columns:1fr}}
+</style>
+</head>
+<body><div class="wrap">
+<section class="top">
+<span class="pill">VISIBLE BUILD</span><span class="pill">LIVE PUBLIC BOOKS</span><span class="pill">PAPER ONLY</span>
+<h1>JM Quick Flip Lab</h1>
+<p class="sub">The simple front door this chat started with. One button checks a cross-venue flip, full book depth, friction, and routes the result through your actual JM Coding Estate.</p>
+</section>
+
+<div class="card">
+<div class="row">
+<div><label>Pair</label><select id="pair"><option>BTC/GBP</option><option>ETH/GBP</option><option>BTC/USD</option><option>ETH/USD</option></select></div>
+<div><label>Paper notional</label><input id="notional" type="number" value="1000" min="1" step="50"></div>
+<div><label>Kraken fee · bps</label><input id="feeA" type="number" value="25" min="0" step="1"></div>
+<div><label>Coinbase fee · bps</label><input id="feeB" type="number" value="25" min="0" step="1"></div>
+<div><label>Other friction · bps</label><input id="other" type="number" value="5" min="0" step="1"></div>
+<div><label>&nbsp;</label><button id="run" class="big">RUN QUICK FLIP</button></div>
+</div>
+<div id="status" class="status muted">Ready. No money is moved.</div>
+</div>
+
+<div id="result" class="grid" style="margin-top:12px"></div>
+
+<div class="card" style="margin-top:12px">
+<h3>Actual JM coding bodies in this build</h3>
+<div id="bodies" class="small muted">Loading donor manifest…</div>
+<p class="small muted">Route: executable books → full-depth candidate → JMLogic gate → Route-Code state route → ContactCode venue contact → TraceBox receipts. Supporting JS adapts market data into the bodies; it does not replace them.</p>
+</div>
+
+<div class="card" style="margin-top:12px">
+<h3>Boundary</h3>
+<p class="small muted">This is a paper scanner. A positive result is not a recommendation, guaranteed fill, or money Ding. Exchange/account fees, inventory, transfer state, latency, taxes and other real execution conditions can differ.</p>
+<p class="small"><a href="/market" style="color:inherit">Open the full Market Ecosystem Lab →</a></p>
+</div>
+</div>
+<script>
+const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])),fmt=(n,d=2)=>Number.isFinite(+n)?Number(n).toFixed(d):'—';
+const card=(t,v,s='')=>'<div class="card"><div class="small muted">'+esc(t)+'</div><div class="kpi '+s+'">'+v+'</div></div>';
+async function manifest(){try{let r=await fetch('/market/v1/quick-flip/manifest',{cache:'no-store'}),j=await r.json();$('bodies').innerHTML='<div class="mono">'+esc(j.build)+' · v'+esc(j.version)+' · '+j.bodyCount+' estate bodies</div><div style="margin-top:7px">'+j.mounted.map(x=>'<span class="pill">'+esc(x)+'</span>').join('')+'<span class="pill">TraceBox receipts</span></div>'}catch(e){$('bodies').textContent=e.message}}
+async function run(){let q=new URLSearchParams({symbol:$('pair').value,notional:$('notional').value,feeA:$('feeA').value,feeB:$('feeB').value,other:$('other').value});$('status').textContent='Contacting both books, walking depth and routing through JM Coding Estate…';$('result').innerHTML='';try{let r=await fetch('/market/v1/quick-flip?'+q,{cache:'no-store'}),j=await r.json();if(!r.ok)throw Error(j.error||('HTTP '+r.status));let c=j.candidate||{},e=j.estateDecision||{},cls=e.verdict==='PAPER_CANDIDATE'?'warn':'good';$('result').innerHTML=
+card('Verdict',esc(e.verdict||'—'),cls)+
+card('Best route',esc(c.route||'—'))+
+card('Gross depth gap',fmt(c.rawBps,2)+' bps',c.rawBps>0?'warn':'bad')+
+card('Net after assumptions',fmt(c.netBps,2)+' bps',c.netBps>0?'warn':'bad')+
+card('Paper P/L',(c.paperPnl>=0?'+':'')+fmt(c.paperPnl,2),c.paperPnl>0?'warn':'bad')+
+card('Book contact',j.depth?.ok?'DEPTH PASS':'HOLD',j.depth?.ok?'good':'bad');
+$('status').innerHTML='<b>'+esc(j.symbol)+'</b> · '+esc((e.logicActions||[]).join(' · '))+'<br><span class="small muted">JM Coding Estate '+esc(e.codingEstate?.build)+' · mounted '+esc((e.codingEstate?.mounted||[]).join(', '))+' · '+esc(e.capitalBoundary)+'</span>';
+}catch(e){$('status').innerHTML='<span class="bad">'+esc(e.message)+'</span>'}}
+$('run').onclick=run;manifest();
+</script>
+</body></html>
