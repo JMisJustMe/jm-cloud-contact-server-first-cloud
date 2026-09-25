@@ -206,3 +206,24 @@ v1.7.2 introduces a strict historical numeric parser shared by FRED and Bank of 
 The existing input diagnostics remain live so this correction is checked at runtime, not merely assumed.
 
 Keeper: **MISSING ≠ ZERO.**
+
+
+## JM Market Ecosystem Lab v1.8 — batch clock matrix
+
+The clock instrument can now screen an entire whitelisted source library in one bounded pass instead of requiring one manually selected pair at a time.
+
+Route:
+- `/market/v1/clock-matrix?source=fred&from=2021-01-01&to=2026-09-25&maxLag=20&frictionBps=20`
+
+For every ordered pair in the chosen source library, the server:
+- reuses one fetched copy of each historical series,
+- applies each series' own transform and default threshold,
+- runs training-only lag selection,
+- freezes lag and direction,
+- evaluates validation + untouched test,
+- separates same-bar survival from non-zero mismatched-clock candidates,
+- keeps failed/insufficient pairs visible rather than silently deleting them.
+
+The matrix is a research screen, not a trading recommendation or capital instruction.
+
+Keeper: **SWEEP THE FIELD; DO NOT FORCE THE FIELD TO PASS.**
