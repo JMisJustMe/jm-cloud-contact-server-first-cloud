@@ -658,3 +658,27 @@ This memory is deliberately device-local. It does not pretend the free hosted se
 The stay classifier also advances to v0.2 so it can classify both full Quick Flip scan wrappers and direct JM Coding Estate decision receipts in QA.
 
 Keeper: **REMEMBER WHAT SURVIVED; MAKE IT MEET REALITY AGAIN.**
+
+
+## JM Quick Flip v1.5 — What Keeps Coming Back?
+
+The local watchlist now separates **instant persistence** from **return persistence**.
+
+A route can no longer become “came back later” merely because the button was pressed repeatedly within seconds.
+
+Device-local return memory now records up to 16 recent watch events per route and applies a time separation gate:
+
+- repeat checks inside 15 minutes remain part of the same near-term contact,
+- 2 time-separated STAYED THERE contacts → **CAME BACK LATER**,
+- 3+ time-separated STAYED THERE contacts spanning at least 30 minutes → **KEEPS COMING BACK**,
+- mixed survival → **FLICKERY**,
+- no surviving return → **FELL AWAY / WAITING** as appropriate.
+
+New visible control:
+- `WHAT KEEPS COMING BACK?`
+
+The watchlist is ranked by return evidence first, then the latest remaining paper gap. Existing v1.4 browser memory is read forward into v1.5 so earlier local survivors are not discarded.
+
+This is still device-local paper evidence. Time-spaced recurrence is stronger than three snapshots in a few seconds, but it is not execution proof or a money Ding.
+
+Keeper: **COMING BACK LATER ≠ STAYING THERE FOR THREE SECONDS.**
