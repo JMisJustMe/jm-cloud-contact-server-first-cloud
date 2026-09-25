@@ -602,3 +602,30 @@ The result also reports average / low / high net paper gap across the repeated c
 This is persistence evidence only. It is not a recommendation, fill guarantee, or money Ding.
 
 Keeper: **ONE FLASH ISN'T A ROUTE.**
+
+
+## JM Quick Flip v1.3 — Find One That Stays
+
+The simple front door can now do the whole route in one action:
+
+- scan every supported Kraken/Coinbase pair,
+- rank the current paper results after the entered costs,
+- choose the strongest result that still has something left,
+- recheck that selected pair three more times,
+- report whether it STAYED THERE, FLICKERED, or FELL AWAY.
+
+New route:
+- `/market/v1/quick-flip/best-that-stays`
+
+New visible control:
+- `FIND ONE THAT STAYS`
+
+If the first all-pairs screen has no paper candidate, the route stops cleanly with:
+- `NOTHING WORTH CHASING`
+
+Every underlying pair check still runs through the actual JM Coding Estate:
+JMLogic → Route-Code → ContactCode → TraceBox.
+
+No order placement. No money Ding.
+
+Keeper: **FIND IT → THEN MAKE IT STAY.**
