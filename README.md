@@ -286,3 +286,34 @@ Default live calibration:
 The reported rates are empirical diagnostics from this deterministic shift family. They are not assumptions of independent observations, not universal p-values, and not causal or capital evidence.
 
 Keeper: **THE SEARCH ITSELF MUST ENTER THE NULL.**
+
+
+## JM Market Ecosystem Lab v1.11 — Lag Rarity
+
+The selected lag identity now has its own null diagnostic.
+
+New route:
+- `/market/v1/clock-lag-rarity`
+
+For a selected pair, the lab:
+- freezes the real baseline lag from the ordinary 60/20/20 clock test,
+- generates many unique non-zero circular shifts of the target history,
+- reruns the exact pair machinery,
+- counts generic mismatched survivors,
+- counts mismatched survivors landing on the exact baseline lag,
+- counts ±2-bar recurrences,
+- reports null lag histograms for all selected lags and later-partition mismatched survivors,
+- reports add-one finite-sample null frequencies.
+
+The primary event is deliberately strict: a shifted null must both survive the later partitions as a mismatched-clock candidate and land on the original baseline lag.
+
+Default live calibration:
+- VIXCLS → DGS10,
+- five-year history,
+- max lag 20 bars,
+- 256 unique target-calendar shifts,
+- minimum 20-bar displacement.
+
+This is an empirical lag-identity diagnostic under a deterministic shift family. It is not a universal p-value, causal proof, execution proof, or capital authority.
+
+Keeper: **THE LAG MUST BE RARER THAN THE SURVIVOR.**
