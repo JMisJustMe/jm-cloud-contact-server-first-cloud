@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JM Quick Flip v1.1</title>
+<style>
+:root{font-family:Inter,system-ui,sans-serif;color-scheme:dark;background:#0b0d10;color:#f5f7fa}
+*{box-sizing:border-box}body{margin:0;padding:14px;background:#0b0d10}.wrap{max-width:900px;margin:auto}
+h1{font-size:clamp(30px,8vw,52px);margin:4px 0}.sub{color:#aeb7c2;margin:0 0 18px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.card{background:#14181d;border:1px solid #29313b;border-radius:18px;padding:14px}.row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+label{display:block;font-size:12px;color:#9ba7b4;margin-bottom:5px}select,input,button{width:100%;border:1px solid #303946;background:#0f1318;color:#fff;padding:12px;border-radius:12px;font-size:16px}
+button{font-weight:900;background:#f4f6f8;color:#111;border:0;cursor:pointer}.big{font-size:19px;padding:15px}.kpi{font-size:28px;font-weight:900;line-height:1.05}.small{font-size:12px}.muted{color:#95a1af}.good{color:#78e3a7}.bad{color:#ff8c91}.warn{color:#ffd479}.pill{display:inline-block;padding:5px 8px;border:1px solid #35404c;border-radius:999px;margin:0 4px 5px 0;font-size:12px}.status{margin-top:10px;padding:12px;border-radius:12px;background:#0f1318;border:1px solid #303946}.mono{font-family:ui-monospace,Consolas,monospace;word-break:break-word}.top{padding:12px 0 18px}@media(max-width:560px){.row{grid-template-columns:1fr}}
+</style>
+</head>
+<body><div class="wrap">
+<section class="top">
+<span class="pill">LIVE BUILD</span><span class="pill">LIVE PRICES</span><span class="pill">NO REAL MONEY</span>
+<h1>JM Quick Flip</h1>
+<p class="sub">Pick one pair or check the lot. It compares Kraken and Coinbase, checks whether the full amount actually fits, takes off the costs, and tells you what is worth another look.</p>
+</section>
+
+<div class="card">
+<div class="row">
+<div><label>What are we checking?</label><select id="pair"><option>BTC/GBP</option><option>ETH/GBP</option><option>BTC/USD</option><option>ETH/USD</option></select></div>
+<div><label>Amount to test</label><input id="notional" type="number" value="1000" min="1" step="50"></div>
+<div><label>Kraken fee (%)</label><input id="feeA" type="number" value="0.25" min="0" step="0.01"></div>
+<div><label>Coinbase fee (%)</label><input id="feeB" type="number" value="0.25" min="0" step="0.01"></div>
+<div><label>Other costs (%)</label><input id="other" type="number" value="0.05" min="0" step="0.01"></div>
+<div><label>&nbsp;</label><button id="run" class="big">CHECK THIS ONE</button></div><div><label>&nbsp;</label><button id="runAll" class="big">CHECK THEM ALL</button></div>
+</div>
+<div id="status" class="status muted">Ready. Check one pair, or hit CHECK THEM ALL and let it scan the full set. No money moves.</div>
+</div>
+
+<div id="result" class="grid" style="margin-top:12px"></div><div id="allResult" style="margin-top:12px"></div>
+
+<div class="card" style="margin-top:12px">
+<h3>What is doing the work underneath</h3>
+<div id="bodies" class="small muted">Loading your JM Coding Estate…</div>
+<p class="small muted">Your JM Coding Estate is doing the checking underneath: JMLogic decides whether it is worth a look or a hold, Route-Code runs the route, ContactCode proves the Kraken ↔ Coinbase contact, and TraceBox keeps the receipt.</p>
+</div>
+
+<div class="card" style="margin-top:12px">
+<h3>What this does NOT do</h3>
+<p class="small muted">It does not buy or sell anything. It is a live checker using public prices and your chosen costs. A positive result means “worth another look”, not “put money in”. Real fills, account fees, timing, transfers and tax can change the outcome.</p>
+<p class="small"><a href="/market" style="color:inherit">Open the deeper research lab →</a></p>
+</div>
+</div>
+<script>
+const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])),fmt=(n,d=2)=>Number.isFinite(+n)?Number(n).toFixed(d):'—';
+const card=(t,v,s='')=>'<div class="card"><div class="small muted">'+esc(t)+'</div><div class="kpi '+s+'">'+v+'</div></div>';
+async function manifest(){try{let r=await fetch('/market/v1/quick-flip/manifest',{cache:'no-store'}),j=await r.json();$('bodies').innerHTML='<div class="mono">'+esc(j.build)+' · v'+esc(j.version)+' · '+j.bodyCount+' estate bodies</div><div style="margin-top:7px">'+j.mounted.map(x=>'<span class="pill">'+esc(x)+'</span>').join('')+'<span class="pill">TraceBox receipts</span></div>'}catch(e){$('bodies').textContent=e.message}}
+async function runAll(){let q=new URLSearchParams({notional:$('notional').value,feeA:(+$('feeA').value||0)*100,feeB:(+$('feeB').value||0)*100,other:(+$('other').value||0)*100});$('status').textContent='Checking all four pairs properly — live prices, full amount and costs…';$('result').innerHTML='';$('allResult').innerHTML='';try{let r=await fetch('/market/v1/quick-flip/all?'+q,{cache:'no-store'}),j=await r.json();if(!r.ok)throw Error(j.error||('HTTP '+r.status));let rows=(j.results||[]).map((x,i)=>{if(!x.ok)return '<div class="card"><div class="small muted">#'+(i+1)+' '+esc(x.symbol)+'</div><div class="bad">Could not check</div><div class="small muted">'+esc(x.error||'unknown error')+'</div></div>';let c=x.candidate||{},e=x.estateDecision||{},label=e.verdict==='PAPER_CANDIDATE'?'WORTH A LOOK':e.verdict==='HOLD_CAPACITY'?'NOT ENOUGH THERE':'COSTS EAT IT',cls=e.verdict==='PAPER_CANDIDATE'?'warn':'good',route=String(c.route||'—').replace('Kraken -> Coinbase','Buy Kraken → sell Coinbase').replace('Coinbase -> Kraken','Buy Coinbase → sell Kraken');return '<div class="card"><div class="small muted">#'+(i+1)+' '+esc(x.symbol)+'</div><div class="kpi '+cls+'">'+esc(label)+'</div><div>'+esc(route)+'</div><div class="small muted">left after costs '+fmt((+c.netBps||0)/100,3)+'% · pretend P/L '+(c.paperPnl>=0?'+':'')+fmt(c.paperPnl,2)+'</div></div>'}).join('');$('allResult').innerHTML='<div class="card"><h3>Best of the lot right now</h3><div class="grid">'+rows+'</div><p class="small muted">'+esc(j.worthALookCount)+' worth-a-look result(s) out of '+esc(j.completedCount)+' completed checks. '+esc(j.claimBoundary)+'</p></div>';$('status').innerHTML='<b>All pairs checked.</b> '+esc(j.worthALookCount)+' worth another look right now.<br><span class="small muted">Each pair still went through JMLogic → Route-Code → ContactCode → TraceBox.</span>'}catch(e){$('status').innerHTML='<span class="bad">'+esc(e.message)+'</span>'}}
+async function run(){let q=new URLSearchParams({symbol:$('pair').value,notional:$('notional').value,feeA:(+$('feeA').value||0)*100,feeB:(+$('feeB').value||0)*100,other:(+$('other').value||0)*100});$('status').textContent='Checking Kraken and Coinbase properly — price, amount available and costs…';$('result').innerHTML='';try{let r=await fetch('/market/v1/quick-flip?'+q,{cache:'no-store'}),j=await r.json();if(!r.ok)throw Error(j.error||('HTTP '+r.status));let c=j.candidate||{},e=j.estateDecision||{},label=e.verdict==='PAPER_CANDIDATE'?'WORTH A LOOK':e.verdict==='HOLD_CAPACITY'?'NOT ENOUGH THERE':'COSTS EAT IT',cls=e.verdict==='PAPER_CANDIDATE'?'warn':'good',route=String(c.route||'—').replace('Kraken -> Coinbase','Buy Kraken → sell Coinbase').replace('Coinbase -> Kraken','Buy Coinbase → sell Kraken'),rawPct=(+c.rawBps||0)/100,netPct=(+c.netBps||0)/100;
+$('result').innerHTML=
+card('So?',esc(label),cls)+
+card('Best way round',esc(route))+
+card('Gap before costs',fmt(rawPct,3)+'%',rawPct>0?'warn':'bad')+
+card('Left after costs',fmt(netPct,3)+'%',netPct>0?'warn':'bad')+
+card('Pretend profit / loss',(c.paperPnl>=0?'+':'')+fmt(c.paperPnl,2),c.paperPnl>0?'warn':'bad')+
+card('Enough there to fill it?',j.depth?.ok?'YES — CHECKED':'NO / COULD NOT CHECK',j.depth?.ok?'good':'bad');
+let plain=e.verdict==='PAPER_CANDIDATE'?'There is still something left after the costs you entered. Worth looking at — not a money signal.':e.verdict==='HOLD_CAPACITY'?'The price gap may exist, but there is not enough book depth for the amount you asked to test.':'Once the costs you entered are taken off, there is nothing left.';
+$('status').innerHTML='<b>'+esc(j.symbol)+'</b> · '+esc(plain)+'<br><span class="small muted">Underneath: JMLogic → Route-Code → ContactCode → TraceBox · '+esc(e.capitalBoundary)+'</span>';
+}catch(e){$('status').innerHTML='<span class="bad">'+esc(e.message)+'</span>'}}
+$('run').onclick=run;$('runAll').onclick=runAll;manifest();
+</script>
+</body></html>
