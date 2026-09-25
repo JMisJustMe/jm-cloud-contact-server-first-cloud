@@ -81,3 +81,17 @@ The hosted market body now gathers bounded public bid/ask snapshots on the serve
 - Historical Lab can ingest the cloud pulse observations without a file handoff.
 
 Keeper: **THE CLOUD OBSERVES; THE LAB TESTS; CAPITAL REMAINS A SEPARATE GATE.**
+
+
+## JM Market Ecosystem Lab v1.3 — top-book size gate
+
+The live route now contacts public level-1 order books instead of price-only tickers.
+
+- Kraken: public depth, top bid/ask + quoted base size.
+- Coinbase Exchange: public level-1 book, top bid/ask + quoted base size.
+- Every cross-venue route records raw bps plus the maximum quote-currency notional that fits entirely at both required top levels.
+- A positive raw/net percentage does not advance if the chosen paper notional exceeds that top-level capacity.
+- Cloud pulse history now carries `bestTopCapacity` alongside `bestRawBps`.
+- Deeper-book slippage is still a later gate; top-level capacity is not allowed to impersonate full-book execution.
+
+Keeper: **PRICE WITHOUT SIZE IS NOT YET AN EXECUTABLE ROUTE.**
