@@ -514,3 +514,31 @@ New routes:
 No order placement is implemented. The visible verdict is explicitly PAPER_CANDIDATE / HOLD_CAPACITY / HOLD_FRICTION and remains behind the standing boundary **LAB DING != MONEY DING**.
 
 Keeper: **USE THE ESTATE TO BUILD THE BUILD.**
+
+
+## JM Market Ecosystem Lab v1.16 — Plain Surface / Deep Guts
+
+The main Market Lab now follows the same language split as Quick Flip:
+
+- **surface language** speaks plainly,
+- **deep research rooms** keep the exact technical terms where they are useful,
+- the underlying runtime, evidence gates, null machinery and JM coding bodies are unchanged.
+
+Visible changes include:
+- Overview → Home
+- Live Mesh → Live Prices
+- 32-Mesh → 32 Routes
+- Historical Lab → Past Data
+- Paper Edge → Try It
+- Trace → Receipts
+- Protocol → Rules
+- Seed topology → 32 market routes ready
+- Live carrier → Running live through CLOUD
+- Historical rows → Past data loaded
+- Real capital → Real money used
+- technical live-price cards translated toward buy/sell, amount, costs and “best way round”
+
+The technical route remains visible underneath where useful:
+`SOURCE → SIGNAL → CONTACT FIELD → ROUTE PRESSURE → STATE CHANGE → DING → TRACE → RECOVERY → OUTPUT`
+
+Keeper: **PLAIN ON TOP; PRECISE UNDERNEATH.**
