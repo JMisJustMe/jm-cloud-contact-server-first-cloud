@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>JM Quick Flip v1.13 · Server-Shared Survivor Continuity</title>
+<title>JM Quick Flip v1.14 · Durable Continuity Gate</title>
 <style>
 :root{font-family:Inter,system-ui,sans-serif;color-scheme:dark;background:#090b0e;color:#f5f7fa;--panel:#14181d;--panel2:#0f1318;--line:#2b3440;--muted:#9ba7b4}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100dvh;padding:14px;background:radial-gradient(circle at 50% -10%,#1a2028 0,#0b0e12 34%,#090b0e 72%);overflow-x:hidden}.wrap{max-width:920px;margin:auto;padding-bottom:22px}
@@ -21,8 +21,8 @@ button{font-weight:900;background:#f4f6f8;color:#111;border:0;cursor:pointer;tou
 <body><div class="wrap">
 <section class="top">
 <span class="pill">LIVE BUILD</span><span class="pill">LIVE PRICES</span><span class="pill">NO REAL MONEY</span>
-<h1>JM Quick Flip <span class="small muted">v1.13 · CURRENT</span></h1>
-<p class="sub">Pick one pair, check the lot, or hit FIND ONE THAT STAYS. The cloud-survival ranking now comes from the server’s own pulse history rather than each browser rebuilding it independently. That gives phone and laptop the same runtime contact field when they use the same test settings. CHECK CLOUD SURVIVOR now promotes the selected server survivor into repeated full-depth paper proof. Server runtime continuity is not yet claimed as durable across a redeploy. Strong history does not pretend to mean it is still there now.</p>
+<h1>JM Quick Flip <span class="small muted">v1.14 · CURRENT</span></h1>
+<p class="sub">Pick one pair, check the lot, or hit FIND ONE THAT STAYS. The server now has a durable-store gate as well as runtime continuity. When a Postgres URL is linked, pulse snapshots reload after restart/redeploy; when it is not linked or contact fails, the page says runtime fallback instead of pretending durability. CHECK CLOUD SURVIVOR still promotes only into repeated full-depth paper proof. Strong history does not pretend to mean it is still there now.</p>
 </section>
 
 <div class="card">
@@ -42,7 +42,7 @@ button{font-weight:900;background:#f4f6f8;color:#111;border:0;cursor:pointer;tou
 <div id="status" class="status muted" aria-live="polite">Ready. The big button checks the lot, picks the best paper result, then makes it prove it can stay there. No money moves.</div>
 </div>
 
-<div class="desk" id="liveDesk" aria-live="polite"><div class="deskTitle"><b><span class="deskDot"></span>LIVE DESK</b><span class="small muted">paper contact only</span></div><div class="deskGrid"><div class="deskCell"><div class="small muted">Best remembered</div><div class="deskValue" id="deskBest">No survivor yet</div></div><div class="deskCell"><div class="small muted">Freshness</div><div class="deskValue" id="deskFresh">No fresh contact</div></div><div class="deskCell"><div class="small muted">Cloud glance</div><div class="deskValue" id="deskCloud">Awaiting server pulse</div><div class="small muted">raw top-book only</div></div><div class="deskCell"><div class="small muted">Cloud preflight</div><div class="deskValue" id="deskGate">WAITING</div><div class="small muted">cost + top-capacity screen only</div></div><div class="deskCell"><div class="small muted">Cloud survival</div><div class="deskValue" id="deskSurvival">WAITING</div><div class="small muted">recent pulse history · still top-book only</div></div><div class="deskCell"><div class="small muted">Cloud pulse</div><div class="deskValue" id="deskPulse">Awaiting contact</div></div><div class="deskCell"><div class="small muted">Next watch</div><div class="deskValue" id="deskNext">Watch off</div></div><button id="cloudCheck" class="secondary deskAction">CHECK CLOUD SURVIVOR</button><button id="deskRecheck" class="secondary deskAction">FULL-DEPTH WATCHLIST</button></div></div>
+<div class="desk" id="liveDesk" aria-live="polite"><div class="deskTitle"><b><span class="deskDot"></span>LIVE DESK</b><span class="small muted">paper contact only</span></div><div class="deskGrid"><div class="deskCell"><div class="small muted">Best remembered</div><div class="deskValue" id="deskBest">No survivor yet</div></div><div class="deskCell"><div class="small muted">Freshness</div><div class="deskValue" id="deskFresh">No fresh contact</div></div><div class="deskCell"><div class="small muted">Cloud glance</div><div class="deskValue" id="deskCloud">Awaiting server pulse</div><div class="small muted">raw top-book only</div></div><div class="deskCell"><div class="small muted">Cloud preflight</div><div class="deskValue" id="deskGate">WAITING</div><div class="small muted">cost + top-capacity screen only</div></div><div class="deskCell"><div class="small muted">Cloud survival</div><div class="deskValue" id="deskSurvival">WAITING</div><div class="small muted">recent pulse history · still top-book only</div></div><div class="deskCell"><div class="small muted">Continuity</div><div class="deskValue" id="deskPersistence">Checking store</div></div><div class="deskCell"><div class="small muted">Cloud pulse</div><div class="deskValue" id="deskPulse">Awaiting contact</div></div><div class="deskCell"><div class="small muted">Next watch</div><div class="deskValue" id="deskNext">Watch off</div></div><button id="cloudCheck" class="secondary deskAction">CHECK CLOUD SURVIVOR</button><button id="deskRecheck" class="secondary deskAction">FULL-DEPTH WATCHLIST</button></div></div>
 
 <div id="result" class="grid resultSlot sectionGap"></div><div id="allResult" class="resultSlot sectionGap"></div><div id="stayResult" class="resultSlot sectionGap"></div><div id="bestStayResult" class="resultSlot sectionGap"></div>
 <div class="card" style="margin-top:12px"><h3>What stayed before</h3><p class="small muted">Saved on this device only. It remembers repeated paper routes so you can come back later and make them meet fresh live books again.</p><div class="row"><button id="checkWatch">CHECK WATCHLIST</button><button id="bestRemembered">WHAT KEEPS COMING BACK?</button><button id="watchMode">WATCH FOR ME</button></div><div id="watchModeStatus" class="small muted" aria-live="polite" style="margin-top:8px">Watch mode is off. When on, this page rechecks remembered routes every 15 minutes while it remains open.</div><div id="watchSummary" class="status muted" aria-live="polite" style="margin-top:10px">Nothing has had enough separate-time contact yet.</div><div id="watchList" style="margin-top:10px"></div></div>
@@ -131,12 +131,13 @@ function cloudParams(){
 function bestCloudHistory(){return cloudContinuity?.selected||cloudContinuity?.results?.[0]||null}
 function renderDesk(){
  let best=null,w=readWatch();if(w.length)best=[...w].sort((a,b)=>scoreWatch(b)-scoreWatch(a))[0];
- let mode=readWatchMode(),fresh=best?freshness(best):null,bestBox=$('deskBest'),freshBox=$('deskFresh'),nextBox=$('deskNext'),cloudBox=$('deskCloud'),gateBox=$('deskGate'),survivalBox=$('deskSurvival'),pulseBox=$('deskPulse'),ch=bestCloudHistory(),cg=ch?.latest||null;
+ let mode=readWatchMode(),fresh=best?freshness(best):null,bestBox=$('deskBest'),freshBox=$('deskFresh'),nextBox=$('deskNext'),cloudBox=$('deskCloud'),gateBox=$('deskGate'),survivalBox=$('deskSurvival'),persistBox=$('deskPersistence'),pulseBox=$('deskPulse'),ch=bestCloudHistory(),cg=ch?.latest||null;
  if(bestBox)bestBox.textContent=best?(best.symbol+' · '+memoryLabel(best)):'No survivor yet';
  if(freshBox)freshBox.textContent=fresh?(fresh.label+' · '+ageWords(fresh.ageMs)+' old'):'No fresh contact';
  if(cloudBox)cloudBox.textContent=ch&&cg?(ch.symbol+' · '+fmt((+cg.rawBps||0)/100,3)+'% raw · cap '+fmt(cg.topCapacity,0)):'Awaiting server pulse';
  if(gateBox)gateBox.textContent=cg?(cg.reason+' · '+fmt((+cg.marginBps||0)/100,3)+'% after entered costs before depth'):'WAITING';
  if(survivalBox)survivalBox.textContent=ch?(ch.symbol+' · '+ch.label+' · '+ch.clears+'/'+ch.count+' recent clears · SERVER'):'WAITING';
+ if(persistBox){let p=cloudPulse?.persistence;persistBox.textContent=p?.durable?'POSTGRES DURABLE':p?.mode==='postgres-pending'?'POSTGRES PENDING':'RUNTIME FALLBACK'}
  if(pulseBox){let t=Date.parse(cloudPulse?.lastRunAt||'');pulseBox.textContent=Number.isFinite(t)?(ageWords(Date.now()-t)+' old · '+(cloudPulse?.pairs||[]).length+'/4 pairs'):'Awaiting contact'}
  if(nextBox)nextBox.textContent=mode.enabled?watchCountdown((mode.nextDue||Date.now())-Date.now()):'Watch off';
 }

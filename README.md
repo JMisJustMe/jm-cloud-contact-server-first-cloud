@@ -771,3 +771,17 @@ The actively evolving Market Lab / Quick Flip hosted surfaces now use stable **C
 Version identity remains inside the body and in Git history. New polish descendants update these carriers in place instead of accumulating another full sibling file. A versioned current predecessor is retained only until the CURRENT carrier earns deployment proof, then it is retired from the active tree.
 
 Keeper: **CURRENT BODY HERE; LINEAGE IN GIT; NO DEAD DESCENDANT PILE.**
+
+
+## JM Quick Flip v1.14 — Durable Continuity Gate
+
+The Market Lab CURRENT profile can now back cloud-pulse snapshots with Postgres when `JM_MARKET_DATABASE_URL` (or `DATABASE_URL`) is present.
+
+- durable store available: snapshots reload after service restart/redeploy,
+- database absent/unreachable: runtime/file fallback remains explicit,
+- public market snapshots only; no execution credentials or capital authority are stored,
+- free Render Postgres expiry remains an external availability boundary.
+
+Visible/API continuity status: `/market/v1/persistence`.
+
+Keeper: **DURABLE ONLY WHEN THE STORE DINGS.**
