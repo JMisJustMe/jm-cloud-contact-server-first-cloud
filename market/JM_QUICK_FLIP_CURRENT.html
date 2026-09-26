@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>JM Quick Flip v1.9 · Current Head</title>
+<title>JM Quick Flip v1.10 · Live Cloud Glance</title>
 <style>
 :root{font-family:Inter,system-ui,sans-serif;color-scheme:dark;background:#090b0e;color:#f5f7fa;--panel:#14181d;--panel2:#0f1318;--line:#2b3440;--muted:#9ba7b4}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100dvh;padding:14px;background:radial-gradient(circle at 50% -10%,#1a2028 0,#0b0e12 34%,#090b0e 72%);overflow-x:hidden}.wrap{max-width:920px;margin:auto;padding-bottom:22px}
@@ -11,7 +11,7 @@ h1{font-size:clamp(34px,8vw,56px);letter-spacing:-.045em;line-height:.96;margin:
 label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}select,input,button{width:100%;min-height:48px;border:1px solid #303946;background:var(--panel2);color:#fff;padding:12px;border-radius:13px;font-size:16px}
 select,input{outline:none;transition:border-color .18s ease,box-shadow .18s ease}select:focus,input:focus{border-color:#667485;box-shadow:0 0 0 3px rgba(150,165,183,.12)}
 button{font-weight:900;background:#f4f6f8;color:#111;border:0;cursor:pointer;touch-action:manipulation;transition:transform .12s ease,filter .16s ease,opacity .16s ease}button:hover{filter:brightness(.94)}button:active{transform:scale(.985)}button:disabled{cursor:wait;opacity:.55;transform:none}.secondary{background:#20262e;color:#eef2f6;border:1px solid #343e49}.primary{font-size:19px;min-height:58px}.kpi{font-size:clamp(24px,6vw,31px);font-weight:900;line-height:1.05;letter-spacing:-.02em}.small{font-size:12px;line-height:1.45}.muted{color:var(--muted)}.good{color:#78e3a7}.bad{color:#ff8c91}.warn{color:#ffd479}.pill{display:inline-flex;align-items:center;padding:5px 8px;border:1px solid #35404c;border-radius:999px;margin:0 4px 5px 0;font-size:12px}.status{margin-top:12px;padding:13px 14px;border-radius:14px;background:#0e1217;border:1px solid #303946;line-height:1.4}.mono{font-family:ui-monospace,Consolas,monospace;word-break:break-word}.top{padding:16px 2px 20px}.sectionGap{margin-top:12px}.resultSlot:not(:empty){animation:riseIn .22s ease-out}.busyLine{display:inline-flex;align-items:center;gap:8px}.busyLine:before{content:"";width:10px;height:10px;border-radius:50%;background:currentColor;animation:pulse 1s ease-in-out infinite}
-.desk{position:sticky;top:8px;z-index:20;margin:12px 0;background:rgba(15,19,24,.96);backdrop-filter:blur(12px);border:1px solid #3a4552;border-radius:18px;padding:10px;box-shadow:0 12px 34px rgba(0,0,0,.28)}.deskTitle{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.deskGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.deskCell{min-width:0;padding:9px 10px;border:1px solid #2b3440;border-radius:12px;background:#0c1015}.deskValue{font-weight:850;line-height:1.2;overflow-wrap:anywhere}.deskAction{min-height:42px;padding:9px 10px}.deskDot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#78e3a7;margin-right:7px;vertical-align:1px}
+.desk{position:sticky;top:8px;z-index:20;margin:12px 0;background:rgba(15,19,24,.96);backdrop-filter:blur(12px);border:1px solid #3a4552;border-radius:18px;padding:10px;box-shadow:0 12px 34px rgba(0,0,0,.28)}.deskTitle{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.deskGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:8px}.deskCell{min-width:0;padding:9px 10px;border:1px solid #2b3440;border-radius:12px;background:#0c1015}.deskValue{font-weight:850;line-height:1.2;overflow-wrap:anywhere}.deskAction{min-height:42px;padding:9px 10px}.deskDot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#78e3a7;margin-right:7px;vertical-align:1px}
 @keyframes riseIn{from{opacity:.15;transform:translateY(7px)}to{opacity:1;transform:none}}@keyframes pulse{50%{opacity:.25}}
 @media(max-width:720px){.actions{grid-template-columns:1fr 1fr}.heroAction{grid-column:1/-1}.wrap{max-width:100%}}
 @media(max-width:560px){body{padding:10px}.row,.actions{grid-template-columns:1fr}.heroAction{grid-column:auto}.card{border-radius:17px;padding:13px}.primary{min-height:56px}h1{font-size:clamp(36px,13vw,52px)}.deskGrid{grid-template-columns:1fr 1fr}.deskAction{grid-column:1/-1}}
@@ -21,8 +21,8 @@ button{font-weight:900;background:#f4f6f8;color:#111;border:0;cursor:pointer;tou
 <body><div class="wrap">
 <section class="top">
 <span class="pill">LIVE BUILD</span><span class="pill">LIVE PRICES</span><span class="pill">NO REAL MONEY</span>
-<h1>JM Quick Flip <span class="small muted">v1.9 · CURRENT</span></h1>
-<p class="sub">Pick one pair, check the lot, or hit FIND ONE THAT STAYS. LIVE DESK keeps the best remembered route, freshness and next watch contact visible while you use the page. Strong history does not pretend to mean it is still there now.</p>
+<h1>JM Quick Flip <span class="small muted">v1.10 · CURRENT</span></h1>
+<p class="sub">Pick one pair, check the lot, or hit FIND ONE THAT STAYS. LIVE DESK now also reads the server’s existing cloud pulse, so you can leave the page open and see fresh top-book contact without firing another exchange scan every few seconds. Full-depth paper proof still happens only when you ask for a recheck.</p>
 </section>
 
 <div class="card">
@@ -42,7 +42,7 @@ button{font-weight:900;background:#f4f6f8;color:#111;border:0;cursor:pointer;tou
 <div id="status" class="status muted" aria-live="polite">Ready. The big button checks the lot, picks the best paper result, then makes it prove it can stay there. No money moves.</div>
 </div>
 
-<div class="desk" id="liveDesk" aria-live="polite"><div class="deskTitle"><b><span class="deskDot"></span>LIVE DESK</b><span class="small muted">paper contact only</span></div><div class="deskGrid"><div class="deskCell"><div class="small muted">Best remembered</div><div class="deskValue" id="deskBest">No survivor yet</div></div><div class="deskCell"><div class="small muted">Freshness</div><div class="deskValue" id="deskFresh">No fresh contact</div></div><div class="deskCell"><div class="small muted">Next watch</div><div class="deskValue" id="deskNext">Watch off</div></div><button id="deskRecheck" class="secondary deskAction">RECHECK NOW</button></div></div>
+<div class="desk" id="liveDesk" aria-live="polite"><div class="deskTitle"><b><span class="deskDot"></span>LIVE DESK</b><span class="small muted">paper contact only</span></div><div class="deskGrid"><div class="deskCell"><div class="small muted">Best remembered</div><div class="deskValue" id="deskBest">No survivor yet</div></div><div class="deskCell"><div class="small muted">Freshness</div><div class="deskValue" id="deskFresh">No fresh contact</div></div><div class="deskCell"><div class="small muted">Cloud glance</div><div class="deskValue" id="deskCloud">Awaiting server pulse</div><div class="small muted">raw top-book only</div></div><div class="deskCell"><div class="small muted">Cloud pulse</div><div class="deskValue" id="deskPulse">Awaiting contact</div></div><div class="deskCell"><div class="small muted">Next watch</div><div class="deskValue" id="deskNext">Watch off</div></div><button id="deskRecheck" class="secondary deskAction">FULL-DEPTH RECHECK</button></div></div>
 
 <div id="result" class="grid resultSlot sectionGap"></div><div id="allResult" class="resultSlot sectionGap"></div><div id="stayResult" class="resultSlot sectionGap"></div><div id="bestStayResult" class="resultSlot sectionGap"></div>
 <div class="card" style="margin-top:12px"><h3>What stayed before</h3><p class="small muted">Saved on this device only. It remembers repeated paper routes so you can come back later and make them meet fresh live books again.</p><div class="row"><button id="checkWatch">CHECK WATCHLIST</button><button id="bestRemembered">WHAT KEEPS COMING BACK?</button><button id="watchMode">WATCH FOR ME</button></div><div id="watchModeStatus" class="small muted" aria-live="polite" style="margin-top:8px">Watch mode is off. When on, this page rechecks remembered routes every 15 minutes while it remains open.</div><div id="watchSummary" class="status muted" aria-live="polite" style="margin-top:10px">Nothing has had enough separate-time contact yet.</div><div id="watchList" style="margin-top:10px"></div></div>
@@ -79,6 +79,8 @@ const WATCH_KEY='jm_quick_flip_watch_current',LEGACY_WATCH_KEY='jm_quick_flip_wa
 const WATCH_MODE_KEY='jm_quick_flip_watch_mode_current',LEGACY_WATCH_MODE_KEY='jm_quick_flip_watch_mode_v16';
 const RETURN_GAP_MS=15*60*1000;
 const WATCH_INTERVAL_MS=15*60*1000;
+const CLOUD_POLL_MS=30000;
+let cloudPulse=null,cloudSnapshots=[],cloudBusy=false;
 const FRESH_MS=5*60*1000;
 const RECENT_MS=20*60*1000;
 const OLD_MS=60*60*1000;
@@ -123,12 +125,28 @@ function scoreWatch(x){
  const label=memoryLabel(x),sessions=spacedStayedSessions(x),fresh=freshness(x),base=label==='KEEPS COMING BACK'?400:label==='CAME BACK LATER'?300:label==='STAYED JUST NOW'?200:label==='FLICKERY'?100:0;
  return base+sessions*20+fresh.level*3+(+x.lastNetBps||0);
 }
+function latestCloudByPair(){
+ let m=new Map();for(const x of cloudSnapshots){if(x?.ok&&x.symbol)m.set(x.symbol,x)}return[...m.values()]
+}
+function bestCloudGlance(){
+ return latestCloudByPair().sort((a,b)=>(b.bestRawBps??-Infinity)-(a.bestRawBps??-Infinity))[0]||null
+}
 function renderDesk(){
  let best=null,w=readWatch();if(w.length)best=[...w].sort((a,b)=>scoreWatch(b)-scoreWatch(a))[0];
- let mode=readWatchMode(),fresh=best?freshness(best):null,bestBox=$('deskBest'),freshBox=$('deskFresh'),nextBox=$('deskNext');
+ let mode=readWatchMode(),fresh=best?freshness(best):null,bestBox=$('deskBest'),freshBox=$('deskFresh'),nextBox=$('deskNext'),cloudBox=$('deskCloud'),pulseBox=$('deskPulse'),cg=bestCloudGlance();
  if(bestBox)bestBox.textContent=best?(best.symbol+' · '+memoryLabel(best)):'No survivor yet';
  if(freshBox)freshBox.textContent=fresh?(fresh.label+' · '+ageWords(fresh.ageMs)+' old'):'No fresh contact';
+ if(cloudBox)cloudBox.textContent=cg?(cg.symbol+' · '+fmt((+cg.bestRawBps||0)/100,3)+'% raw · cap '+fmt(cg.bestTopCapacity,0)):'Awaiting server pulse';
+ if(pulseBox){let t=Date.parse(cloudPulse?.lastRunAt||'');pulseBox.textContent=Number.isFinite(t)?(ageWords(Date.now()-t)+' old · '+(cloudPulse?.pairs||[]).join(' + ')):'Awaiting contact'}
  if(nextBox)nextBox.textContent=mode.enabled?watchCountdown((mode.nextDue||Date.now())-Date.now()):'Watch off';
+}
+async function refreshCloudPulse(){
+ if(cloudBusy||document.hidden)return;cloudBusy=true;
+ try{
+  const [pr,sr]=await Promise.all([fetch('/market/v1/pulse',{cache:'no-store'}),fetch('/market/v1/snapshots?limit=8',{cache:'no-store'})]);
+  const [p,s]=await Promise.all([pr.json(),sr.json()]);
+  if(pr.ok)cloudPulse=p;if(sr.ok&&Array.isArray(s.snapshots))cloudSnapshots=s.snapshots;
+ }catch{}finally{cloudBusy=false;renderDesk()}
 }
 async function deskRecheck(){
  if(readWatch().length)await checkWatchlist(false);else await runBestStay();
@@ -198,6 +216,6 @@ $('checkWatch').onclick=()=>withAction('checkWatch','RECHECKING WATCHLIST…',()
 $('bestRemembered').onclick=bestRemembered;
 $('watchMode').onclick=toggleWatchMode;
 $('deskRecheck').onclick=()=>withAction('deskRecheck','RECHECKING…',deskRecheck);
-renderWatch();renderWatchMode();renderDesk();manifest();setInterval(watchTick,30000);setInterval(renderDesk,30000);setTimeout(watchTick,800);document.addEventListener('visibilitychange',()=>{if(!document.hidden){watchTick();renderDesk()}});
+renderWatch();renderWatchMode();renderDesk();manifest();refreshCloudPulse();setInterval(watchTick,30000);setInterval(renderDesk,30000);setInterval(refreshCloudPulse,CLOUD_POLL_MS);setTimeout(watchTick,800);document.addEventListener('visibilitychange',()=>{if(!document.hidden){watchTick();refreshCloudPulse();renderDesk()}});
 </script>
 </body></html>
