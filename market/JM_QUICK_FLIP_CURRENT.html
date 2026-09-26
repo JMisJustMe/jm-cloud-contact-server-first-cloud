@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>JM Quick Flip v1.10 · Live Cloud Glance</title>
+<title>JM Quick Flip v1.11 · Cloud Preflight Gate</title>
 <style>
 :root{font-family:Inter,system-ui,sans-serif;color-scheme:dark;background:#090b0e;color:#f5f7fa;--panel:#14181d;--panel2:#0f1318;--line:#2b3440;--muted:#9ba7b4}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100dvh;padding:14px;background:radial-gradient(circle at 50% -10%,#1a2028 0,#0b0e12 34%,#090b0e 72%);overflow-x:hidden}.wrap{max-width:920px;margin:auto;padding-bottom:22px}
@@ -21,8 +21,8 @@ button{font-weight:900;background:#f4f6f8;color:#111;border:0;cursor:pointer;tou
 <body><div class="wrap">
 <section class="top">
 <span class="pill">LIVE BUILD</span><span class="pill">LIVE PRICES</span><span class="pill">NO REAL MONEY</span>
-<h1>JM Quick Flip <span class="small muted">v1.10 · CURRENT</span></h1>
-<p class="sub">Pick one pair, check the lot, or hit FIND ONE THAT STAYS. LIVE DESK now also reads the server’s existing cloud pulse, so you can leave the page open and see fresh top-book contact without firing another exchange scan every few seconds. Full-depth paper proof still happens only when you ask for a recheck. Strong history does not pretend to mean it is still there now.</p>
+<h1>JM Quick Flip <span class="small muted">v1.11 · CURRENT</span></h1>
+<p class="sub">Pick one pair, check the lot, or hit FIND ONE THAT STAYS. LIVE DESK now turns the server’s existing cloud pulse into a cheap preflight gate: does the raw top-book gap even clear your entered costs, and is the quoted top-book capacity large enough for your test amount? It still does not call that executable. Full-depth paper proof only happens when you explicitly check it. Strong history does not pretend to mean it is still there now.</p>
 </section>
 
 <div class="card">
@@ -42,7 +42,7 @@ button{font-weight:900;background:#f4f6f8;color:#111;border:0;cursor:pointer;tou
 <div id="status" class="status muted" aria-live="polite">Ready. The big button checks the lot, picks the best paper result, then makes it prove it can stay there. No money moves.</div>
 </div>
 
-<div class="desk" id="liveDesk" aria-live="polite"><div class="deskTitle"><b><span class="deskDot"></span>LIVE DESK</b><span class="small muted">paper contact only</span></div><div class="deskGrid"><div class="deskCell"><div class="small muted">Best remembered</div><div class="deskValue" id="deskBest">No survivor yet</div></div><div class="deskCell"><div class="small muted">Freshness</div><div class="deskValue" id="deskFresh">No fresh contact</div></div><div class="deskCell"><div class="small muted">Cloud glance</div><div class="deskValue" id="deskCloud">Awaiting server pulse</div><div class="small muted">raw top-book only</div></div><div class="deskCell"><div class="small muted">Cloud pulse</div><div class="deskValue" id="deskPulse">Awaiting contact</div></div><div class="deskCell"><div class="small muted">Next watch</div><div class="deskValue" id="deskNext">Watch off</div></div><button id="deskRecheck" class="secondary deskAction">FULL-DEPTH RECHECK</button></div></div>
+<div class="desk" id="liveDesk" aria-live="polite"><div class="deskTitle"><b><span class="deskDot"></span>LIVE DESK</b><span class="small muted">paper contact only</span></div><div class="deskGrid"><div class="deskCell"><div class="small muted">Best remembered</div><div class="deskValue" id="deskBest">No survivor yet</div></div><div class="deskCell"><div class="small muted">Freshness</div><div class="deskValue" id="deskFresh">No fresh contact</div></div><div class="deskCell"><div class="small muted">Cloud glance</div><div class="deskValue" id="deskCloud">Awaiting server pulse</div><div class="small muted">raw top-book only</div></div><div class="deskCell"><div class="small muted">Cloud preflight</div><div class="deskValue" id="deskGate">WAITING</div><div class="small muted">cost + top-capacity screen only</div></div><div class="deskCell"><div class="small muted">Cloud pulse</div><div class="deskValue" id="deskPulse">Awaiting contact</div></div><div class="deskCell"><div class="small muted">Next watch</div><div class="deskValue" id="deskNext">Watch off</div></div><button id="cloudCheck" class="secondary deskAction">CHECK CLOUD LEADER</button><button id="deskRecheck" class="secondary deskAction">FULL-DEPTH WATCHLIST</button></div></div>
 
 <div id="result" class="grid resultSlot sectionGap"></div><div id="allResult" class="resultSlot sectionGap"></div><div id="stayResult" class="resultSlot sectionGap"></div><div id="bestStayResult" class="resultSlot sectionGap"></div>
 <div class="card" style="margin-top:12px"><h3>What stayed before</h3><p class="small muted">Saved on this device only. It remembers repeated paper routes so you can come back later and make them meet fresh live books again.</p><div class="row"><button id="checkWatch">CHECK WATCHLIST</button><button id="bestRemembered">WHAT KEEPS COMING BACK?</button><button id="watchMode">WATCH FOR ME</button></div><div id="watchModeStatus" class="small muted" aria-live="polite" style="margin-top:8px">Watch mode is off. When on, this page rechecks remembered routes every 15 minutes while it remains open.</div><div id="watchSummary" class="status muted" aria-live="polite" style="margin-top:10px">Nothing has had enough separate-time contact yet.</div><div id="watchList" style="margin-top:10px"></div></div>
@@ -63,7 +63,7 @@ button{font-weight:900;background:#f4f6f8;color:#111;border:0;cursor:pointer;tou
 const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])),fmt=(n,d=2)=>Number.isFinite(+n)?Number(n).toFixed(d):'—';
 const card=(t,v,s='')=>'<div class="card"><div class="small muted">'+esc(t)+'</div><div class="kpi '+s+'">'+v+'</div></div>';
 const SETTINGS_KEY='jm_quick_flip_settings_current',LEGACY_SETTINGS_KEY='jm_quick_flip_settings_v18';
-const ACTION_IDS=['run','runAll','stay','bestStay','checkWatch','bestRemembered','deskRecheck'];
+const ACTION_IDS=['run','runAll','stay','bestStay','checkWatch','bestRemembered','cloudCheck','deskRecheck'];
 let actionBusy=false;
 function readSettings(){try{return JSON.parse(localStorage.getItem(SETTINGS_KEY)||localStorage.getItem(LEGACY_SETTINGS_KEY)||'{}')}catch{return{}}}
 function saveSettings(){let x={pair:$('pair').value,notional:$('notional').value,feeA:$('feeA').value,feeB:$('feeB').value,other:$('other').value};localStorage.setItem(SETTINGS_KEY,JSON.stringify(x))}
@@ -131,12 +131,21 @@ function latestCloudByPair(){
 function bestCloudGlance(){
  return latestCloudByPair().sort((a,b)=>(b.bestRawBps??-Infinity)-(a.bestRawBps??-Infinity))[0]||null
 }
+function currentCostBps(){return ((+$('feeA').value||0)+(+($('feeB').value)||0)+(+($('other').value)||0))*100}
+function cloudPreflight(x){
+ if(!x)return{label:'WAITING',detail:'no cloud snapshot'};
+ const raw=+x.bestRawBps||0,cost=currentCostBps(),cap=+x.bestTopCapacity||0,need=+$('notional').value||1000;
+ if(raw<=cost)return{label:'RAW BELOW COSTS',detail:fmt((raw-cost)/100,3)+'% after entered costs before depth'};
+ if(cap<need)return{label:'TOP CAPACITY SHORT',detail:fmt(cap,0)+' quoted vs '+fmt(need,0)+' test amount'};
+ return{label:'PREFLIGHT CLEARS',detail:fmt((raw-cost)/100,3)+'% after entered costs · top cap '+fmt(cap,0)};
+}
 function renderDesk(){
  let best=null,w=readWatch();if(w.length)best=[...w].sort((a,b)=>scoreWatch(b)-scoreWatch(a))[0];
- let mode=readWatchMode(),fresh=best?freshness(best):null,bestBox=$('deskBest'),freshBox=$('deskFresh'),nextBox=$('deskNext'),cloudBox=$('deskCloud'),pulseBox=$('deskPulse'),cg=bestCloudGlance();
+ let mode=readWatchMode(),fresh=best?freshness(best):null,bestBox=$('deskBest'),freshBox=$('deskFresh'),nextBox=$('deskNext'),cloudBox=$('deskCloud'),gateBox=$('deskGate'),pulseBox=$('deskPulse'),cg=bestCloudGlance(),gate=cloudPreflight(cg);
  if(bestBox)bestBox.textContent=best?(best.symbol+' · '+memoryLabel(best)):'No survivor yet';
  if(freshBox)freshBox.textContent=fresh?(fresh.label+' · '+ageWords(fresh.ageMs)+' old'):'No fresh contact';
  if(cloudBox)cloudBox.textContent=cg?(cg.symbol+' · '+fmt((+cg.bestRawBps||0)/100,3)+'% raw · cap '+fmt(cg.bestTopCapacity,0)):'Awaiting server pulse';
+ if(gateBox)gateBox.textContent=gate.label+(gate.detail?' · '+gate.detail:'');
  if(pulseBox){let t=Date.parse(cloudPulse?.lastRunAt||'');pulseBox.textContent=Number.isFinite(t)?(ageWords(Date.now()-t)+' old · '+(cloudPulse?.pairs||[]).join(' + ')):'Awaiting contact'}
  if(nextBox)nextBox.textContent=mode.enabled?watchCountdown((mode.nextDue||Date.now())-Date.now()):'Watch off';
 }
@@ -147,6 +156,11 @@ async function refreshCloudPulse(){
   const [p,s]=await Promise.all([pr.json(),sr.json()]);
   if(pr.ok)cloudPulse=p;if(sr.ok&&Array.isArray(s.snapshots))cloudSnapshots=s.snapshots;
  }catch{}finally{cloudBusy=false;renderDesk()}
+}
+async function checkCloudLeader(){
+ const cg=bestCloudGlance();if(!cg){$('status').innerHTML='<b>No cloud leader yet.</b><br><span class="small muted">Waiting for the server pulse to return a usable top-book snapshot.</span>';return}
+ $('pair').value=cg.symbol;saveSettings();$('status').innerHTML='<b>'+esc(cg.symbol)+' selected from cloud preflight.</b><br><span class="small muted">Now doing the separate full-depth paper check. The preflight itself was not treated as executable proof.</span>';
+ await run();renderDesk();
 }
 async function deskRecheck(){
  if(readWatch().length)await checkWatchlist(false);else await runBestStay();
@@ -207,7 +221,7 @@ let plain=e.verdict==='PAPER_CANDIDATE'?'There is still something left after the
 $('status').innerHTML='<b>'+esc(j.symbol)+'</b> · '+esc(plain)+'<br><span class="small muted">Underneath: JMLogic → Route-Code → ContactCode → TraceBox · '+esc(e.capitalBoundary)+'</span>';
 }catch(e){$('status').innerHTML='<span class="bad">'+esc(e.message)+'</span>'}}
 loadSettings();
-for(const id of ['pair','notional','feeA','feeB','other'])$(id).addEventListener('change',saveSettings);
+for(const id of ['pair','notional','feeA','feeB','other'])$(id).addEventListener('change',()=>{saveSettings();renderDesk()});
 $('run').onclick=()=>withAction('run','CHECKING…',run);
 $('runAll').onclick=()=>withAction('runAll','CHECKING THE LOT…',runAll);
 $('stay').onclick=()=>withAction('stay','RECHECKING…',runStay);
@@ -215,6 +229,7 @@ $('bestStay').onclick=()=>withAction('bestStay','FINDING + PROVING…',runBestSt
 $('checkWatch').onclick=()=>withAction('checkWatch','RECHECKING WATCHLIST…',()=>checkWatchlist(false));
 $('bestRemembered').onclick=bestRemembered;
 $('watchMode').onclick=toggleWatchMode;
+$('cloudCheck').onclick=()=>withAction('cloudCheck','FULL-DEPTH CHECKING…',checkCloudLeader);
 $('deskRecheck').onclick=()=>withAction('deskRecheck','RECHECKING…',deskRecheck);
 renderWatch();renderWatchMode();renderDesk();manifest();refreshCloudPulse();setInterval(watchTick,30000);setInterval(renderDesk,30000);setInterval(refreshCloudPulse,CLOUD_POLL_MS);setTimeout(watchTick,800);document.addEventListener('visibilitychange',()=>{if(!document.hidden){watchTick();refreshCloudPulse();renderDesk()}});
 </script>
