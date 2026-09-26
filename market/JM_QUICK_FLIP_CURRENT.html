@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>JM Quick Flip v1.12 · Cloud Survival Preflight</title>
+<title>JM Quick Flip v1.13 · Server-Shared Survivor Continuity</title>
 <style>
 :root{font-family:Inter,system-ui,sans-serif;color-scheme:dark;background:#090b0e;color:#f5f7fa;--panel:#14181d;--panel2:#0f1318;--line:#2b3440;--muted:#9ba7b4}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100dvh;padding:14px;background:radial-gradient(circle at 50% -10%,#1a2028 0,#0b0e12 34%,#090b0e 72%);overflow-x:hidden}.wrap{max-width:920px;margin:auto;padding-bottom:22px}
@@ -21,8 +21,8 @@ button{font-weight:900;background:#f4f6f8;color:#111;border:0;cursor:pointer;tou
 <body><div class="wrap">
 <section class="top">
 <span class="pill">LIVE BUILD</span><span class="pill">LIVE PRICES</span><span class="pill">NO REAL MONEY</span>
-<h1>JM Quick Flip <span class="small muted">v1.12 · CURRENT</span></h1>
-<p class="sub">Pick one pair, check the lot, or hit FIND ONE THAT STAYS. LIVE DESK now asks the cloud pulse a stronger cheap question before full-depth work: did the top-book preflight clear once, or has it kept clearing across recent server pulses? All four seed pairs are observed by the default cloud pulse. None of that becomes executable proof until a separate full-depth paper check is run. Strong history does not pretend to mean it is still there now.</p>
+<h1>JM Quick Flip <span class="small muted">v1.13 · CURRENT</span></h1>
+<p class="sub">Pick one pair, check the lot, or hit FIND ONE THAT STAYS. The cloud-survival ranking now comes from the server’s own pulse history rather than each browser rebuilding it independently. That gives phone and laptop the same runtime contact field when they use the same test settings. CHECK CLOUD SURVIVOR now promotes the selected server survivor into repeated full-depth paper proof. Server runtime continuity is not yet claimed as durable across a redeploy. Strong history does not pretend to mean it is still there now.</p>
 </section>
 
 <div class="card">
@@ -80,7 +80,7 @@ const WATCH_MODE_KEY='jm_quick_flip_watch_mode_current',LEGACY_WATCH_MODE_KEY='j
 const RETURN_GAP_MS=15*60*1000;
 const WATCH_INTERVAL_MS=15*60*1000;
 const CLOUD_POLL_MS=30000;
-let cloudPulse=null,cloudSnapshots=[],cloudBusy=false;
+let cloudPulse=null,cloudContinuity=null,cloudBusy=false;
 const FRESH_MS=5*60*1000;
 const RECENT_MS=20*60*1000;
 const OLD_MS=60*60*1000;
@@ -125,54 +125,33 @@ function scoreWatch(x){
  const label=memoryLabel(x),sessions=spacedStayedSessions(x),fresh=freshness(x),base=label==='KEEPS COMING BACK'?400:label==='CAME BACK LATER'?300:label==='STAYED JUST NOW'?200:label==='FLICKERY'?100:0;
  return base+sessions*20+fresh.level*3+(+x.lastNetBps||0);
 }
-function latestCloudByPair(){
- let m=new Map();for(const x of cloudSnapshots){if(x?.ok&&x.symbol)m.set(x.symbol,x)}return[...m.values()]
+function cloudParams(){
+ return new URLSearchParams({notional:$('notional').value,feeA:(+$('feeA').value||0)*100,feeB:(+$('feeB').value||0)*100,other:(+$('other').value||0)*100,limit:6})
 }
-function currentCostBps(){return ((+$('feeA').value||0)+(+($('feeB').value)||0)+(+($('other').value)||0))*100}
-function cloudPreflight(x){
- if(!x)return{label:'WAITING',detail:'no cloud snapshot',clears:false,marginBps:-Infinity};
- const raw=+x.bestRawBps||0,cost=currentCostBps(),cap=+x.bestTopCapacity||0,need=+$('notional').value||1000,marginBps=raw-cost;
- if(raw<=cost)return{label:'RAW BELOW COSTS',detail:fmt(marginBps/100,3)+'% after entered costs before depth',clears:false,marginBps};
- if(cap<need)return{label:'TOP CAPACITY SHORT',detail:fmt(cap,0)+' quoted vs '+fmt(need,0)+' test amount',clears:false,marginBps};
- return{label:'PREFLIGHT CLEARS',detail:fmt(marginBps/100,3)+'% after entered costs · top cap '+fmt(cap,0),clears:true,marginBps};
-}
-function cloudHistory(symbol,limit=6){
- const xs=cloudSnapshots.filter(x=>x?.ok&&x.symbol===symbol).slice(-limit),gates=xs.map(cloudPreflight),clears=gates.filter(x=>x.clears).length,latest=gates.at(-1)||cloudPreflight(null);
- const rate=xs.length?clears/xs.length:0;
- const label=!xs.length?'WAITING':clears===xs.length&&xs.length>=3?'KEEPS CLEARING':clears>=2?'FLICKERING':clears===1?'CLEARED ONCE':'NEVER CLEARED';
- return{symbol,count:xs.length,clears,rate,label,latest,latestSnapshot:xs.at(-1)||null};
-}
-function cloudLeaders(){
- return latestCloudByPair().map(x=>cloudHistory(x.symbol)).sort((a,b)=>{
-  const ac=a.latest.clears?1:0,bc=b.latest.clears?1:0;
-  return (bc-ac)||(b.rate-a.rate)||(b.clears-a.clears)||((b.latest.marginBps??-Infinity)-(a.latest.marginBps??-Infinity));
- });
-}
-function bestCloudGlance(){return cloudLeaders()[0]?.latestSnapshot||null}
-function bestCloudHistory(){return cloudLeaders()[0]||null}
+function bestCloudHistory(){return cloudContinuity?.selected||cloudContinuity?.results?.[0]||null}
 function renderDesk(){
  let best=null,w=readWatch();if(w.length)best=[...w].sort((a,b)=>scoreWatch(b)-scoreWatch(a))[0];
- let mode=readWatchMode(),fresh=best?freshness(best):null,bestBox=$('deskBest'),freshBox=$('deskFresh'),nextBox=$('deskNext'),cloudBox=$('deskCloud'),gateBox=$('deskGate'),survivalBox=$('deskSurvival'),pulseBox=$('deskPulse'),cg=bestCloudGlance(),ch=bestCloudHistory(),gate=cloudPreflight(cg);
+ let mode=readWatchMode(),fresh=best?freshness(best):null,bestBox=$('deskBest'),freshBox=$('deskFresh'),nextBox=$('deskNext'),cloudBox=$('deskCloud'),gateBox=$('deskGate'),survivalBox=$('deskSurvival'),pulseBox=$('deskPulse'),ch=bestCloudHistory(),cg=ch?.latest||null;
  if(bestBox)bestBox.textContent=best?(best.symbol+' · '+memoryLabel(best)):'No survivor yet';
  if(freshBox)freshBox.textContent=fresh?(fresh.label+' · '+ageWords(fresh.ageMs)+' old'):'No fresh contact';
- if(cloudBox)cloudBox.textContent=cg?(cg.symbol+' · '+fmt((+cg.bestRawBps||0)/100,3)+'% raw · cap '+fmt(cg.bestTopCapacity,0)):'Awaiting server pulse';
- if(gateBox)gateBox.textContent=gate.label+(gate.detail?' · '+gate.detail:'');
- if(survivalBox)survivalBox.textContent=ch?(ch.symbol+' · '+ch.label+' · '+ch.clears+'/'+ch.count+' recent clears'):'WAITING';
+ if(cloudBox)cloudBox.textContent=ch&&cg?(ch.symbol+' · '+fmt((+cg.rawBps||0)/100,3)+'% raw · cap '+fmt(cg.topCapacity,0)):'Awaiting server pulse';
+ if(gateBox)gateBox.textContent=cg?(cg.reason+' · '+fmt((+cg.marginBps||0)/100,3)+'% after entered costs before depth'):'WAITING';
+ if(survivalBox)survivalBox.textContent=ch?(ch.symbol+' · '+ch.label+' · '+ch.clears+'/'+ch.count+' recent clears · SERVER'):'WAITING';
  if(pulseBox){let t=Date.parse(cloudPulse?.lastRunAt||'');pulseBox.textContent=Number.isFinite(t)?(ageWords(Date.now()-t)+' old · '+(cloudPulse?.pairs||[]).length+'/4 pairs'):'Awaiting contact'}
  if(nextBox)nextBox.textContent=mode.enabled?watchCountdown((mode.nextDue||Date.now())-Date.now()):'Watch off';
 }
 async function refreshCloudPulse(){
  if(cloudBusy||document.hidden)return;cloudBusy=true;
  try{
-  const [pr,sr]=await Promise.all([fetch('/market/v1/pulse',{cache:'no-store'}),fetch('/market/v1/snapshots?limit=24',{cache:'no-store'})]);
+  const [pr,sr]=await Promise.all([fetch('/market/v1/pulse',{cache:'no-store'}),fetch('/market/v1/quick-flip/cloud-survivors?'+cloudParams(),{cache:'no-store'})]);
   const [p,s]=await Promise.all([pr.json(),sr.json()]);
-  if(pr.ok)cloudPulse=p;if(sr.ok&&Array.isArray(s.snapshots))cloudSnapshots=s.snapshots;
+  if(pr.ok)cloudPulse=p;if(sr.ok)cloudContinuity=s;
  }catch{}finally{cloudBusy=false;renderDesk()}
 }
 async function checkCloudLeader(){
- const ch=bestCloudHistory(),cg=ch?.latestSnapshot;if(!cg){$('status').innerHTML='<b>No cloud survivor yet.</b><br><span class="small muted">Waiting for enough server-pulse contact to rank the recent preflight history.</span>';return}
- $('pair').value=cg.symbol;saveSettings();$('status').innerHTML='<b>'+esc(cg.symbol)+' selected from cloud history.</b><br><span class="small muted">'+esc(ch.label)+' · '+ch.clears+'/'+ch.count+' recent preflights cleared. Now doing the separate full-depth paper check; recent top-book survival is not executable proof.</span>';
- await run();renderDesk();
+ const ch=cloudContinuity?.selected;if(!ch?.latest?.clears){$('status').innerHTML='<b>No cloud survivor clears right now.</b><br><span class="small muted">Server history is preserved, but nothing earns promotion into the heavier full-depth route at this contact.</span>';return}
+ $('pair').value=ch.symbol;saveSettings();$('status').innerHTML='<b>'+esc(ch.symbol)+' selected by server-shared cloud history.</b><br><span class="small muted">'+esc(ch.label)+' · '+ch.clears+'/'+ch.count+' recent preflights cleared. Now making it survive repeated full-depth paper contact; top-book history itself is not executable proof.</span>';
+ await runStay();renderDesk();
 }
 async function deskRecheck(){
  if(readWatch().length)await checkWatchlist(false);else await runBestStay();
@@ -233,7 +212,7 @@ let plain=e.verdict==='PAPER_CANDIDATE'?'There is still something left after the
 $('status').innerHTML='<b>'+esc(j.symbol)+'</b> · '+esc(plain)+'<br><span class="small muted">Underneath: JMLogic → Route-Code → ContactCode → TraceBox · '+esc(e.capitalBoundary)+'</span>';
 }catch(e){$('status').innerHTML='<span class="bad">'+esc(e.message)+'</span>'}}
 loadSettings();
-for(const id of ['pair','notional','feeA','feeB','other'])$(id).addEventListener('change',()=>{saveSettings();renderDesk()});
+for(const id of ['pair','notional','feeA','feeB','other'])$(id).addEventListener('change',()=>{saveSettings();renderDesk();refreshCloudPulse()});
 $('run').onclick=()=>withAction('run','CHECKING…',run);
 $('runAll').onclick=()=>withAction('runAll','CHECKING THE LOT…',runAll);
 $('stay').onclick=()=>withAction('stay','RECHECKING…',runStay);
