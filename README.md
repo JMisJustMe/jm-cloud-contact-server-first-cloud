@@ -785,3 +785,12 @@ The Market Lab CURRENT profile can now back cloud-pulse snapshots with Postgres 
 Visible/API continuity status: `/market/v1/persistence`.
 
 Keeper: **DURABLE ONLY WHEN THE STORE DINGS.**
+
+
+## FLAZ checkpoint — Quick Flip v1.15
+
+Current stage is frozen at earned runtime/paper-monitoring scope. Server-shared survivor continuity, repeated full-depth promotion, bounded timeline receipts and SHA-256 operational receipts are live. Cross-redeploy durability remains a HOLD until real Postgres connection contact and restart recovery are proved.
+
+Recovery receipt: `market/JM_QUICK_FLIP_FLAZ_v1_15_RUNTIME_CONTINUITY_TIMELINE_RECEIPTS.md`
+
+Keeper: **DURABLE ONLY WHEN THE STORE DINGS.**
