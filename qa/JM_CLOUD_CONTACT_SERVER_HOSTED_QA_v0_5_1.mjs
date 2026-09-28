@@ -10,7 +10,7 @@ const port=18951;
 const admin='A'.repeat(48),secret='S'.repeat(48);
 const tmp=path.join(root,'.qa-data');
 fs.rmSync(tmp,{recursive:true,force:true});fs.mkdirSync(tmp,{recursive:true});
-const child=spawn(process.execPath,[path.join(root,'JM_CLOUD_CONTACT_SERVER_v0_5_2_COMPUTE_CELL.mjs')],{cwd:root,env:{...process.env,PORT:String(port),HOST:'127.0.0.1',JM_CLOUD_MODE:'development',JM_CLOUD_ADMIN_TOKEN:admin,JM_CLOUD_SERVER_SECRET:secret,JM_CLOUD_ORIGINS:'*',JM_CLOUD_DATA:path.join(tmp,'data.json'),JM_CLOUD_PROFILE_DIR:path.join(root,'profiles'),JM_CLOUD_PROFILE_MANIFEST:path.join(root,'profiles','JM_CLOUD_PROFILE_MANIFEST_HOSTED_v0_5_1.json'),JM_CLOUD_RECEIPT_SIGNING_KEY:path.join(tmp,'signing.pem'),JM_COMPUTE_DATA:path.join(tmp,'compute-state.json'),JM_COMPUTE_ARTIFACTS:path.join(tmp,'compute-artifacts')}});
+const child=spawn(process.execPath,[path.join(root,'JM_CLOUD_CONTACT_SERVER_v0_5_1_HOSTED_DESCENDANT.mjs')],{cwd:root,env:{...process.env,PORT:String(port),HOST:'127.0.0.1',JM_CLOUD_MODE:'development',JM_CLOUD_ADMIN_TOKEN:admin,JM_CLOUD_SERVER_SECRET:secret,JM_CLOUD_ORIGINS:'*',JM_CLOUD_DATA:path.join(tmp,'data.json'),JM_CLOUD_PROFILE_DIR:path.join(root,'profiles'),JM_CLOUD_PROFILE_MANIFEST:path.join(root,'profiles','JM_CLOUD_PROFILE_MANIFEST_HOSTED_v0_5_1.json'),JM_CLOUD_RECEIPT_SIGNING_KEY:path.join(tmp,'signing.pem')}});
 let stderr='';child.stderr.on('data',d=>stderr+=d);child.stdout.on('data',()=>{});
 const base=`http://127.0.0.1:${port}`;const checks=[];
 const pass=(name,detail=true)=>checks.push({name,pass:true,detail});
@@ -20,23 +20,9 @@ async function wait(){for(let i=0;i<60;i++){try{const x=await fetch(base+'/healt
 function canonical(v){if(v===null||typeof v!=='object')return JSON.stringify(v);if(Array.isArray(v))return '['+v.map(canonical).join(',')+']';return '{'+Object.keys(v).sort().map(k=>JSON.stringify(k)+':'+canonical(v[k])).join(',')+'}'}
 try{
  await wait();
- let x=await req('/health'); if(x.r.ok&&x.j.version==='0.5.2-compute-cell')pass('health',x.j.version);else throw new Error(JSON.stringify(x.j));
- x=await req('/meta'); if(x.r.ok&&x.j.apiRoots.join(',')==='/v5,/v4,/v3'&&x.j.computeCell==='/compute/v1/meta')pass('meta-v5-plus-compat',{apiRoots:x.j.apiRoots,computeCell:x.j.computeCell});else throw new Error(JSON.stringify(x.j));
+ let x=await req('/health'); if(x.r.ok&&x.j.version==='0.5.1-hosted')pass('health',x.j.version);else throw new Error(JSON.stringify(x.j));
+ x=await req('/meta'); if(x.r.ok&&x.j.apiRoots.join(',')==='/v5,/v4,/v3')pass('meta-v5-plus-compat',x.j.apiRoots);else throw new Error(JSON.stringify(x.j));
  x=await req('/ready'); if(x.r.ok&&x.j.ready&&x.j.profileCount===1&&x.j.receiptSigning)pass('ready-profile-signing',x.j);else throw new Error(JSON.stringify(x.j));
- x=await req('/compute/v1/meta');if(x.r.ok&&x.j.engines?.includes('routecore-native')&&x.j.forbidden?.includes('arbitrary shell'))pass('compute-meta-mounted',x.j);else throw new Error(JSON.stringify(x.j));
- x=await req('/compute/v1/ready');if(x.r.ok&&x.j.ready&&x.j.engineCount===1)pass('compute-ready',x.j);else throw new Error(JSON.stringify(x.j));
- x=await req('/compute/v1/cells',{method:'POST',token:admin,body:{cellId:'hosted-alpha',label:'Hosted Alpha Compute Cell'}});if(x.r.status===201&&x.j.cell?.policy?.engines?.[0]==='routecore-native')pass('compute-cell-create',x.j.cell);else throw new Error(JSON.stringify(x.j));
- const computeSource=`nativeRoute DoorNative {
-  entry = closed
-  states = [closed,open]
-  transition = press
-  abi = jm.routecore.v1
-}`;
- x=await req('/compute/v1/cells/hosted-alpha/jobs',{method:'POST',token:admin,body:{engine:'routecore-native',source:computeSource,input:{state:'closed',event:'press'}}});
- if(x.r.status===201&&x.j.job?.status==='completed'&&x.j.job?.nativeReceipt?.body==='RouteCore Native'&&x.j.cloudReceipt?.status==='closed')pass('compute-routecore-parent-integration',{jobId:x.j.job.jobId,artifactHash:x.j.job.artifactHash,cloudReceiptHash:x.j.job.cloudReceiptHash});else throw new Error(JSON.stringify(x.j));
- const computeJob=x.j.job;
- x=await req('/compute/v1/artifacts/'+computeJob.artifactHash,{token:admin});if(x.r.ok&&x.j.artifact?.payload?.execution?.result?.state?.to==='open')pass('compute-artifact-parent-integration','open');else throw new Error(JSON.stringify(x.j));
- x=await req('/compute/v1/cells/hosted-alpha/jobs',{method:'POST',token:admin,body:{engine:'node-shell',source:'echo nope',input:{}}});if(x.r.status===400&&x.j.allowed?.[0]==='routecore-native')pass('compute-foreign-engine-denied',x.j);else throw new Error(JSON.stringify(x.j));
  x=await req('/profiles'); if(x.r.ok&&x.j.profiles?.[0]?.id==='phone-laptop')pass('profile-list',x.j.profiles);else throw new Error(JSON.stringify(x.j));
  let html=await fetch(base+'/profiles/phone-laptop/control').then(r=>({status:r.status,text:r.text(),csp:r.headers.get('content-security-policy')}));html.text=await html.text;if(html.status===200&&html.csp.includes("frame-ancestors 'self'"))pass('profile-control-served',html.csp);else throw new Error('control');
  html=await fetch(base+'/profiles/phone-laptop/runner').then(async r=>({status:r.status,text:await r.text(),csp:r.headers.get('content-security-policy')}));if(html.status===200&&html.text.includes('CONTACT RUNNER')&&html.csp.includes("frame-ancestors 'self'"))pass('profile-runner-served',html.csp);else throw new Error('runner');
@@ -72,4 +58,4 @@ try{
  x=await req('/v3/spaces',{token:admin});if(x.r.ok)pass('v3-compatibility-list','PASS');else throw new Error('v3');
  const raw=fs.readFileSync(path.join(tmp,'data.json'),'utf8');if(!raw.includes(oldPhone)&&!raw.includes(phone)&&!raw.includes(phoneRejoin))pass('raw-secrets-not-persisted','PASS');else throw new Error('raw secret persisted');
 } catch(e){fail('fatal',e)} finally {child.kill('SIGTERM');await new Promise(r=>setTimeout(r,150));}
-const passed=checks.filter(x=>x.pass).length,failed=checks.length-passed;const out={body:'JM CLOUD CONTACT SERVER v0.5.2-compute-cell descendant + Phone↔Laptop profile + JM Compute Cell v0.1',checks,passed,failed,claimBoundary:'Assistant-side server/profile/API/static proof only; public hosted v0.5 and physical Phone↔Laptop consequences remain separately claim-gated.'};console.log(JSON.stringify(out,null,2));fs.writeFileSync(path.join(root,'qa','JM_CLOUD_CONTACT_SERVER_HOSTED_QA_RECEIPT_v0_5_1.json'),JSON.stringify(out,null,2));if(failed)process.exit(1);
+const passed=checks.filter(x=>x.pass).length,failed=checks.length-passed;const out={body:'JM CLOUD CONTACT SERVER v0.5.1-hosted descendant + Phone↔Laptop profile carrier',checks,passed,failed,claimBoundary:'Assistant-side server/profile/API/static proof only; public hosted v0.5 and physical Phone↔Laptop consequences remain separately claim-gated.'};console.log(JSON.stringify(out,null,2));fs.writeFileSync(path.join(root,'qa','JM_CLOUD_CONTACT_SERVER_HOSTED_QA_RECEIPT_v0_5_1.json'),JSON.stringify(out,null,2));if(failed)process.exit(1);
