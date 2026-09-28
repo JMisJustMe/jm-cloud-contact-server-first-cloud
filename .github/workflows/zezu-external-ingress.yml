@@ -1,4 +1,4 @@
-name: zezu.nwona external ingress proof
+name: zezu.nwona external ingress + recovery proof
 
 on:
   push:
@@ -21,77 +21,107 @@ jobs:
       - name: Checkout exact hosted descendant
         uses: actions/checkout@v4
 
-      - name: Public POST -> server store -> public GET -> exact return
+      - name: Public GET-before-POST recovery + POST/GET exact return
         shell: bash
         run: |
           node <<'NODE'
           const fs=require('fs');
           const crypto=require('crypto');
-          const source=fs.readFileSync('zezu/fixtures/ZEZU_NWONA_PORTABLE_HISTORY_CAPSULE_v0_5.json');
-          const expected='58d6cbd2ce62325b6ba75cacdd0e50949a5a05eef5e1946d8d9190ccc6b1b38f';
           const base='https://jm-cloud-contact-server-v05.onrender.com';
           const sha=b=>crypto.createHash('sha256').update(b).digest('hex');
           const fail=(m,x)=>{console.error(m,x??'');process.exit(1)};
+          const cases=[
+            {
+              admissionId:'v0.5-portable-return',
+              file:'zezu/fixtures/ZEZU_NWONA_PORTABLE_HISTORY_CAPSULE_v0_5.json',
+              expected:'58d6cbd2ce62325b6ba75cacdd0e50949a5a05eef5e1946d8d9190ccc6b1b38f'
+            },
+            {
+              admissionId:'v0.8-hosted-return-descendant',
+              file:'zezu/fixtures/ZEZU_NWONA_PORTABLE_HISTORY_CAPSULE_v0_8.json',
+              expected:'133a1016ebbd8f8d84fbaa8c35db9acbf617e76a2c10c3ef08970554a606750d'
+            }
+          ];
           (async()=>{
-            const sourceSha=sha(source);
-            if(sourceSha!==expected) fail('source SHA mismatch',sourceSha);
-
-            const post=await fetch(base+'/zezu/v1/history',{
-              method:'POST',
-              headers:{'content-type':'application/json','user-agent':'JM-zezu-external-proof/GitHub-Actions'},
-              body:JSON.stringify({carrierBase64:source.toString('base64')})
-            });
-            const pj=await post.json();
-            if(post.status!==201||!pj.ok) fail('public POST failed',{status:post.status,body:pj});
-
-            const get=await fetch(base+'/zezu/v1/history/'+encodeURIComponent(pj.historyId),{
-              headers:{'user-agent':'JM-zezu-external-proof/GitHub-Actions'}
-            });
-            const gj=await get.json();
-            if(get.status!==200||!gj.ok) fail('public GET failed',{status:get.status,body:gj});
-
-            const returned=Buffer.from(gj.carrierBase64,'base64');
-            const returnedSha=sha(returned);
-            const exact=Buffer.compare(source,returned)===0;
-
-            const tampered=Buffer.from(source);
-            tampered[tampered.length-2]^=1;
-            const bad=await fetch(base+'/zezu/v1/history',{
-              method:'POST',
-              headers:{'content-type':'application/json','user-agent':'JM-zezu-external-proof/GitHub-Actions'},
-              body:JSON.stringify({carrierBase64:tampered.toString('base64')})
-            });
-
             const proof={
-              schema:'zezu.nwona.external-public-ingress-proof/0.8',
-              status: exact && returnedSha===expected && bad.status===422 ? 'PASS':'FAIL',
+              schema:'zezu.nwona.external-public-recovery-proof/1.0',
+              status:'PASS',
               source:'GitHub Actions hosted runner',
               destination:base,
-              route:'EXTERNAL RUNNER -> PUBLIC HTTPS POST -> RENDER SERVER VERIFY/STORE -> PUBLIC HTTPS GET -> EXTERNAL RUNNER',
-              historyId:pj.historyId,
-              sourceBytes:source.length,
-              returnedBytes:returned.length,
-              sourceSha256:sourceSha,
-              returnedSha256:returnedSha,
-              exactByteMatch:exact,
-              ledgerRoot:gj.verification?.ledgerRoot||null,
-              continuationRoot:gj.verification?.continuationRoot||null,
-              blockedReceiptsExcludedFromContinuation:gj.verification?.blockedReceiptsExcludedFromContinuation===true,
-              serverReceiptHash:gj.receipt?.receiptHash||null,
-              serverSigPresent:!!gj.receipt?.serverSig,
-              tamperedCarrierPublicStatus:bad.status,
+              route:'EXTERNAL RUNNER -> PUBLIC GET BEFORE POST -> PUBLIC POST -> PUBLIC GET -> EXACT RETURN',
               runId:process.env.GITHUB_RUN_ID||null,
-              commit:process.env.GITHUB_SHA||null
+              runAttempt:process.env.GITHUB_RUN_ATTEMPT||null,
+              commit:process.env.GITHUB_SHA||null,
+              cases:[]
             };
-            fs.writeFileSync('ZEZU_EXTERNAL_INGRESS_PROOF_v0_8.json',JSON.stringify(proof,null,2)+'\n');
-            console.log('JM_ZEZU_EXTERNAL_INGRESS_PROOF '+JSON.stringify(proof));
-            if(proof.status!=='PASS') process.exit(1);
+            for(const c of cases){
+              const source=fs.readFileSync(c.file),sourceSha=sha(source),historyId='zn_'+c.expected.slice(0,24);
+              if(sourceSha!==c.expected) fail('source SHA mismatch '+c.admissionId,sourceSha);
+
+              const pre=await fetch(base+'/zezu/v1/history/'+encodeURIComponent(historyId),{
+                headers:{'user-agent':'JM-zezu-external-proof/GitHub-Actions'}
+              });
+              const preJ=await pre.json();
+              if(pre.status!==200||!preJ.ok) fail('public pre-POST GET failed '+c.admissionId,{status:pre.status,body:preJ});
+              const preBytes=Buffer.from(preJ.carrierBase64,'base64'),preSha=sha(preBytes);
+
+              const post=await fetch(base+'/zezu/v1/history',{
+                method:'POST',
+                headers:{'content-type':'application/json','user-agent':'JM-zezu-external-proof/GitHub-Actions'},
+                body:JSON.stringify({carrierBase64:source.toString('base64')})
+              });
+              const pj=await post.json();
+              if(post.status!==201||!pj.ok) fail('public POST failed '+c.admissionId,{status:post.status,body:pj});
+
+              const get=await fetch(base+'/zezu/v1/history/'+encodeURIComponent(historyId),{
+                headers:{'user-agent':'JM-zezu-external-proof/GitHub-Actions'}
+              });
+              const gj=await get.json();
+              if(get.status!==200||!gj.ok) fail('public GET failed '+c.admissionId,{status:get.status,body:gj});
+              const returned=Buffer.from(gj.carrierBase64,'base64'),returnedSha=sha(returned);
+
+              const row={
+                admissionId:c.admissionId,
+                historyId,
+                sourceBytes:source.length,
+                prePostRecoveredBytes:preBytes.length,
+                returnedBytes:returned.length,
+                sourceSha256:sourceSha,
+                prePostRecoveredSha256:preSha,
+                returnedSha256:returnedSha,
+                recoveredBeforePost:preSha===c.expected,
+                postDeduplicated:pj.deduplicated===true,
+                exactByteMatch:Buffer.compare(source,returned)===0,
+                ledgerRoot:gj.verification?.ledgerRoot||null,
+                continuationRoot:gj.verification?.continuationRoot||null,
+                blockedReceiptsExcludedFromContinuation:gj.verification?.blockedReceiptsExcludedFromContinuation===true,
+                serverReceiptHash:gj.receipt?.receiptHash||null,
+                serverSigPresent:!!gj.receipt?.serverSig
+              };
+              row.pass=row.recoveredBeforePost&&row.postDeduplicated&&row.exactByteMatch&&row.returnedSha256===c.expected;
+              if(!row.pass)proof.status='FAIL';
+              proof.cases.push(row);
+            }
+
+            const bad=Buffer.from(fs.readFileSync(cases[1].file));
+            bad[bad.length-2]^=1;
+            const reject=await fetch(base+'/zezu/v1/history',{
+              method:'POST',
+              headers:{'content-type':'application/json','user-agent':'JM-zezu-external-proof/GitHub-Actions'},
+              body:JSON.stringify({carrierBase64:bad.toString('base64')})
+            });
+            proof.tamperedCarrierPublicStatus=reject.status;
+            if(reject.status!==422)proof.status='FAIL';
+
+            fs.writeFileSync('ZEZU_EXTERNAL_RECOVERY_PROOF_CURRENT.json',JSON.stringify(proof,null,2)+'\n');
+            console.log('JM_ZEZU_EXTERNAL_RECOVERY_PROOF '+JSON.stringify(proof));
+            if(proof.status!=='PASS')process.exit(1);
           })().catch(e=>fail(e.stack||String(e)));
           NODE
 
       - name: Upload external proof receipt
         uses: actions/upload-artifact@v4
         with:
-          name: zezu-external-ingress-proof
-          path: ZEZU_EXTERNAL_INGRESS_PROOF_v0_8.json
+          name: zezu-external-recovery-proof
+          path: ZEZU_EXTERNAL_RECOVERY_PROOF_CURRENT.json
           if-no-files-found: error
