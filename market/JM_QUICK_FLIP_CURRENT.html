@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>JM Quick Flip v1.19 · Quality Body</title>
+<title>JM Quick Flip v1.20 · Completion Gate</title>
 <style>
 :root{font-family:Inter,system-ui,sans-serif;color-scheme:dark;background:#090b0e;color:#f5f7fa;--panel:#14181d;--panel2:#0f1318;--line:#2b3440;--muted:#9ba7b4}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100dvh;padding:14px;background:radial-gradient(circle at 50% -10%,#1a2028 0,#0b0e12 34%,#090b0e 72%);overflow-x:hidden}.wrap{max-width:920px;margin:auto;padding-bottom:22px}
@@ -21,12 +21,12 @@ button{font-weight:900;background:#f4f6f8;color:#111;border:0;cursor:pointer;tou
 <body><div class="wrap">
 <section class="top">
 <span class="pill">LIVE BUILD</span><span class="pill">LIVE PRICES</span><span class="pill">NO REAL MONEY</span>
-<h1>JM Quick Flip <span class="small muted">v1.19 · CURRENT</span></h1>
+<h1>JM Quick Flip <span class="small muted">v1.20 · CURRENT</span></h1>
 <p class="sub">One body, one visible route: <b>find contact → earn the queue → prove it at full depth</b>. The heavy receipts, history and diagnostics still exist underneath, but they no longer have to be the first thing you look at. Queue membership is not proof, a full-depth paper stay is not a trade instruction. Strong history does not pretend to mean it is still there now.</p>
 </section>
 
 <section class="routeRail" id="qualityRoute" aria-live="polite">
-<div class="routeRailHead"><div><b>ONE-BODY ROUTE</b><div class="small muted">You only need the line. Open the deep desk when you want the machinery.</div></div><span class="pill" id="routeContinuity">RUNTIME</span></div>
+<div class="routeRailHead"><div><b>ONE-BODY ROUTE</b><div class="small muted">You only need the line. Open the deep desk when you want the machinery.</div></div><div><span class="pill" id="routeFinish">CORE CHECKING</span><span class="pill" id="routeContinuity">RUNTIME</span></div></div>
 <div class="routeSteps">
 <div class="routeStep"><div class="routeNum">1</div><div class="routeLabel">CONTACT</div><div class="routeValue" id="routeContact">Waiting for live contact</div><div class="routeHint">Cheap current screen. Not proof.</div></div>
 <div class="routeStep"><div class="routeNum">2</div><div class="routeLabel">EARN PROOF</div><div class="routeValue" id="routeQueue">Nothing queued</div><div class="routeHint">Must have entered preflight and still clear.</div></div>
@@ -92,7 +92,7 @@ const WATCH_MODE_KEY='jm_quick_flip_watch_mode_current',LEGACY_WATCH_MODE_KEY='j
 const RETURN_GAP_MS=15*60*1000;
 const WATCH_INTERVAL_MS=15*60*1000;
 const CLOUD_POLL_MS=30000;
-let cloudPulse=null,cloudContinuity=null,cloudTimeline=null,cloudTransitions=null,cloudProofQueue=null,cloudProofOutcome=null,cloudBusy=false;
+let cloudPulse=null,cloudContinuity=null,cloudTimeline=null,cloudTransitions=null,cloudProofQueue=null,cloudProofOutcome=null,cloudCompletion=null,cloudBusy=false;
 const FRESH_MS=5*60*1000;
 const RECENT_MS=20*60*1000;
 const OLD_MS=60*60*1000;
@@ -154,20 +154,21 @@ function renderDesk(){
  if(changeBox)changeBox.textContent=ce?(ce.symbol+' · '+ce.type.replaceAll('_',' ')+' · '+fmt((+ce.marginBps||0)/100,3)+'%'):'No transition yet';
  if(queueBox)queueBox.textContent=pq?(pq.symbol+' · '+pq.status.replaceAll('_',' ')+' · '+fmt((+pq.marginBps||0)/100,3)+'%'):'No entrant awaiting proof';
  if(proofBox)proofBox.textContent=po?(po.stay.symbol+' · '+po.outcome.replaceAll('_',' ')):'No queue-bound proof yet';
- let rc=$('routeContact'),rq=$('routeQueue'),rp=$('routeProof'),rr=$('routeContinuity');
+ let rc=$('routeContact'),rq=$('routeQueue'),rp=$('routeProof'),rr=$('routeContinuity'),rf=$('routeFinish');
  if(rc)rc.textContent=ch&&cg?(ch.symbol+' · '+(cg.clears?'PREFLIGHT CLEARS':'HOLD')+' · '+fmt((+cg.marginBps||0)/100,3)+'%'):'Waiting for live contact';
  if(rq)rq.textContent=pq?(pq.symbol+' · NEEDS FULL-DEPTH PROOF'):'Nothing queued';
  if(rp)rp.textContent=po?(po.stay.symbol+' · '+po.outcome.replaceAll('_',' ')):'No proof yet';
  if(rr){let p=cloudPulse?.persistence;rr.textContent=p?.durable?'POSTGRES DURABLE':'RUNTIME ONLY';rr.className='pill '+(p?.durable?'good':'warn')}
+ if(rf){let done=cloudCompletion?.coreScope==='CORE_COMPLETE';rf.textContent=done?'CORE COMPLETE':'ONE HARD HOLD';rf.className='pill '+(done?'good':'warn')}
  if(pulseBox){let t=Date.parse(cloudPulse?.lastRunAt||'');pulseBox.textContent=Number.isFinite(t)?(ageWords(Date.now()-t)+' old · '+(cloudPulse?.pairs||[]).length+'/4 pairs'):'Awaiting contact'}
  if(nextBox)nextBox.textContent=mode.enabled?watchCountdown((mode.nextDue||Date.now())-Date.now()):'Watch off';
 }
 async function refreshCloudPulse(){
  if(cloudBusy||document.hidden)return;cloudBusy=true;
  try{
-  const [pr,sr,tr,cr,qr]=await Promise.all([fetch('/market/v1/pulse',{cache:'no-store'}),fetch('/market/v1/quick-flip/cloud-survivors?'+cloudParams(),{cache:'no-store'}),fetch('/market/v1/quick-flip/timeline?'+cloudParams(),{cache:'no-store'}),fetch('/market/v1/quick-flip/transitions?'+cloudParams(),{cache:'no-store'}),fetch('/market/v1/quick-flip/proof-queue?'+cloudParams(),{cache:'no-store'})]);
-  const [p,s,t,c,q]=await Promise.all([pr.json(),sr.json(),tr.json(),cr.json(),qr.json()]);
-  if(pr.ok)cloudPulse=p;if(sr.ok)cloudContinuity=s;if(tr.ok)cloudTimeline=t;if(cr.ok)cloudTransitions=c;if(qr.ok)cloudProofQueue=q;
+  const [pr,sr,tr,cr,qr,fr]=await Promise.all([fetch('/market/v1/pulse',{cache:'no-store'}),fetch('/market/v1/quick-flip/cloud-survivors?'+cloudParams(),{cache:'no-store'}),fetch('/market/v1/quick-flip/timeline?'+cloudParams(),{cache:'no-store'}),fetch('/market/v1/quick-flip/transitions?'+cloudParams(),{cache:'no-store'}),fetch('/market/v1/quick-flip/proof-queue?'+cloudParams(),{cache:'no-store'}),fetch('/market/v1/quick-flip/completion',{cache:'no-store'})]);
+  const [p,s,t,c,q,f]=await Promise.all([pr.json(),sr.json(),tr.json(),cr.json(),qr.json(),fr.json()]);
+  if(pr.ok)cloudPulse=p;if(sr.ok)cloudContinuity=s;if(tr.ok)cloudTimeline=t;if(cr.ok)cloudTransitions=c;if(qr.ok)cloudProofQueue=q;if(fr.ok)cloudCompletion=f;
  }catch{}finally{cloudBusy=false;renderDesk()}
 }
 async function showServerTimeline(){
