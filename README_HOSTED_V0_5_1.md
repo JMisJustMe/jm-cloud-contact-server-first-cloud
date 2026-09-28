@@ -71,39 +71,3 @@ No stage silently invents the user's selection. Gem requires an explicit selecte
 Each pipeline gets a real `/v5` cloud space. Every stage appends a cloud event. Completion closes the space and returns the cloud's signed receipt. The entire packet trace remains `jm.packet/1.0`.
 
 QA: `qa/JM_SERVICE_MESH_PIPELINE_QA_v0_2.mjs`.
-
-
-## JM CLOUD CONTACT SERVER v0.5.2-compute-cell — Compute Cell descendant
-
-This branch now carries an additive descendant above the frozen v0.5.1-hosted parent:
-
-`frozen v0.5.0 Profile Mounts -> v0.5.1-hosted -> v0.5.2-compute-cell`
-
-The inherited v0.5.1 server source remains preserved as `JM_CLOUD_CONTACT_SERVER_v0_5_1_HOSTED_DESCENDANT.mjs`. The new child is `JM_CLOUD_CONTACT_SERVER_v0_5_2_COMPUTE_CELL.mjs`.
-
-### First compute route
-
-`SOURCE -> CELL POLICY -> JM NATIVE ENGINE -> ARTIFACT -> CLOUD TRACE -> RECEIPT`
-
-Compute Cell v0.1 mounts the existing **RouteCore Native** body from the JM coding estate rather than recreating it. Exact source provenance is recorded in `compute/NATIVE_SOURCE_PROVENANCE.md`.
-
-Current compute surfaces:
-
-- `GET /compute/v1/meta`
-- `GET /compute/v1/ready`
-- `POST /compute/v1/cells`
-- `GET /compute/v1/cells`
-- `POST /compute/v1/cells/:cellId/jobs`
-- `GET /compute/v1/jobs/:jobId`
-- `GET /compute/v1/artifacts/:sha256`
-- `GET /compute/v1/receipts`
-
-Each RouteCore job mounts a fresh `/v5` cloud space, executes through the recovered JM RouteCore Native body, writes a content-addressed artifact, closes the cloud space, and links the native body receipt, Compute Cell receipt and underlying JM Cloud receipt.
-
-### Authority / safety boundary
-
-v0.1 permits only the registered `routecore-native` engine. It does **not** expose arbitrary shell or arbitrary filesystem execution and does not label Node itself as the JM execution engine.
-
-### Claim boundary
-
-Compute Cell v0.1 proves only governed RouteCore Native cloud jobs. CadenVM/JMVM execution, general containers, kernel jobs, Android production builds and arbitrary-program compute are later descendants and must earn their own Dings.
