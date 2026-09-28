@@ -10,7 +10,7 @@ const port=18951;
 const admin='A'.repeat(48),secret='S'.repeat(48);
 const tmp=path.join(root,'.qa-data');
 fs.rmSync(tmp,{recursive:true,force:true});fs.mkdirSync(tmp,{recursive:true});
-const child=spawn(process.execPath,[path.join(root,'JM_CLOUD_CONTACT_SERVER_v0_5_1_HOSTED_DESCENDANT.mjs')],{cwd:root,env:{...process.env,PORT:String(port),HOST:'127.0.0.1',JM_CLOUD_MODE:'development',JM_CLOUD_ADMIN_TOKEN:admin,JM_CLOUD_SERVER_SECRET:secret,JM_CLOUD_ORIGINS:'*',JM_CLOUD_DATA:path.join(tmp,'data.json'),JM_CLOUD_PROFILE_DIR:path.join(root,'profiles'),JM_CLOUD_PROFILE_MANIFEST:path.join(root,'profiles','JM_CLOUD_PROFILE_MANIFEST_HOSTED_v0_5_1.json'),JM_CLOUD_RECEIPT_SIGNING_KEY:path.join(tmp,'signing.pem'),JM_COMPUTE_DATA:path.join(tmp,'compute-state.json'),JM_COMPUTE_ARTIFACTS:path.join(tmp,'compute-artifacts')}});
+const child=spawn(process.execPath,[path.join(root,'JM_CLOUD_CONTACT_SERVER_v0_5_2_COMPUTE_CELL.mjs')],{cwd:root,env:{...process.env,PORT:String(port),HOST:'127.0.0.1',JM_CLOUD_MODE:'development',JM_CLOUD_ADMIN_TOKEN:admin,JM_CLOUD_SERVER_SECRET:secret,JM_CLOUD_ORIGINS:'*',JM_CLOUD_DATA:path.join(tmp,'data.json'),JM_CLOUD_PROFILE_DIR:path.join(root,'profiles'),JM_CLOUD_PROFILE_MANIFEST:path.join(root,'profiles','JM_CLOUD_PROFILE_MANIFEST_HOSTED_v0_5_1.json'),JM_CLOUD_RECEIPT_SIGNING_KEY:path.join(tmp,'signing.pem'),JM_COMPUTE_DATA:path.join(tmp,'compute-state.json'),JM_COMPUTE_ARTIFACTS:path.join(tmp,'compute-artifacts')}});
 let stderr='';child.stderr.on('data',d=>stderr+=d);child.stdout.on('data',()=>{});
 const base=`http://127.0.0.1:${port}`;const checks=[];
 const pass=(name,detail=true)=>checks.push({name,pass:true,detail});
