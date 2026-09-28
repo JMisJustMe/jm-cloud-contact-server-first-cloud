@@ -794,3 +794,10 @@ Current stage is frozen at earned runtime/paper-monitoring scope. Server-shared 
 Recovery receipt: `market/JM_QUICK_FLIP_FLAZ_v1_15_RUNTIME_CONTINUITY_TIMELINE_RECEIPTS.md`
 
 Keeper: **DURABLE ONLY WHEN THE STORE DINGS.**
+
+
+## Quick Flip core FLAZ — v1.22
+
+JM Quick Flip v1.22 is **FLAZ COMPLETE** at the current spot-crypto live-public-data / paper-monitoring scope. The final durability HOLD closed when a later Postgres-backed service boot recovered a prior durability witness before writing a new one. Future notifications, venues, pairs, scheduling and Commodity futures field No. 8 are additions, not core completion debt.
+
+Receipt: `market/JM_QUICK_FLIP_CORE_FLAZ_v1_22.md`
