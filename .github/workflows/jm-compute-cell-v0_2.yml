@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  vm-compute-qa:
+  vm-compute-full-suite:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout VM descendant
@@ -16,7 +16,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Compute Cell v0.2 syntax
-        run: node --check compute/JM_COMPUTE_CELL_PROFILE_v0_2.mjs
-      - name: Compute Cell v0.2 three-engine QA
-        run: node qa/JM_COMPUTE_CELL_QA_v0_2.mjs
+      - name: Install hosted dependencies
+        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Full JM cloud + three-engine Compute Cell suite
+        run: npm test
