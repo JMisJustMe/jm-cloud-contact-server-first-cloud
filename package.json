@@ -1,14 +1,14 @@
 {
   "name": "jm-cloud-contact-server-hosted-v05-descendant",
-  "version": "0.5.3-vm-compute",
+  "version": "0.5.4-build-cloud",
   "private": true,
   "type": "module",
   "engines": {
     "node": ">=20"
   },
   "scripts": {
-    "start": "node JM_CLOUD_CONTACT_SERVER_v0_5_3_VM_COMPUTE.mjs",
-    "test": "node --check JM_CLOUD_CONTACT_SERVER_v0_5_3_VM_COMPUTE.mjs && node --check compute/JM_COMPUTE_CELL_PROFILE_v0_2.mjs && node qa/JM_COMPUTE_CELL_QA_v0_2.mjs && node qa/JM_CLOUD_CONTACT_SERVER_HOSTED_STATIC_QA_v0_5_1.mjs && node qa/JM_CLOUD_CONTACT_SERVER_VM_COMPUTE_QA_v0_5_3.mjs && node qa/JM_GAME_LIVE_PROFILE_QA_v0_3.mjs && node qa/JM_SERVICE_MESH_QA_v0_1.mjs && node qa/JM_SERVICE_MESH_PIPELINE_QA_v0_2.mjs && node qa/JM_MARKET_LAB_QA_CURRENT.mjs",
+    "start": "node JM_CLOUD_CONTACT_SERVER_v0_5_4_BUILD_CLOUD.mjs",
+    "test": "node --check JM_CLOUD_CONTACT_SERVER_v0_5_4_BUILD_CLOUD.mjs && node --check build/JM_BUILD_CELL_PROFILE_v0_1.mjs && node qa/JM_BUILD_CELL_QA_v0_1.mjs && node --check compute/JM_COMPUTE_CELL_PROFILE_v0_2.mjs && node qa/JM_COMPUTE_CELL_QA_v0_2.mjs && node qa/JM_CLOUD_CONTACT_SERVER_HOSTED_STATIC_QA_v0_5_1.mjs && node qa/JM_CLOUD_CONTACT_SERVER_BUILD_CLOUD_QA_v0_5_4.mjs && node qa/JM_GAME_LIVE_PROFILE_QA_v0_3.mjs && node qa/JM_SERVICE_MESH_QA_v0_1.mjs && node qa/JM_SERVICE_MESH_PIPELINE_QA_v0_2.mjs && node qa/JM_MARKET_LAB_QA_CURRENT.mjs",
     "preflight": "npm test"
   },
   "dependencies": {
