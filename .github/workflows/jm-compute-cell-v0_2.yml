@@ -1,0 +1,22 @@
+name: JM Compute Cell v0.2 VMs
+
+on:
+  push:
+    branches:
+      - jm-compute-cell-v0.2-vms
+  workflow_dispatch:
+
+jobs:
+  vm-compute-full-suite:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout VM descendant
+        uses: actions/checkout@v4
+      - name: Use Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install hosted dependencies
+        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Full JM cloud + three-engine Compute Cell suite
+        run: npm test
