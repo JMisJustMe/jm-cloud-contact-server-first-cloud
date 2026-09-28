@@ -1,0 +1,25 @@
+name: JM Compute Cell v0.1
+
+on:
+  push:
+    branches:
+      - jm-compute-cell-v0.1
+  pull_request:
+    branches:
+      - hosted-v0.5-descendant
+  workflow_dispatch:
+
+jobs:
+  compute-cell-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout descendant
+        uses: actions/checkout@v4
+      - name: Use Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Syntax gate
+        run: node --check compute/JM_COMPUTE_CELL_PROFILE_v0_1.mjs
+      - name: JM Compute Cell QA
+        run: node qa/JM_COMPUTE_CELL_QA_v0_1.mjs
