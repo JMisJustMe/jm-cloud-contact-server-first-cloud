@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>JM Quick Flip v1.16 · State Change Trace</title>
+<title>JM Quick Flip v1.17 · Change-to-Proof Queue</title>
 <style>
 :root{font-family:Inter,system-ui,sans-serif;color-scheme:dark;background:#090b0e;color:#f5f7fa;--panel:#14181d;--panel2:#0f1318;--line:#2b3440;--muted:#9ba7b4}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100dvh;padding:14px;background:radial-gradient(circle at 50% -10%,#1a2028 0,#0b0e12 34%,#090b0e 72%);overflow-x:hidden}.wrap{max-width:920px;margin:auto;padding-bottom:22px}
@@ -21,8 +21,8 @@ button{font-weight:900;background:#f4f6f8;color:#111;border:0;cursor:pointer;tou
 <body><div class="wrap">
 <section class="top">
 <span class="pill">LIVE BUILD</span><span class="pill">LIVE PRICES</span><span class="pill">NO REAL MONEY</span>
-<h1>JM Quick Flip <span class="small muted">v1.16 · CURRENT</span></h1>
-<p class="sub">Pick one pair, check the lot, or hit FIND ONE THAT STAYS. The server now traces actual state changes in its pulse history: a pair entering the cheap preflight or leaving it again. That separates “what is true now” from “what changed to get here”. CHECK CLOUD SURVIVOR still promotes only into repeated full-depth paper proof. The transition trace carries its own SHA-256 receipt and still says runtime-only until the Postgres store really DINGs. Strong history does not pretend to mean it is still there now.</p>
+<h1>JM Quick Flip <span class="small muted">v1.17 · CURRENT</span></h1>
+<p class="sub">Pick one pair, check the lot, or hit FIND ONE THAT STAYS. The server now turns change into a bounded proof queue: only pairs that actually entered the cheap preflight and are still clearing now can sit there. PROVE LATEST ENTRANT promotes that current entrant into repeated full-depth paper contact. The queue carries its own SHA-256 receipt and remains runtime-only until Postgres really DINGs. Strong history does not pretend to mean it is still there now.</p>
 </section>
 
 <div class="card">
@@ -42,7 +42,7 @@ button{font-weight:900;background:#f4f6f8;color:#111;border:0;cursor:pointer;tou
 <div id="status" class="status muted" aria-live="polite">Ready. The big button checks the lot, picks the best paper result, then makes it prove it can stay there. No money moves.</div>
 </div>
 
-<div class="desk" id="liveDesk" aria-live="polite"><div class="deskTitle"><b><span class="deskDot"></span>LIVE DESK</b><span class="small muted">paper contact only</span></div><div class="deskGrid"><div class="deskCell"><div class="small muted">Best remembered</div><div class="deskValue" id="deskBest">No survivor yet</div></div><div class="deskCell"><div class="small muted">Freshness</div><div class="deskValue" id="deskFresh">No fresh contact</div></div><div class="deskCell"><div class="small muted">Cloud glance</div><div class="deskValue" id="deskCloud">Awaiting server pulse</div><div class="small muted">raw top-book only</div></div><div class="deskCell"><div class="small muted">Cloud preflight</div><div class="deskValue" id="deskGate">WAITING</div><div class="small muted">cost + top-capacity screen only</div></div><div class="deskCell"><div class="small muted">Cloud survival</div><div class="deskValue" id="deskSurvival">WAITING</div><div class="small muted">recent pulse history · still top-book only</div></div><div class="deskCell"><div class="small muted">Continuity</div><div class="deskValue" id="deskPersistence">Checking store</div></div><div class="deskCell"><div class="small muted">Server receipt</div><div class="deskValue mono" id="deskReceipt">Awaiting timeline</div><div class="small muted">bounded snapshot receipt</div></div><div class="deskCell"><div class="small muted">Latest change</div><div class="deskValue" id="deskChange">No transition yet</div><div class="small muted">entered / left cheap preflight</div></div><div class="deskCell"><div class="small muted">Cloud pulse</div><div class="deskValue" id="deskPulse">Awaiting contact</div></div><div class="deskCell"><div class="small muted">Next watch</div><div class="deskValue" id="deskNext">Watch off</div></div><button id="cloudCheck" class="secondary deskAction">CHECK CLOUD SURVIVOR</button><button id="timelineCheck" class="secondary deskAction">SERVER TIMELINE</button><button id="changeCheck" class="secondary deskAction">WHAT CHANGED?</button><button id="deskRecheck" class="secondary deskAction">FULL-DEPTH WATCHLIST</button></div></div>
+<div class="desk" id="liveDesk" aria-live="polite"><div class="deskTitle"><b><span class="deskDot"></span>LIVE DESK</b><span class="small muted">paper contact only</span></div><div class="deskGrid"><div class="deskCell"><div class="small muted">Best remembered</div><div class="deskValue" id="deskBest">No survivor yet</div></div><div class="deskCell"><div class="small muted">Freshness</div><div class="deskValue" id="deskFresh">No fresh contact</div></div><div class="deskCell"><div class="small muted">Cloud glance</div><div class="deskValue" id="deskCloud">Awaiting server pulse</div><div class="small muted">raw top-book only</div></div><div class="deskCell"><div class="small muted">Cloud preflight</div><div class="deskValue" id="deskGate">WAITING</div><div class="small muted">cost + top-capacity screen only</div></div><div class="deskCell"><div class="small muted">Cloud survival</div><div class="deskValue" id="deskSurvival">WAITING</div><div class="small muted">recent pulse history · still top-book only</div></div><div class="deskCell"><div class="small muted">Continuity</div><div class="deskValue" id="deskPersistence">Checking store</div></div><div class="deskCell"><div class="small muted">Server receipt</div><div class="deskValue mono" id="deskReceipt">Awaiting timeline</div><div class="small muted">bounded snapshot receipt</div></div><div class="deskCell"><div class="small muted">Latest change</div><div class="deskValue" id="deskChange">No transition yet</div><div class="small muted">entered / left cheap preflight</div></div><div class="deskCell"><div class="small muted">Proof queue</div><div class="deskValue" id="deskQueue">No entrant awaiting proof</div><div class="small muted">entered + still clears</div></div><div class="deskCell"><div class="small muted">Cloud pulse</div><div class="deskValue" id="deskPulse">Awaiting contact</div></div><div class="deskCell"><div class="small muted">Next watch</div><div class="deskValue" id="deskNext">Watch off</div></div><button id="cloudCheck" class="secondary deskAction">CHECK CLOUD SURVIVOR</button><button id="timelineCheck" class="secondary deskAction">SERVER TIMELINE</button><button id="changeCheck" class="secondary deskAction">WHAT CHANGED?</button><button id="proveEntrant" class="secondary deskAction">PROVE LATEST ENTRANT</button><button id="deskRecheck" class="secondary deskAction">FULL-DEPTH WATCHLIST</button></div></div>
 
 <div id="timelineResult" class="resultSlot sectionGap"></div><div id="changeResult" class="resultSlot sectionGap"></div><div id="result" class="grid resultSlot sectionGap"></div><div id="allResult" class="resultSlot sectionGap"></div><div id="stayResult" class="resultSlot sectionGap"></div><div id="bestStayResult" class="resultSlot sectionGap"></div>
 <div class="card" style="margin-top:12px"><h3>What stayed before</h3><p class="small muted">Saved on this device only. It remembers repeated paper routes so you can come back later and make them meet fresh live books again.</p><div class="row"><button id="checkWatch">CHECK WATCHLIST</button><button id="bestRemembered">WHAT KEEPS COMING BACK?</button><button id="watchMode">WATCH FOR ME</button></div><div id="watchModeStatus" class="small muted" aria-live="polite" style="margin-top:8px">Watch mode is off. When on, this page rechecks remembered routes every 15 minutes while it remains open.</div><div id="watchSummary" class="status muted" aria-live="polite" style="margin-top:10px">Nothing has had enough separate-time contact yet.</div><div id="watchList" style="margin-top:10px"></div></div>
@@ -63,7 +63,7 @@ button{font-weight:900;background:#f4f6f8;color:#111;border:0;cursor:pointer;tou
 const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])),fmt=(n,d=2)=>Number.isFinite(+n)?Number(n).toFixed(d):'—';
 const card=(t,v,s='')=>'<div class="card"><div class="small muted">'+esc(t)+'</div><div class="kpi '+s+'">'+v+'</div></div>';
 const SETTINGS_KEY='jm_quick_flip_settings_current',LEGACY_SETTINGS_KEY='jm_quick_flip_settings_v18';
-const ACTION_IDS=['run','runAll','stay','bestStay','checkWatch','bestRemembered','cloudCheck','timelineCheck','changeCheck','deskRecheck'];
+const ACTION_IDS=['run','runAll','stay','bestStay','checkWatch','bestRemembered','cloudCheck','timelineCheck','changeCheck','proveEntrant','deskRecheck'];
 let actionBusy=false;
 function readSettings(){try{return JSON.parse(localStorage.getItem(SETTINGS_KEY)||localStorage.getItem(LEGACY_SETTINGS_KEY)||'{}')}catch{return{}}}
 function saveSettings(){let x={pair:$('pair').value,notional:$('notional').value,feeA:$('feeA').value,feeB:$('feeB').value,other:$('other').value};localStorage.setItem(SETTINGS_KEY,JSON.stringify(x))}
@@ -80,7 +80,7 @@ const WATCH_MODE_KEY='jm_quick_flip_watch_mode_current',LEGACY_WATCH_MODE_KEY='j
 const RETURN_GAP_MS=15*60*1000;
 const WATCH_INTERVAL_MS=15*60*1000;
 const CLOUD_POLL_MS=30000;
-let cloudPulse=null,cloudContinuity=null,cloudTimeline=null,cloudTransitions=null,cloudBusy=false;
+let cloudPulse=null,cloudContinuity=null,cloudTimeline=null,cloudTransitions=null,cloudProofQueue=null,cloudBusy=false;
 const FRESH_MS=5*60*1000;
 const RECENT_MS=20*60*1000;
 const OLD_MS=60*60*1000;
@@ -131,7 +131,7 @@ function cloudParams(){
 function bestCloudHistory(){return cloudContinuity?.selected||cloudContinuity?.results?.[0]||null}
 function renderDesk(){
  let best=null,w=readWatch();if(w.length)best=[...w].sort((a,b)=>scoreWatch(b)-scoreWatch(a))[0];
- let mode=readWatchMode(),fresh=best?freshness(best):null,bestBox=$('deskBest'),freshBox=$('deskFresh'),nextBox=$('deskNext'),cloudBox=$('deskCloud'),gateBox=$('deskGate'),survivalBox=$('deskSurvival'),persistBox=$('deskPersistence'),receiptBox=$('deskReceipt'),changeBox=$('deskChange'),pulseBox=$('deskPulse'),ch=bestCloudHistory(),cg=ch?.latest||null,ce=cloudTransitions?.latestEvent||null;
+ let mode=readWatchMode(),fresh=best?freshness(best):null,bestBox=$('deskBest'),freshBox=$('deskFresh'),nextBox=$('deskNext'),cloudBox=$('deskCloud'),gateBox=$('deskGate'),survivalBox=$('deskSurvival'),persistBox=$('deskPersistence'),receiptBox=$('deskReceipt'),changeBox=$('deskChange'),queueBox=$('deskQueue'),pulseBox=$('deskPulse'),ch=bestCloudHistory(),cg=ch?.latest||null,ce=cloudTransitions?.latestEvent||null,pq=cloudProofQueue?.selected||null;
  if(bestBox)bestBox.textContent=best?(best.symbol+' · '+memoryLabel(best)):'No survivor yet';
  if(freshBox)freshBox.textContent=fresh?(fresh.label+' · '+ageWords(fresh.ageMs)+' old'):'No fresh contact';
  if(cloudBox)cloudBox.textContent=ch&&cg?(ch.symbol+' · '+fmt((+cg.rawBps||0)/100,3)+'% raw · cap '+fmt(cg.topCapacity,0)):'Awaiting server pulse';
@@ -140,15 +140,16 @@ function renderDesk(){
  if(persistBox){let p=cloudPulse?.persistence;persistBox.textContent=p?.durable?'POSTGRES DURABLE':p?.mode==='postgres-pending'?'POSTGRES PENDING':'RUNTIME FALLBACK'}
  if(receiptBox)receiptBox.textContent=cloudTimeline?.receiptHash?(cloudTimeline.receiptHash.slice(0,12)+'… · '+cloudTimeline.rowCount+' rows'):'Awaiting timeline';
  if(changeBox)changeBox.textContent=ce?(ce.symbol+' · '+ce.type.replaceAll('_',' ')+' · '+fmt((+ce.marginBps||0)/100,3)+'%'):'No transition yet';
+ if(queueBox)queueBox.textContent=pq?(pq.symbol+' · '+pq.status.replaceAll('_',' ')+' · '+fmt((+pq.marginBps||0)/100,3)+'%'):'No entrant awaiting proof';
  if(pulseBox){let t=Date.parse(cloudPulse?.lastRunAt||'');pulseBox.textContent=Number.isFinite(t)?(ageWords(Date.now()-t)+' old · '+(cloudPulse?.pairs||[]).length+'/4 pairs'):'Awaiting contact'}
  if(nextBox)nextBox.textContent=mode.enabled?watchCountdown((mode.nextDue||Date.now())-Date.now()):'Watch off';
 }
 async function refreshCloudPulse(){
  if(cloudBusy||document.hidden)return;cloudBusy=true;
  try{
-  const [pr,sr,tr,cr]=await Promise.all([fetch('/market/v1/pulse',{cache:'no-store'}),fetch('/market/v1/quick-flip/cloud-survivors?'+cloudParams(),{cache:'no-store'}),fetch('/market/v1/quick-flip/timeline?'+cloudParams(),{cache:'no-store'}),fetch('/market/v1/quick-flip/transitions?'+cloudParams(),{cache:'no-store'})]);
-  const [p,s,t,c]=await Promise.all([pr.json(),sr.json(),tr.json(),cr.json()]);
-  if(pr.ok)cloudPulse=p;if(sr.ok)cloudContinuity=s;if(tr.ok)cloudTimeline=t;if(cr.ok)cloudTransitions=c;
+  const [pr,sr,tr,cr,qr]=await Promise.all([fetch('/market/v1/pulse',{cache:'no-store'}),fetch('/market/v1/quick-flip/cloud-survivors?'+cloudParams(),{cache:'no-store'}),fetch('/market/v1/quick-flip/timeline?'+cloudParams(),{cache:'no-store'}),fetch('/market/v1/quick-flip/transitions?'+cloudParams(),{cache:'no-store'}),fetch('/market/v1/quick-flip/proof-queue?'+cloudParams(),{cache:'no-store'})]);
+  const [p,s,t,c,q]=await Promise.all([pr.json(),sr.json(),tr.json(),cr.json(),qr.json()]);
+  if(pr.ok)cloudPulse=p;if(sr.ok)cloudContinuity=s;if(tr.ok)cloudTimeline=t;if(cr.ok)cloudTransitions=c;if(qr.ok)cloudProofQueue=q;
  }catch{}finally{cloudBusy=false;renderDesk()}
 }
 async function showServerTimeline(){
@@ -165,6 +166,12 @@ async function showCloudChanges(){
  if(!q?.ok){box.innerHTML='<div class="card"><h3>What changed?</h3><div class="bad">No state-change trace available yet.</div></div>';return}
  const rows=(q.events||[]).slice(-12).reverse().map(x=>'<div class="small mono" style="padding:7px 0;border-top:1px solid #2b3440">'+esc((x.at||'').replace('T',' ').slice(0,19))+' · '+esc(x.symbol)+' · '+esc(x.type.replaceAll('_',' '))+' · '+fmt((+x.marginBps||0)/100,3)+'% margin</div>').join('');
  box.innerHTML='<div class="card"><h3>State-change trace</h3><div class="kpi '+(q.eventCount?'warn':'muted')+'">'+esc(q.eventCount)+' transition'+(q.eventCount===1?'':'s')+'</div><p class="small muted">Receipt SHA-256</p><div class="small mono">'+esc(q.receiptHash||'')+'</div><p class="small muted">'+esc(q.claimBoundary)+'</p>'+(rows||'<div class="small muted">No pair changed preflight state inside this bounded server window.</div>')+'</div>';
+}
+async function proveLatestEntrant(){
+ if(!cloudProofQueue?.ok)await refreshCloudPulse();
+ const x=cloudProofQueue?.selected;if(!x){$('status').innerHTML='<b>No current entrant awaits proof.</b><br><span class="small muted">A pair has to enter the cheap preflight and still be clearing now before this route promotes it.</span>';return}
+ $('pair').value=x.symbol;saveSettings();$('status').innerHTML='<b>'+esc(x.symbol)+' promoted from the change-to-proof queue.</b><br><span class="small muted">Entered '+esc((x.enteredAt||'').replace('T',' ').slice(0,19))+' · still clears now. Running repeated full-depth paper contact; queue membership itself is not proof.</span>';
+ await runStay();await refreshCloudPulse();renderDesk();
 }
 async function checkCloudLeader(){
  const ch=cloudContinuity?.selected;if(!ch?.latest?.clears){$('status').innerHTML='<b>No cloud survivor clears right now.</b><br><span class="small muted">Server history is preserved, but nothing earns promotion into the heavier full-depth route at this contact.</span>';return}
@@ -241,6 +248,7 @@ $('watchMode').onclick=toggleWatchMode;
 $('cloudCheck').onclick=()=>withAction('cloudCheck','FULL-DEPTH CHECKING…',checkCloudLeader);
 $('timelineCheck').onclick=()=>withAction('timelineCheck','BUILDING RECEIPT…',showServerTimeline);
 $('changeCheck').onclick=()=>withAction('changeCheck','READING CHANGES…',showCloudChanges);
+$('proveEntrant').onclick=()=>withAction('proveEntrant','PROVING ENTRANT…',proveLatestEntrant);
 $('deskRecheck').onclick=()=>withAction('deskRecheck','RECHECKING…',deskRecheck);
 renderWatch();renderWatchMode();renderDesk();manifest();refreshCloudPulse();setInterval(watchTick,30000);setInterval(renderDesk,30000);setInterval(refreshCloudPulse,CLOUD_POLL_MS);setTimeout(watchTick,800);document.addEventListener('visibilitychange',()=>{if(!document.hidden){watchTick();refreshCloudPulse();renderDesk()}});
 </script>
