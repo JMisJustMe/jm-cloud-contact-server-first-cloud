@@ -7,16 +7,16 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-cell-qa:
+  build-cloud-full-suite:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Build Cell descendant
+      - name: Checkout Build Cloud descendant
         uses: actions/checkout@v4
       - name: Use Node 20
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Build Cell syntax
-        run: node --check build/JM_BUILD_CELL_PROFILE_v0_1.mjs
-      - name: Exact JM compiler route QA
-        run: node qa/JM_BUILD_CELL_QA_v0_1.mjs
+      - name: Install hosted dependencies
+        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Full JM cloud + Compute Cell + Build Cell suite
+        run: npm test
