@@ -26,7 +26,12 @@ try{
  x=await req('/compute/v1/meta');if(x.r.ok&&x.j.engines?.includes('routecore-native')&&x.j.forbidden?.includes('arbitrary shell'))pass('compute-meta-mounted',x.j);else throw new Error(JSON.stringify(x.j));
  x=await req('/compute/v1/ready');if(x.r.ok&&x.j.ready&&x.j.engineCount===1)pass('compute-ready',x.j);else throw new Error(JSON.stringify(x.j));
  x=await req('/compute/v1/cells',{method:'POST',token:admin,body:{cellId:'hosted-alpha',label:'Hosted Alpha Compute Cell'}});if(x.r.status===201&&x.j.cell?.policy?.engines?.[0]==='routecore-native')pass('compute-cell-create',x.j.cell);else throw new Error(JSON.stringify(x.j));
- const computeSource='nativeRoute DoorNative {\\n  entry = closed\\n  states = [closed,open]\\n  transition = press\\n  abi = jm.routecore.v1\\n}';
+ const computeSource=`nativeRoute DoorNative {
+  entry = closed
+  states = [closed,open]
+  transition = press
+  abi = jm.routecore.v1
+}`;
  x=await req('/compute/v1/cells/hosted-alpha/jobs',{method:'POST',token:admin,body:{engine:'routecore-native',source:computeSource,input:{state:'closed',event:'press'}}});
  if(x.r.status===201&&x.j.job?.status==='completed'&&x.j.job?.nativeReceipt?.body==='RouteCore Native'&&x.j.cloudReceipt?.status==='closed')pass('compute-routecore-parent-integration',{jobId:x.j.job.jobId,artifactHash:x.j.job.artifactHash,cloudReceiptHash:x.j.job.cloudReceiptHash});else throw new Error(JSON.stringify(x.j));
  const computeJob=x.j.job;
