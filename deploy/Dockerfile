@@ -10,6 +10,7 @@ COPY profiles ./profiles
 COPY game ./game
 COPY mesh ./mesh
 COPY market ./market
+COPY zezu ./zezu
 COPY qa ./qa
 RUN npm test && rm -rf .qa-data
 RUN mkdir -p /data && chown -R node:node /app /data
