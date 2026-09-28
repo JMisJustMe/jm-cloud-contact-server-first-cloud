@@ -1,0 +1,27 @@
+{
+  "schema": "zezu.nwona.history-admission-manifest/0.2",
+  "mode": "bounded-immutable-admission",
+  "current": "v0.8-hosted-return-descendant",
+  "maxCarrierBytes": 32768,
+  "law": "ADMITTED MANY != ARBITRARY ANY. RECOVER BEFORE REBUILD.",
+  "carriers": [
+    {
+      "id": "v0.5-portable-return",
+      "status": "FROZEN_ANCESTOR",
+      "schema": "zezu.nwona.portable-history-return/0.5",
+      "sha256": "58d6cbd2ce62325b6ba75cacdd0e50949a5a05eef5e1946d8d9190ccc6b1b38f",
+      "bytes": 5064,
+      "fixture": "fixtures/ZEZU_NWONA_PORTABLE_HISTORY_CAPSULE_v0_5.json",
+      "admittedAt": "2026-09-28T12:59:14Z"
+    },
+    {
+      "id": "v0.8-hosted-return-descendant",
+      "status": "CURRENT",
+      "schema": "zezu.nwona.portable-history-return/0.8",
+      "sha256": "133a1016ebbd8f8d84fbaa8c35db9acbf617e76a2c10c3ef08970554a606750d",
+      "bytes": 6690,
+      "fixture": "fixtures/ZEZU_NWONA_PORTABLE_HISTORY_CAPSULE_v0_8.json",
+      "admittedAt": "2026-09-28T15:40:00Z"
+    }
+  ]
+}

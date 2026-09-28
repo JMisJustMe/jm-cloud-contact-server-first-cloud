@@ -1,0 +1,181 @@
+{
+  "continuationHead": "682af7b981d33d61ad957049b3059db4388f34fbe012c8f239be291c914e251d",
+  "continuationRoot": "c0e37c7923fa6de847e7c0c06b069183c336bd4458d99ae5164031e26629c2e0",
+  "createdAt": "2026-09-28T15:40:00Z",
+  "laws": [
+    "REMEMBER != TRUST",
+    "CHRONOLOGY != CONTINUATION LINEAGE",
+    "NO UNTRACED CARRY -> NO LEGITIMATE CONTINUATION",
+    "EXACT CARRIER RETURN != UNIVERSAL DEVICE CROWN",
+    "SERVER RETURN != CREATOR SIGNATURE",
+    "MULTI-CARRIER ADMISSION != ARBITRARY UNBOUNDED STORAGE"
+  ],
+  "ledger": [
+    {
+      "bounceback": {
+        "valid": [
+          {
+            "name": "threshold contact grounded",
+            "status": "verified_here"
+          }
+        ]
+      },
+      "chain": {
+        "requested": false,
+        "status": "NO_PRIOR"
+      },
+      "contact": "verified threshold contact",
+      "continuation": "NEXT_STATE_ELIGIBLE",
+      "driftInterrupt": false,
+      "expected": "threshold",
+      "inheritance": "UPLIFT_ELIGIBLE",
+      "ledgerPreviousHash": null,
+      "previousReceiptHash": null,
+      "receiptHash": "08ed7c55134cbf294f1c7f1beb966a5685e9d2c055c357dbfd983f4e8195a15b",
+      "source": "portable-return seed",
+      "state0": "outside",
+      "state1": "threshold",
+      "system": "zezu.nwona Unified Contact Memory Runtime",
+      "timestamp": "2026-09-28T12:00:01Z",
+      "verdict": "DING",
+      "version": "0.5-seed"
+    },
+    {
+      "bounceback": {
+        "valid": [
+          {
+            "name": "threshold contact grounded",
+            "sourceReceiptHash": "08ed7c55134cbf294f1c7f1beb966a5685e9d2c055c357dbfd983f4e8195a15b",
+            "status": "verified_inherited"
+          },
+          {
+            "name": "membrane passage grounded",
+            "status": "verified_here"
+          }
+        ]
+      },
+      "chain": {
+        "requested": true,
+        "status": "CHAIN_CONTINUES"
+      },
+      "contact": "verified membrane passage",
+      "continuation": "NEXT_STATE_ELIGIBLE",
+      "driftInterrupt": false,
+      "expected": "inside",
+      "inheritance": "UPLIFT_ELIGIBLE",
+      "ledgerPreviousHash": "08ed7c55134cbf294f1c7f1beb966a5685e9d2c055c357dbfd983f4e8195a15b",
+      "previousReceiptHash": "08ed7c55134cbf294f1c7f1beb966a5685e9d2c055c357dbfd983f4e8195a15b",
+      "receiptHash": "45a46e42b57f6992dfb4f73845b0c91c14cf4d9901718bb793648ac81edc9ed8",
+      "source": "portable-return seed",
+      "state0": "threshold",
+      "state1": "inside",
+      "system": "zezu.nwona Unified Contact Memory Runtime",
+      "timestamp": "2026-09-28T12:00:02Z",
+      "verdict": "DING",
+      "version": "0.5-seed"
+    },
+    {
+      "bounceback": {
+        "invalid": [
+          {
+            "name": "invented prerequisite",
+            "status": "assumed"
+          }
+        ],
+        "valid": []
+      },
+      "chain": {
+        "requested": true,
+        "status": "CHAIN_CONTINUES"
+      },
+      "contact": "unsupported prerequisite introduced after valid contact",
+      "continuation": "BLOCKED",
+      "driftInterrupt": true,
+      "expected": "attempted-next",
+      "inheritance": "FALSE_RAISED_FLOOR_BLOCK",
+      "ledgerPreviousHash": "45a46e42b57f6992dfb4f73845b0c91c14cf4d9901718bb793648ac81edc9ed8",
+      "previousReceiptHash": "45a46e42b57f6992dfb4f73845b0c91c14cf4d9901718bb793648ac81edc9ed8",
+      "receiptHash": "aeaa2503eb2e41d3eeabcf5f31c4c3a75c1979ba2d2b957c0ddb69ff5ea4c524",
+      "source": "portable-return seed",
+      "state0": "inside",
+      "state1": "attempted-next",
+      "system": "zezu.nwona Unified Contact Memory Runtime",
+      "timestamp": "2026-09-28T12:00:03Z",
+      "verdict": "DING",
+      "version": "0.5-seed"
+    },
+    {
+      "bounceback": {
+        "valid": [
+          {
+            "name": "membrane passage grounded",
+            "sourceReceiptHash": "45a46e42b57f6992dfb4f73845b0c91c14cf4d9901718bb793648ac81edc9ed8",
+            "status": "verified_inherited"
+          },
+          {
+            "name": "return route grounded",
+            "status": "verified_here"
+          }
+        ]
+      },
+      "chain": {
+        "requested": true,
+        "status": "CHAIN_CONTINUES"
+      },
+      "contact": "alternate verified return route",
+      "continuation": "NEXT_STATE_ELIGIBLE",
+      "driftInterrupt": false,
+      "expected": "returned-with-proof",
+      "inheritance": "SAME_FLOOR_ELIGIBLE",
+      "ledgerPreviousHash": "aeaa2503eb2e41d3eeabcf5f31c4c3a75c1979ba2d2b957c0ddb69ff5ea4c524",
+      "previousReceiptHash": "45a46e42b57f6992dfb4f73845b0c91c14cf4d9901718bb793648ac81edc9ed8",
+      "receiptHash": "0e1951efafc5ea3be903a57d055179cff3c8522916f7efc22320743c934026f2",
+      "source": "portable-return seed",
+      "state0": "inside",
+      "state1": "returned-with-proof",
+      "system": "zezu.nwona Unified Contact Memory Runtime",
+      "timestamp": "2026-09-28T12:00:04Z",
+      "verdict": "DING",
+      "version": "0.5-seed"
+    },
+    {
+      "bounceback": {
+        "valid": [
+          {
+            "name": "return route grounded",
+            "sourceReceiptHash": "0e1951efafc5ea3be903a57d055179cff3c8522916f7efc22320743c934026f2",
+            "status": "verified_inherited"
+          },
+          {
+            "name": "hosted server carry/return grounded",
+            "serverReceiptHash": "00fbc3b8af655739b794e9c739b0e7cbff4683264917bc614920d32d70fbd8af",
+            "status": "verified_here"
+          }
+        ]
+      },
+      "chain": {
+        "requested": true,
+        "status": "CHAIN_CONTINUES"
+      },
+      "contact": "live deployed server verified, stored, and exact-returned the admitted history carrier",
+      "continuation": "NEXT_STATE_ELIGIBLE",
+      "driftInterrupt": false,
+      "expected": "hosted-server-return",
+      "inheritance": "UPLIFT_ELIGIBLE",
+      "ledgerPreviousHash": "0e1951efafc5ea3be903a57d055179cff3c8522916f7efc22320743c934026f2",
+      "previousReceiptHash": "0e1951efafc5ea3be903a57d055179cff3c8522916f7efc22320743c934026f2",
+      "source": "JM Cloud Contact Server hosted descendant v0.5.1 / zezu mount v0.7",
+      "state0": "returned-with-proof",
+      "state1": "hosted-server-return",
+      "system": "zezu.nwona Unified Contact Memory Runtime",
+      "timestamp": "2026-09-28T15:38:13.558Z",
+      "verdict": "DING",
+      "version": "0.8-hosted-server",
+      "receiptHash": "682af7b981d33d61ad957049b3059db4388f34fbe012c8f239be291c914e251d"
+    }
+  ],
+  "ledgerCount": 5,
+  "ledgerRoot": "555ce0f88790616caee5592a723cfc7bf36693a9f9560302be66b0a1ee5a746f",
+  "schema": "zezu.nwona.portable-history-return/0.8",
+  "sourceRuntime": "zezu.nwona Unified Contact Memory Runtime v0.5 → hosted server carry/return v0.7 → portable descendant v0.8"
+}
