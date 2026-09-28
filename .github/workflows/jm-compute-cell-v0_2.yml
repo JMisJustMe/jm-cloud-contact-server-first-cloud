@@ -1,0 +1,22 @@
+name: JM Compute Cell v0.2 VMs
+
+on:
+  push:
+    branches:
+      - jm-compute-cell-v0.2-vms
+  workflow_dispatch:
+
+jobs:
+  vm-compute-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout VM descendant
+        uses: actions/checkout@v4
+      - name: Use Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Compute Cell v0.2 syntax
+        run: node --check compute/JM_COMPUTE_CELL_PROFILE_v0_2.mjs
+      - name: Compute Cell v0.2 three-engine QA
+        run: node qa/JM_COMPUTE_CELL_QA_v0_2.mjs
