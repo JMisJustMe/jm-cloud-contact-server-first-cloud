@@ -1,0 +1,29 @@
+{
+  "schema": "JM.ComputeCell/0.1",
+  "name": "JM Compute Cell",
+  "version": "0.1",
+  "parent": "JM CLOUD CONTACT SERVER v0.5.1-hosted",
+  "route": "SOURCE -> CELL POLICY -> JM NATIVE ENGINE -> ARTIFACT -> CLOUD TRACE -> RECEIPT",
+  "engines": [
+    {
+      "id": "routecore-native",
+      "body": "RouteCore Native",
+      "source": "compute/native/runtime-composition-native.mjs",
+      "provenance": "JM-cading-lab sovereign-batch-six exact mounted source"
+    }
+  ],
+  "authority": {
+    "control": "cloud admin bearer at v0.1",
+    "execution": "allow-listed JM engine only",
+    "shell": "forbidden",
+    "filesystem": "artifact store only; no arbitrary path execution"
+  },
+  "proof": {
+    "cloud": "fresh /v5 job space per compute job",
+    "native": "RouteCore Native body receipt",
+    "compute": "JM.ComputeReceipt/0.1 HMAC",
+    "artifact": "SHA-256 content-addressed JSON carrier",
+    "cloudReceipt": "underlying signed JM Cloud receipt"
+  },
+  "claimBoundary": "v0.1 proves governed RouteCore Native jobs only; VM/container/kernel/Android-build/arbitrary-program execution remain later descendants."
+}
