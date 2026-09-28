@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  compute-cell-qa:
+  compute-cell-full-suite:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout descendant
@@ -19,7 +19,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Syntax gate
-        run: node --check compute/JM_COMPUTE_CELL_PROFILE_v0_1.mjs
-      - name: JM Compute Cell QA
-        run: node qa/JM_COMPUTE_CELL_QA_v0_1.mjs
+      - name: Install hosted dependencies
+        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Full JM hosted cloud + Compute Cell suite
+        run: npm test
