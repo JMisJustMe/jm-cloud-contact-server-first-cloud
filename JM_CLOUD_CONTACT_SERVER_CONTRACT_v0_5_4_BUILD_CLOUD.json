@@ -1,0 +1,56 @@
+{
+  "schema": "jm.cloud-contact.server.contract/0.5.4",
+  "name": "JM CLOUD CONTACT SERVER",
+  "version": "0.5.4-build-cloud",
+  "parent": "0.5.3-vm-compute",
+  "lineage": [
+    "0.5.0 Profile Mounts",
+    "0.5.1-hosted",
+    "0.5.2-compute-cell",
+    "0.5.3-vm-compute",
+    "0.5.4-build-cloud"
+  ],
+  "buildCell": {
+    "schema": "JM.BuildCell/0.1",
+    "api": "/build/v1",
+    "engine": "compilecading-native",
+    "bodies": [
+      "Parser",
+      "Compiler",
+      "OneBody IR",
+      "JS Emitter",
+      "compileCading API"
+    ],
+    "targets": [
+      "javascript"
+    ],
+    "heldEngines": [
+      "jmgradle-android"
+    ],
+    "route": "SOURCE -> PARSER -> COMPILER -> ONEBODY IR -> JS EMITTER -> compileCading API -> ARTIFACT -> CLOUD TRACE -> RECEIPT",
+    "arbitraryShell": false,
+    "arbitraryProcess": false
+  },
+  "computeCell": {
+    "schema": "JM.ComputeCell/0.2",
+    "engines": [
+      "routecore-native",
+      "cadenvm-native",
+      "jmvm-native"
+    ]
+  },
+  "publicSurfaces": [
+    "/build/v1/meta",
+    "/build/v1/ready",
+    "/build/v1/builders",
+    "/build/v1/builders/:id/jobs",
+    "/build/v1/jobs/:id",
+    "/build/v1/artifacts/:hash",
+    "/compute/v1/meta",
+    "/compute/v1/ready",
+    "/v5",
+    "/v4",
+    "/v3"
+  ],
+  "claimBoundary": "Repository/CI Build Cloud proof covers exact Batch Five reference compiler route to JavaScript artifacts plus inherited JM compute/cloud compatibility. JMGradle Android builds, arbitrary build processes, public v0.5.4 hosting and physical infrastructure independence remain unclaimed."
+}
