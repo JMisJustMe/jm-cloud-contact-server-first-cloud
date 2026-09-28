@@ -30,3 +30,7 @@ services:
         value: "60000"
       - key: JM_CLOUD_RATE_MAX
         value: "360"
+      - key: JM_MARKET_DATABASE_URL
+        fromDatabase:
+          name: jm-market-survivor-state
+          property: connectionString
