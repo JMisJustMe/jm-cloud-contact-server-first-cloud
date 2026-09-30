@@ -68,7 +68,7 @@ export function createJMGradleCloudGraph(){
         forgeReceipt:c.forged.receipt,
         claimBoundary:'Exact recovered JMGradle scheduler bytes execute this cloud-adapter graph. The task implementations use the already-proved cloud-safe Android Forge descendant; this does not impersonate the historical local JMGradle HTTP host or its complete offline builder/toolchain carrier.'
       };
-    });
+    }});
 }
 
 export function describeJMGradleCloudGraph(){return createJMGradleCloudGraph().describe('receipt')}
