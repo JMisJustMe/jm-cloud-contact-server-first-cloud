@@ -1,0 +1,32 @@
+name: JM Build Cell v0.2.1 Recovered JMGradle
+
+on:
+  push:
+    branches:
+      - jm-build-cell-v0.2.1-jmgradle-recovered
+  workflow_dispatch:
+
+jobs:
+  recovered-jmgradle-full-cloud:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout recovered JMGradle descendant
+        uses: actions/checkout@v4
+      - name: Use Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install inherited dependencies
+        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Syntax gate recovered scheduler and descendant
+        run: |
+          node --check build/native/android/jmgradle/src/jmgradle.mjs
+          node --check build/native/android/jmgradle/src/util.mjs
+          node --check build/JM_JMGRADLE_CLOUD_ADAPTER_v0_1.mjs
+          node --check build/JM_BUILD_CELL_PROFILE_v0_2_1.mjs
+          node --check JM_CLOUD_CONTACT_SERVER_v0_5_5_1_JMGRADLE_BUILD_CLOUD.mjs
+          node --check qa/JM_CLOUD_CONTACT_SERVER_JMGRADLE_BUILD_CLOUD_QA_v0_5_5_1.mjs
+      - name: Preserve inherited full JM cloud suite
+        run: npm test
+      - name: Full cloud recovered JMGradle contact
+        run: node qa/JM_CLOUD_CONTACT_SERVER_JMGRADLE_BUILD_CLOUD_QA_v0_5_5_1.mjs
