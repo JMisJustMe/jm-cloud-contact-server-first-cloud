@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - jm-build-cell-v0.2.1-jmgradle-recovered
+  pull_request:
+    branches:
+      - jm-build-cell-v0.2-android-apk-clean
   workflow_dispatch:
 
 jobs:
