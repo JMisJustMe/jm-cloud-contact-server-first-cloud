@@ -448,7 +448,10 @@
     return { bytes: aligned, report };
   }
 
-  async function signV2(unsignedApk) {\n    if (!CHILD_PRIVATE_KEY_PKCS8_B64 || !CHILD_CERT_DER_B64 || !CHILD_PUBLIC_KEY_SPKI_B64 || !CHILD_CERT_SHA256) {\n      throw new Error("APK signing material is required; embedded debug key was removed for cloud custody.");\n    }
+  async function signV2(unsignedApk) {
+    if (!CHILD_PRIVATE_KEY_PKCS8_B64 || !CHILD_CERT_DER_B64 || !CHILD_PUBLIC_KEY_SPKI_B64 || !CHILD_CERT_SHA256) {
+      throw new Error("APK signing material is required; embedded debug key was removed for cloud custody.");
+    }
     const eocdOffset = findEocd(unsignedApk);
     const view = new DataView(unsignedApk.buffer, unsignedApk.byteOffset, unsignedApk.byteLength);
     const centralOffset = view.getUint32(eocdOffset + 16, true);
