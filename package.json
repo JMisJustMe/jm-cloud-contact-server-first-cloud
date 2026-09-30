@@ -1,17 +1,18 @@
 {
   "name": "jm-cloud-contact-server-hosted-v05-descendant",
-  "version": "0.5.4-build-cloud",
+  "version": "0.5.5-android-apk-build-cloud",
   "private": true,
   "type": "module",
   "engines": {
     "node": ">=20"
   },
   "scripts": {
-    "start": "node JM_CLOUD_CONTACT_SERVER_v0_5_4_BUILD_CLOUD.mjs",
-    "test": "node --check JM_CLOUD_CONTACT_SERVER_v0_5_4_BUILD_CLOUD.mjs && node --check build/JM_BUILD_CELL_PROFILE_v0_1.mjs && node qa/JM_BUILD_CELL_QA_v0_1.mjs && node --check compute/JM_COMPUTE_CELL_PROFILE_v0_2.mjs && node qa/JM_COMPUTE_CELL_QA_v0_2.mjs && node qa/JM_CLOUD_CONTACT_SERVER_HOSTED_STATIC_QA_v0_5_1.mjs && node qa/JM_CLOUD_CONTACT_SERVER_BUILD_CLOUD_QA_v0_5_4.mjs && node qa/JM_GAME_LIVE_PROFILE_QA_v0_3.mjs && node qa/JM_SERVICE_MESH_QA_v0_1.mjs && node qa/JM_SERVICE_MESH_PIPELINE_QA_v0_2.mjs && node qa/JM_MARKET_LAB_QA_CURRENT.mjs",
+    "start": "node JM_CLOUD_CONTACT_SERVER_v0_5_5_ANDROID_APK_BUILD_CLOUD.mjs",
+    "test": "node --check JM_CLOUD_CONTACT_SERVER_v0_5_5_ANDROID_APK_BUILD_CLOUD.mjs && node --check build/JM_BUILD_CELL_PROFILE_v0_2.mjs && node --check build/JM_ANDROID_FORGE_CLOUD_ADAPTER_v0_1.mjs && node --check build/native/android/JM_FORGE_CORE_DONOR_v1_4_1.js && node --check build/native/android/JM_PHONE_FORGE_CLOUD_SAFE_v1_4_1.js && node qa/JM_BUILD_CELL_ANDROID_QA_v0_2.mjs && node --check compute/JM_COMPUTE_CELL_PROFILE_v0_2.mjs && node qa/JM_COMPUTE_CELL_QA_v0_2.mjs && node qa/JM_CLOUD_CONTACT_SERVER_HOSTED_STATIC_QA_v0_5_1.mjs && node qa/JM_CLOUD_CONTACT_SERVER_ANDROID_APK_BUILD_CLOUD_QA_v0_5_5.mjs && node qa/JM_GAME_LIVE_PROFILE_QA_v0_3.mjs && node qa/JM_SERVICE_MESH_QA_v0_1.mjs && node qa/JM_SERVICE_MESH_PIPELINE_QA_v0_2.mjs && node qa/JM_MARKET_LAB_QA_CURRENT.mjs",
     "preflight": "npm test"
   },
   "dependencies": {
-    "pg": "^8.16.3"
+    "pg": "^8.16.3",
+    "jszip": "^3.10.1"
   }
 }

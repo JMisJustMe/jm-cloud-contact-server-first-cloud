@@ -1,0 +1,87 @@
+{
+  "schema": "jm.cloud-contact.server.contract/0.5.5",
+  "name": "JM CLOUD CONTACT SERVER",
+  "version": "0.5.5-android-apk-build-cloud",
+  "parent": "0.5.4-build-cloud",
+  "lineage": [
+    "0.5.0 Profile Mounts",
+    "0.5.1-hosted",
+    "0.5.2-compute-cell",
+    "0.5.3-vm-compute",
+    "0.5.4-build-cloud",
+    "0.5.5-android-apk-build-cloud"
+  ],
+  "buildCell": {
+    "schema": "JM.BuildCell/0.2",
+    "api": "/build/v1",
+    "engines": [
+      {
+        "id": "compilecading-native",
+        "target": "javascript",
+        "bodies": [
+          "Parser",
+          "Compiler",
+          "OneBody IR",
+          "JS Emitter",
+          "compileCading API"
+        ]
+      },
+      {
+        "id": "android-apk-native",
+        "target": "android-apk",
+        "bodies": [
+          "JMForgeCore v1.4.1",
+          "JMPhoneForge v1.4.1",
+          "OneBody Android",
+          "APK v2 signer/alignment route"
+        ],
+        "signingCustody": "runtime-injected",
+        "artifact": "content-addressed APK binary"
+      }
+    ],
+    "targets": [
+      "javascript",
+      "android-apk"
+    ],
+    "heldEngines": [
+      "jmgradle-local-host",
+      "aosp-system-image"
+    ],
+    "routes": {
+      "javascript": "SOURCE -> PARSER -> COMPILER -> ONEBODY IR -> JS EMITTER -> compileCading API -> ARTIFACT -> CLOUD TRACE -> RECEIPT",
+      "androidApk": "CADING -> JMFORGECORE -> ONEBODY ANDROID -> JMPHONEFORGE -> DEX REPAIR -> ZIP ALIGNMENT -> APK V2 SIGNING -> BINARY ARTIFACT -> CLOUD TRACE -> RECEIPT"
+    },
+    "arbitraryShell": false,
+    "arbitraryProcess": false,
+    "recoveredPrivateKeyEmbedded": false
+  },
+  "computeCell": {
+    "schema": "JM.ComputeCell/0.2",
+    "engines": [
+      "routecore-native",
+      "cadenvm-native",
+      "jmvm-native"
+    ]
+  },
+  "publicSurfaces": [
+    "/build/v1/meta",
+    "/build/v1/ready",
+    "/build/v1/builders",
+    "/build/v1/builders/:id/jobs",
+    "/build/v1/jobs/:id",
+    "/build/v1/artifacts/:hash",
+    "/build/v1/artifacts/:hash/download",
+    "/compute/v1/meta",
+    "/compute/v1/ready",
+    "/v5",
+    "/v4",
+    "/v3"
+  ],
+  "proof": {
+    "cleanHead": "3e4f415da3ada464fe57c6841aa90466e1bb77bb",
+    "fullSuiteRun": 36678547470,
+    "fullSuiteJob": 109768759986,
+    "result": "SUCCESS"
+  },
+  "claimBoundary": "Repository/CI proof covers exact recovered JMForgeCore/JMPhoneForge-derived static Android APK emission under Build Cell governance, plus inherited JM compiler/compute/cloud compatibility. Historical local-JMGradle host bytes, AOSP/system-image builds, production release signing, physical-device install/launch, public v0.5.5 hosting and hardware/datacentre independence remain unclaimed."
+}
