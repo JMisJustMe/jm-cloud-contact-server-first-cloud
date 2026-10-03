@@ -8,7 +8,7 @@ services:
     autoDeploy: false
     dockerfilePath: ./deploy/Dockerfile
     dockerContext: .
-    healthCheckPath: /ready
+    healthCheckPath: /remain/health
     disk:
       name: jm-sovereign-gateway-data
       mountPath: /data
@@ -22,6 +22,8 @@ services:
         generateValue: true
       - key: JM_GATEWAY_DATA
         value: /data/JM_SOVEREIGN_AGENT_GATEWAY_STORE_v0_2.json
+      - key: JM_REMAIN_DATA_ROOT
+        value: /data
       - key: JM_GATEWAY_ACP_ENABLED
         value: "true"
       - key: JM_GATEWAY_DURABILITY_TIER
