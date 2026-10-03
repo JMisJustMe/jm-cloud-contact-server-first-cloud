@@ -1,49 +1,84 @@
-# JM SOVEREIGN AGENT GATEWAY v0.2 — Durable Cading Deployment Branch
+# JM SOVEREIGN AGENT GATEWAY v0.3 — Magnifying Glass Convergence
 
 **YOUR DOOR. MANY AGENTS. YOUR AUTHORITY.**
 
-This branch promotes the existing JM Cloud Contact public-service rail into the durable JM Sovereign Agent Gateway descendant without deleting the historical v0.4.2 carrier files.
+This branch is the forward convergence descendant of the durable v0.2 Cading gateway and the current JM Magnifying Glass control body.
 
-## Source authority
+It does **not** create a third authority architecture.
 
-The source body is:
+## Two source authorities, one service face
 
-`gateway-cading-v0.2/JM_SOVEREIGN_AGENT_GATEWAY_v0_2.cading`
+- **Cading / JM Coding Estate** remains source authority for task creation, human-final approval, dispatch and gateway state.
+- **JM.MagnifyingGlass/1.0** remains source authority for cages, evidence, recovery, concurrency, trust-domain provenance and worker replacement.
+- `gateway-remain-v0.3/JM_SOVEREIGN_AGENT_GATEWAY_REMAIN_v0_3.mjs` is a deployment/service carrier that exposes both behind one durable door. It is not source authority.
 
-JavaScript, Node, Docker, Render, HTTP and ACP are downstream carriers/adapters. They do not replace Cading as source authority.
+The existing v0.2 gateway API and ACP face are proxied rather than rebuilt.
 
-See `gateway-cading-v0.2/README.md` for the compiler, parity, persistence and claim-boundary receipts.
+## Durable control face
 
-## Canonical service continuity
+The v0.3 face adds:
 
-The Render Blueprint deliberately preserves the established service identity:
+- persistent Magnifying Glass control state;
+- current revision/digest re-entry;
+- SHA-256 chained control receipts;
+- guarded revision + digest compare-and-swap commits;
+- stale-write rejection;
+- restart recovery;
+- authority-broadening rejection;
+- hash binding to the existing Magnifying Glass engine;
+- `/remain/health`;
+- `/remain/control`;
+- `/remain/reentry`;
+- `/remain/receipts`.
+
+A replacement worker can recover the current control, validate it, claim only an available cage and continue without inheriting the previous worker's private reasoning.
+
+## Seeded live state
+
+The branch carries the current Magnifying Glass control at revision **19** and the engine bound by SHA-256:
+
+`65bb1f67dc1dd8806aa8894111b5af5ae5f2f09e2364e912e59419878e53c3e4`
+
+Destructive authority remains **disabled**.
+
+## Local proof
+
+The v0.3 self-test proves:
+
+`seed → successor commit → stale conflict rejection → process restart → recovered control → authority-broadening rejection`
+
+The Docker build runs this test before producing the service image.
+
+## Hosted rail
+
+The established Render service identity remains:
 
 `jm-cloud-contact-server`
 
-A descendant does not receive a new public root merely because its body evolved.
+The existing 1 GB persistent disk remains mounted at `/data`. The v0.3 face stores its control journal under that persistent root and preserves the v0.2 gateway store beside it.
 
-## Durable deployment rail
+`autoDeploy` remains **false**.
 
-The root `render.yaml` now describes:
+## Claim boundary
 
-- one Docker web-service instance;
-- paid `0.5c-512mb` compute;
-- one 1 GB persistent disk at `/data`;
-- generated client, human-authority and ACP bearer tokens;
-- `/ready` health checking;
-- ACP enabled at `/acp`;
-- `autoDeploy: false` for the first controlled hosted durability Ding.
+**Proven in the candidate branch:**
 
-The deployed state file is intended to live at:
+- existing v0.2 Cading gateway lineage preserved;
+- current Magnifying Glass control/engine carried into the gateway lineage;
+- v0.3 control-store self-test PASS locally;
+- restart-recoverable control state;
+- chained control receipts;
+- guarded stale-write rejection;
+- no silent destructive-authority enlargement;
+- runnable Docker/service configuration prepared.
 
-`/data/JM_SOVEREIGN_AGENT_GATEWAY_STORE_v0_2.json`
+**Still open — do not silently crown:**
 
-## Current proof state
-
-**PASS:** Cading compile/runtime, source-owned state roundtrip, JS-carrier parity, split authority, chained receipts, atomic persistence and two-process local restart recovery.
-
-**OPEN:** actual Render persistent-disk restart Ding, public HTTPS descendant contact, ACP live-wire Ding and first external coding-agent execution.
-
-Repository configuration is not itself a hosted durability claim.
+- actual v0.3 container build on the deployment host;
+- live hosted persistent-disk restart Ding;
+- public HTTPS contact on the v0.3 descendant;
+- live ACP wire Ding through the v0.3 service face;
+- first real external replacement-worker round trip through the hosted face;
+- owner-governed out-of-band attestation / independent transport trust.
 
 **No Ding, no claim.**
