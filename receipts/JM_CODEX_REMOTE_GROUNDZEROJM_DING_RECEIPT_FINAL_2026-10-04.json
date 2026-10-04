@@ -1,0 +1,76 @@
+{
+  "schema": "JM.CodexRemoteRecipientDing/1",
+  "state": "DING",
+  "dingEarnedAt": "2026-10-04",
+  "operationId": "JMOP-070f1186f1b59e4c9a084842",
+  "recipient": "GroundZeroJM",
+  "target": "JM Service Mesh v0.2 on JM CLOUD CONTACT SERVER v0.5.1-hosted",
+  "candidateReceipt": {
+    "schema": "JM.CodexRemoteRecipientDingCandidate/1",
+    "state": "DING_CANDIDATE_RETURN_REQUIRED",
+    "operationId": "JMOP-070f1186f1b59e4c9a084842",
+    "recipient": "GroundZeroJM",
+    "executedAt": "2026-10-04T02:24:26.074Z",
+    "target": "JM Service Mesh v0.2 on JM CLOUD CONTACT SERVER v0.5.1-hosted",
+    "readiness": {
+      "serverVersion": "0.5.1-hosted",
+      "receiptSigning": true
+    },
+    "pipeline": {
+      "pipelineId": "pipe_e579HGApyBk",
+      "cloudSpaceId": "meshpipe_pipe_e579HGApyBk",
+      "stage": "PUBLIC_OUTPUT",
+      "status": "complete",
+      "claimVerdict": "TESTABLE — evidence route present",
+      "releaseState": "PUBLIC_READY"
+    },
+    "meshReceipt": {
+      "receiptHash": "fb3a43e5719d376ba8efb949c9be471125e1a7bf7db89bd302f6452638cae9ad",
+      "verified": true
+    },
+    "cloudReceipt": {
+      "receiptHash": "7d2570d3803ca498dd7691abb8bdef99a89ff52a80c52a3a392abbe48356a40d",
+      "canonicalHashMatch": true,
+      "publicKeyId": "a13ed0bf6faa640aff27b048",
+      "signatureAlgorithm": "ECDSA-P256-SHA256-P1363",
+      "signatureValid": true,
+      "status": "closed",
+      "chainHead": "d8d0c89eec400dbd8f958ff36e393a625129ebdd128e1e36582213d4dcb22ca8"
+    },
+    "readback": {
+      "complete": true,
+      "stage": "PUBLIC_OUTPUT",
+      "cloudReceiptHash": "7d2570d3803ca498dd7691abb8bdef99a89ff52a80c52a3a392abbe48356a40d",
+      "returnedHashMatches": true
+    },
+    "finalGate": "Return this receipt visibly through the actual GroundZeroJM Codex Remote session to the initiating user surface before final DING.",
+    "boundary": "Recipient-specific only. Does not transfer to other hosts, devices, apps, tools or games."
+  },
+  "finalGateObservation": {
+    "initiatingSurface": "current ChatGPT conversation",
+    "receiptReturnedVisibly": true,
+    "returnedUnchangedDeclaredByOwner": true,
+    "recipientNamed": "GroundZeroJM",
+    "priorGitHubActionsDingBorrowed": false
+  },
+  "verificationBasis": {
+    "exactRunnerSourceReadBackFromMain": true,
+    "runnerFailsClosedOnMissingOrInvalidStageHashSignatureOrReadback": true,
+    "candidateReceiptReportsAllRunnerGatesPass": true,
+    "finalReturnGateObservedInConversation": true,
+    "independentRecomputationFromReducedReceipt": false,
+    "note": "The reduced returned receipt does not include the full signed cloud snapshot or publicSig, so this closure does not claim a second independent cryptographic recomputation outside the GroundZeroJM runner."
+  },
+  "excluded": {
+    "earlierDisposableDiscoveryPipeline": "incomplete and excluded",
+    "proofTransferToCodexCloud": false,
+    "proofTransferToOtherDevicesAppsToolsGames": false
+  },
+  "keeper": [
+    "NO DING, NO CLAIM",
+    "CONTACT BEFORE CROWN",
+    "RECIPIENT A DING ≠ RECIPIENT B DING",
+    "MESH ≠ MERGE",
+    "ACCESS ≠ AUTHORITY"
+  ]
+}
