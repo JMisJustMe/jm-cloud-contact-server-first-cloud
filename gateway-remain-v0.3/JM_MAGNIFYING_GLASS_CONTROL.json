@@ -1,0 +1,2034 @@
+{
+  "protocol": "JM.MagnifyingGlass/1.0",
+  "owner": "Theodore Benjamin Scott / JM",
+  "body": "JM Library Reclaim control overlay",
+  "revision": 19,
+  "parent_digest": "7d06300d9880b3634174a679170e87c96e65ddeede2591e8d0128b2afdc3d07f",
+  "source_head": {
+    "id": "libfile_db757ec184248191a51317a696803ec8",
+    "version": "1",
+    "content_sha256": "3fe31222a8bd5c629fea0377bb29558565c3f26a4624491f1c5aeb9c8e6cfc0c",
+    "hash_scope": "Library extracted text UTF-8; not original-file SHA",
+    "modified_at": "2026-10-03T08:54:37.552180Z"
+  },
+  "lineage": [
+    {
+      "id": "libfile_3d740f7a9ce08191bddd9cd810ff6bd9",
+      "version": null,
+      "content_sha256": "5259083d9ee7dd6230779a12328a740bdb7e9b2322dc8dfa3cf873200df73e65",
+      "hash_scope": "Library extracted text UTF-8; not original-file SHA",
+      "modified_at": "2026-10-03T02:10:26.929012Z"
+    },
+    {
+      "id": "libfile_b042928c896881918ea294959e371d3f",
+      "version": null,
+      "content_sha256": "c8d8467b37ad9904408b0a843e351d9f481f1f2cd0fc081d209ac749590aea7c",
+      "hash_scope": "Library extracted text UTF-8; not original-file SHA",
+      "modified_at": "2026-10-03T01:57:45.311030Z"
+    },
+    {
+      "id": "libfile_85e40bf88798819197db5d64283d129a",
+      "version": "2",
+      "content_sha256": "34eae592bc41a64b1026cc5450e0c1e6bca3f493073ece8d3a3389cd3e9d1753",
+      "hash_scope": "Library extracted text UTF-8; not original-file SHA",
+      "modified_at": "2026-10-03T01:20:20.233411Z"
+    }
+  ],
+  "completed": {
+    "trash_ids": [
+      "libfile_dfc98e1cbfa0819193928a3db8407d28",
+      "libfile_0859b25ce114819191a986a4d9b90ee1",
+      "libfile_6795a148552881918b23dec935331ff1",
+      "libfile_ac8bf996fa248191a0265efa205cc46e",
+      "libfile_803dbea9de7c81919b4bdcb301b27c7d",
+      "libfile_e85d8c2802448191b1bc9c04d7e34703",
+      "libfile_fb48cb049f1481918cfea4622f0cffca",
+      "libfile_4335fe4301c08191baaf42b659e4c2c0",
+      "libfile_cdf9a72eae708191b186eb89834d36aa",
+      "libfile_762d80647db48191b472ca81efa07a65",
+      "libfile_7f66146698a0819197c6d3bf241b35c2",
+      "libfile_98753c50d20c81919656de7d3d86aa16",
+      "libfile_0a1293eeddc881918187d1ce81a2b55c",
+      "libfile_7e72e48c594c8191923633e55ff4078b",
+      "libfile_37cf05fb856881918bdf86adfe89bcf4",
+      "libfile_af8acb434e7881919148fb4e7a1c0cd2",
+      "libfile_3b8b0e2678f8819196e1d023caa3c093",
+      "libfile_580c3f9395248191bb4478ed0a71cb72",
+      "libfile_f4db05eb27c481918dd35e1d37b350d1",
+      "libfile_ffbf1956c86081918201c7b91bf95032",
+      "libfile_848d612f29308191a23e0ded8395b027",
+      "libfile_b2e1d31f8a008191987d8c9449eedd63",
+      "libfile_99fcfff39e0c81918aa14d6a7237eadf",
+      "libfile_61def6d31034819199b87e3754f18403",
+      "libfile_5d3139624fe48191a5dafbb0facd9043",
+      "libfile_02c94e63f3208191bb85052c4e0b02e2",
+      "libfile_a66e688b0ef881918f5f21c69136535a",
+      "libfile_c97ff4f16b508191b87644171ac6af5a",
+      "libfile_b9535812f4a881919a85496242c815c2",
+      "libfile_da1f66fd7d4081919dc3c2dac7068904",
+      "libfile_9e004aa30db481918b9d28984d634bf5",
+      "libfile_c9be76eb5e348191b0d9e7e301f852b1",
+      "libfile_8ec0614536a48191bc6dfbc7ea1af80e",
+      "libfile_bcdbb3bd0624819182ef2b73ce20a974",
+      "libfile_72f77f09f33881918310d6cabf7b873f",
+      "libfile_021f32c8c67c8191ac5bb6011070b9dd",
+      "libfile_9d5d78a96d248191ae217a57eb5f3efd",
+      "libfile_bc1eb80b2f548191a2652ee38d07121d",
+      "libfile_f86f89d37b9481918087836754d8e4ca",
+      "libfile_cff56893c59c81918efc665b3edb0437",
+      "libfile_1c9faf4092988191b4371c8a6b47ece3",
+      "libfile_04de44b7db2081919b39d689a343be96",
+      "libfile_ede7375c9adc819182dc347abb139d73",
+      "libfile_de1679a02f908191bb8dd24ab3d72969",
+      "libfile_8d442c63a1108191872e21a5116b6a27",
+      "libfile_f1a8974ff8a88191bc6833c08b605c97",
+      "libfile_ae818ea8e77c8191b8af2f34ab2f33a4",
+      "libfile_bf1f9672c8a48191bf64e606bf0f6c88",
+      "libfile_625207bd038c8191a4a5138c1d5a8c4c",
+      "libfile_d8e23592822c8191aa31dce14f93d2f0",
+      "libfile_1b9c5a8f1e5881918a36ac44e19b0d1b",
+      "libfile_1a2dfc4c52b88191af02ae1e12b9145c",
+      "libfile_1361701bf7cc819192530cbf36cf8dd3",
+      "libfile_e205f79add048191b8b7ae8c6fcac4b3",
+      "libfile_3dbae4fbcc188191bf6c7ab4c3c96c6f",
+      "libfile_c1b4ca3c00ac8191ab0ce11bb3e77b02",
+      "libfile_f5b0e4070ce881919168a231d687a31e",
+      "libfile_3be19a786c308191a98abe737e9e6606",
+      "libfile_3f84280d3fa88191a174d97fb93827f9",
+      "libfile_d694f022b14481919d9ece9ed753356e",
+      "libfile_ceb78acc0488819184bdc7e1668b42fb",
+      "libfile_5b87b1884558819181e6fc08d92e808f",
+      "libfile_3536e3207a108191a1641d820e2b5de0",
+      "libfile_0dfae9a9531c8191b92022456d63d32f",
+      "libfile_c6f6c2c54754819192b080f1a266bbb7",
+      "libfile_818665be8914819195a4a80ed12f9760",
+      "libfile_029fa3a498d88191b2131df6ce5ad77e",
+      "libfile_eb2e0dd950e48191ad190b545425fe4b",
+      "libfile_07a6da2f43f88191b97d40623c5b7059",
+      "libfile_9d9698c1b20481918b9330b4b2033768",
+      "libfile_e6dd994a5af88191be3d009509ddd576",
+      "libfile_dddaffec22a48191b2ddd0775c52bb66",
+      "libfile_f70cccea892c81918328ac46ce3f949d",
+      "libfile_eb446f7e368c8191a5db62470a5a8ffa",
+      "libfile_9671ac45463881918cea79c4eb30f644",
+      "libfile_a46bc4088eec8191b2642c25d7472496",
+      "libfile_543ebee0348481918a5628d58290615a",
+      "libfile_b6e5cc88e2988191b4acc7f96d7b0cf3",
+      "libfile_983d0f6c3ce88191a7196d2cf9a4efa6",
+      "libfile_2c086e60d9f0819199416be9d8b01be0",
+      "libfile_1eb200d32e588191b9085483b92faf13",
+      "libfile_e2689138def081919347e4c529b28db1",
+      "libfile_24688438c2c881919cde468c8bee7244"
+    ],
+    "thinned_ids": [
+      "libfile_91e14f151fb0819189a62d91da8740f1",
+      "libfile_0edbfa9156788191bc52161bb22346af",
+      "libfile_f20cfda8be44819188141eaa21f1d810",
+      "libfile_643016dc675c8191ac454febffc7f927",
+      "libfile_403907276b7c81918284e3ee7a9dbba7",
+      "libfile_656f0ae4695481919d802a4260128266",
+      "libfile_19545148462881918a52b355d2466ab2",
+      "libfile_cc9a1a8dbf408191869b1e87bc55f452",
+      "libfile_1828614effac819185e0084431ac0697",
+      "libfile_3408c372ba6481919a354af367f0f331",
+      "libfile_108f3a371b2c8191886e278d09e0809f",
+      "libfile_f2b889bef0b4819184b014959d669730",
+      "libfile_d2154736f0cc8191bee89956ebfabef5",
+      "libfile_22cc078f299881918a4cde030ff6a908",
+      "libfile_33d2cdd49e108191a1974cb39ae25e03",
+      "libfile_f6a2065c5240819180e93e34fb99e404",
+      "libfile_a20d0ab2501c8191b6486b118a9ac19e",
+      "libfile_80b123b984a88191bb1379ffcab27bc0",
+      "libfile_4617c0ce6f2c8191ae7c1a404b4f844d",
+      "libfile_21d2136fdec081919e6b5bbee7883a75",
+      "libfile_99b41fd1b85c81918ce043886a5aa806"
+    ],
+    "source_refs": [
+      "libfile_db757ec184248191a51317a696803ec8",
+      "libfile_3d740f7a9ce08191bddd9cd810ff6bd9",
+      "libfile_b042928c896881918ea294959e371d3f",
+      "libfile_85e40bf88798819197db5d64283d129a"
+    ]
+  },
+  "authority": {
+    "allowed": [
+      "inspect"
+    ],
+    "prohibited": [
+      "delete",
+      "replace project carrier",
+      "semantic retirement",
+      "whole census restart",
+      "blind queue replay",
+      "gross-as-net claim",
+      "quota credit without meter contact"
+    ],
+    "destructive_enabled": false,
+    "inherited_reclaim": "Tier A/B historical authority remains external; this pilot grants no new deletion authority"
+  },
+  "exclusions": {
+    "protected_ids": [
+      "libfile_0137abb05de48191a1ae31ad826f6503",
+      "libfile_014b5cf507ec8191907bd540587917a1",
+      "libfile_04080d3373248191997252a198f4c2db",
+      "libfile_0694511709cc81919a639c93a7b53e6d",
+      "libfile_07a4029dc2108191a1262926bee8173f",
+      "libfile_12754374c42c819198ab8407e65f3908",
+      "libfile_203e65cc6f048191be2f961cc739d63c",
+      "libfile_2c213f8139408191a3ff31c3af90a5bb",
+      "libfile_331181a367408191b350519e31cea4b4",
+      "libfile_35b8c06e73cc8191ae912586c1006e87",
+      "libfile_36e1e027e4248191b784c7415300e1f0",
+      "libfile_3daaeaf1fbe0819180615a4d3af15a11",
+      "libfile_449ef57494e48191b0ff014b96f4e3f2",
+      "libfile_44f21c101fb08191a6590ec11d9b5576",
+      "libfile_46f2740d1bc88191a13e13222e17cbca",
+      "libfile_55f8856a10e88191a668330a2cf0cf64",
+      "libfile_566115c94bec8191a5a18b4b72fc18ec",
+      "libfile_56d33677767c81919a0199bf5d8bb017",
+      "libfile_5729928976688191aee1b77bd7784fb2",
+      "libfile_5e09b221f8dc81919515ae6e3d3376e5",
+      "libfile_60d42c154d3c819189e4e121f637765f",
+      "libfile_62da1954a6208191bc0a2452c17bd0a4",
+      "libfile_638241bf9a288191921f308b85126b6e",
+      "libfile_65d6cf04482c8191bc9fbeb28af0c5e1",
+      "libfile_670fa19221508191a7f2fadf244a6050",
+      "libfile_69197535dccc819182edf7549af449eb",
+      "libfile_6ac6bf5d595081919909bedae22d7b57",
+      "libfile_7035f12b547481918cd1c460764bb7d7",
+      "libfile_7107872040088191899b3b9decfb1426",
+      "libfile_747703d357648191ae34bf6a0f9446de",
+      "libfile_786fcd6d96ec81919a4e0fc8217d70c0",
+      "libfile_7d5ad19654d48191bd10a08e26733b77",
+      "libfile_7d8a1b0ec46881919d3dcccf47a8890d",
+      "libfile_7f1a582836e08191a68d48808090198f",
+      "libfile_85e40bf88798819197db5d64283d129a",
+      "libfile_8a13319f5c6c81918d66a5f10d78c8b1",
+      "libfile_910cca967de48191b27458072e84c45c",
+      "libfile_91b1547299d88191b0a433d9789e28d4",
+      "libfile_930707fb184481918c833ee5afd3684d",
+      "libfile_9d899167292c8191b4d2b087835fe7e6",
+      "libfile_a23d1348d7f081918a7627f5c102210a",
+      "libfile_a4bfd229cde48191b3e792c68ac0c49a",
+      "libfile_b042928c896881918ea294959e371d3f",
+      "libfile_b138647eb49881918f8653d0af330e52",
+      "libfile_b24328ebdc68819194ead4f923fe6fc1",
+      "libfile_b99c3d3637f88191b8dd01368ddd5a08",
+      "libfile_b9dfef82c324819188f28d197676a2b7",
+      "libfile_bf5f38598f3081919a1609c0d6ac2872",
+      "libfile_c02c5238fa508191a2029fc19a685a0d",
+      "libfile_c765e70ae88c8191aa505565ef5db00b",
+      "libfile_c83ae2992b2c8191a647e8a218f09890",
+      "libfile_d1f94e637d9c819184ee317c06c40fd7",
+      "libfile_d366e89e7be88191b771bf6f4d1d00a0",
+      "libfile_d914b5d5b2688191b5f1a12d87eb6461",
+      "libfile_da8c27eb7070819181164a99e6936187",
+      "libfile_e108896db7cc8191b2053624f60368e7",
+      "libfile_e160b9390de481918b5f6f4f1521ab68",
+      "libfile_e38610dc158881918995af211ac94ad4",
+      "libfile_e5341e1889fc8191b1212b0af21a970e",
+      "libfile_ee69842d95b88191ad449442b4217058",
+      "libfile_efc24e78a59481919c53db579bbdc1e7",
+      "libfile_f2ed7d283a488191a882954063288847",
+      "libfile_f5c43d68f3548191b7eafbd4654d5bfd"
+    ],
+    "holds": [
+      "Visualang unequal carrier / patch dependency",
+      "Phoney PDF unique credentials",
+      "Signalcore Showcase",
+      "three Amazon accessory screenshots",
+      "STUFFBOUND unequal PDF",
+      "Formula Wave6 unequal carrier",
+      "Anomaly evidence videos",
+      "Knowledge unique v16 DOCX",
+      "current videos without function/uniqueness proof"
+    ],
+    "source_refs": [
+      "libfile_db757ec184248191a51317a696803ec8",
+      "libfile_3d740f7a9ce08191bddd9cd810ff6bd9",
+      "libfile_b042928c896881918ea294959e371d3f",
+      "libfile_85e40bf88798819197db5d64283d129a"
+    ],
+    "scope": "Explicit current chain exclusions; historical 33 IDs and full recovery dependency closure must be read from ancestor before enabling any destructive adapter"
+  },
+  "unknowns": [
+    "Whole quota effect",
+    "Cumulative checkpoint and retained-carrier overhead",
+    "Whole active/justified/unresolved partition",
+    "Other concurrent unreported work",
+    "Full historical 33-ID exclusion ledger not normalized here",
+    "Library target atomic conditional mutation unsupported by this engine"
+  ],
+  "accounting": {
+    "historical_inherited_trash_count": 83,
+    "historical_inherited_trash_bytes": 522689921,
+    "historical_thinning_count": 21,
+    "historical_thinning_saved_bytes": 10129486,
+    "historical_gross_bytes": 532819407,
+    "separate_historical_batch": {
+      "count": 33,
+      "bytes": 491993115
+    },
+    "pilot_new_trash_count": 0,
+    "pilot_reclaimed_bytes": 0,
+    "quota_credit_bytes": null,
+    "net_bytes": null
+  },
+  "current_target": "Transport attestation pilot closed; independent origin remains unverified",
+  "cages": {
+    "playform-recovery-001": {
+      "id": "playform-recovery-001",
+      "worker": null,
+      "entry_digest": "e195e51a3820aea3ea4f1b04520d0166382cc9f002371442dbb95d05c52ddaf3",
+      "target": {
+        "id": "libfile_7107872040088191899b3b9decfb1426",
+        "version": "1"
+      },
+      "authority": [
+        "inspect"
+      ],
+      "exclusions": [
+        "libfile_0137abb05de48191a1ae31ad826f6503",
+        "libfile_014b5cf507ec8191907bd540587917a1",
+        "libfile_04080d3373248191997252a198f4c2db",
+        "libfile_0694511709cc81919a639c93a7b53e6d",
+        "libfile_07a4029dc2108191a1262926bee8173f",
+        "libfile_12754374c42c819198ab8407e65f3908",
+        "libfile_203e65cc6f048191be2f961cc739d63c",
+        "libfile_2c213f8139408191a3ff31c3af90a5bb",
+        "libfile_331181a367408191b350519e31cea4b4",
+        "libfile_35b8c06e73cc8191ae912586c1006e87",
+        "libfile_36e1e027e4248191b784c7415300e1f0",
+        "libfile_449ef57494e48191b0ff014b96f4e3f2",
+        "libfile_44f21c101fb08191a6590ec11d9b5576",
+        "libfile_46f2740d1bc88191a13e13222e17cbca",
+        "libfile_55f8856a10e88191a668330a2cf0cf64",
+        "libfile_566115c94bec8191a5a18b4b72fc18ec",
+        "libfile_56d33677767c81919a0199bf5d8bb017",
+        "libfile_5729928976688191aee1b77bd7784fb2",
+        "libfile_5e09b221f8dc81919515ae6e3d3376e5",
+        "libfile_60d42c154d3c819189e4e121f637765f",
+        "libfile_62da1954a6208191bc0a2452c17bd0a4",
+        "libfile_638241bf9a288191921f308b85126b6e",
+        "libfile_65d6cf04482c8191bc9fbeb28af0c5e1",
+        "libfile_670fa19221508191a7f2fadf244a6050",
+        "libfile_69197535dccc819182edf7549af449eb",
+        "libfile_6ac6bf5d595081919909bedae22d7b57",
+        "libfile_7035f12b547481918cd1c460764bb7d7",
+        "libfile_7107872040088191899b3b9decfb1426",
+        "libfile_747703d357648191ae34bf6a0f9446de",
+        "libfile_786fcd6d96ec81919a4e0fc8217d70c0",
+        "libfile_7d5ad19654d48191bd10a08e26733b77",
+        "libfile_7d8a1b0ec46881919d3dcccf47a8890d",
+        "libfile_7f1a582836e08191a68d48808090198f",
+        "libfile_85e40bf88798819197db5d64283d129a",
+        "libfile_910cca967de48191b27458072e84c45c",
+        "libfile_91b1547299d88191b0a433d9789e28d4",
+        "libfile_930707fb184481918c833ee5afd3684d",
+        "libfile_9d899167292c8191b4d2b087835fe7e6",
+        "libfile_a23d1348d7f081918a7627f5c102210a",
+        "libfile_a4bfd229cde48191b3e792c68ac0c49a",
+        "libfile_b042928c896881918ea294959e371d3f",
+        "libfile_b138647eb49881918f8653d0af330e52",
+        "libfile_b24328ebdc68819194ead4f923fe6fc1",
+        "libfile_b99c3d3637f88191b8dd01368ddd5a08",
+        "libfile_b9dfef82c324819188f28d197676a2b7",
+        "libfile_bf5f38598f3081919a1609c0d6ac2872",
+        "libfile_c02c5238fa508191a2029fc19a685a0d",
+        "libfile_c765e70ae88c8191aa505565ef5db00b",
+        "libfile_c83ae2992b2c8191a647e8a218f09890",
+        "libfile_d1f94e637d9c819184ee317c06c40fd7",
+        "libfile_d366e89e7be88191b771bf6f4d1d00a0",
+        "libfile_d914b5d5b2688191b5f1a12d87eb6461",
+        "libfile_da8c27eb7070819181164a99e6936187",
+        "libfile_e108896db7cc8191b2053624f60368e7",
+        "libfile_e160b9390de481918b5f6f4f1521ab68",
+        "libfile_e38610dc158881918995af211ac94ad4",
+        "libfile_e5341e1889fc8191b1212b0af21a970e",
+        "libfile_ee69842d95b88191ad449442b4217058",
+        "libfile_efc24e78a59481919c53db579bbdc1e7",
+        "libfile_f2ed7d283a488191a882954063288847",
+        "libfile_f5c43d68f3548191b7eafbd4654d5bfd"
+      ],
+      "expected_outputs": [
+        "verified landing or material blocker"
+      ],
+      "mutation_boundary": "inspect only; no external content mutation",
+      "verification": [
+        "current head",
+        "identity/version",
+        "recovery presence",
+        "live recontact",
+        "durable landing"
+      ],
+      "exit": "one bounded target; confirmed landing or blocker",
+      "recovery": "recontact target and named carriers; reconcile intent; never blind replay",
+      "accounting_rule": "one operation key once; stale skip zero; quota unclaimed",
+      "status": "COMPLETED",
+      "intent": {
+        "refs": [
+          "libfile_db757ec184248191a51317a696803ec8",
+          "libfile_7107872040088191899b3b9decfb1426"
+        ],
+        "entry_verified": true,
+        "head_verified": true,
+        "recovery_present": true,
+        "recontact": true,
+        "outcome": "verified_inspection",
+        "operation_key": "inspect:playform:version1:recovery-001",
+        "bytes": 0
+      },
+      "landing": {
+        "refs": [
+          "libfile_db757ec184248191a51317a696803ec8",
+          "libfile_7107872040088191899b3b9decfb1426",
+          "sha256:2bb5e0e7a1d68e487ffb864a70be00a9e41a8224568a362f048bcb45360f7bf8"
+        ],
+        "entry_verified": true,
+        "head_verified": true,
+        "recovery_present": true,
+        "recontact": true,
+        "outcome": "verified_inspection",
+        "operation_key": "inspect:playform:version1:recovery-001",
+        "bytes": 0,
+        "proof": "fresh carrier SHA + three restored member hashes/sizes/CRC; historical completed IDs unavailable at live contact"
+      }
+    },
+    "visualang-dependency-001": {
+      "id": "visualang-dependency-001",
+      "worker": null,
+      "entry_digest": "98b1e33e11f69bd6903a1c78ed8ab1bf23e4925fb06fb040a01e346e057494e2",
+      "target": {
+        "id": "libfile_3daaeaf1fbe0819180615a4d3af15a11",
+        "version": "1"
+      },
+      "authority": [
+        "inspect"
+      ],
+      "exclusions": [
+        "libfile_0137abb05de48191a1ae31ad826f6503",
+        "libfile_014b5cf507ec8191907bd540587917a1",
+        "libfile_04080d3373248191997252a198f4c2db",
+        "libfile_0694511709cc81919a639c93a7b53e6d",
+        "libfile_07a4029dc2108191a1262926bee8173f",
+        "libfile_12754374c42c819198ab8407e65f3908",
+        "libfile_203e65cc6f048191be2f961cc739d63c",
+        "libfile_2c213f8139408191a3ff31c3af90a5bb",
+        "libfile_331181a367408191b350519e31cea4b4",
+        "libfile_35b8c06e73cc8191ae912586c1006e87",
+        "libfile_36e1e027e4248191b784c7415300e1f0",
+        "libfile_449ef57494e48191b0ff014b96f4e3f2",
+        "libfile_44f21c101fb08191a6590ec11d9b5576",
+        "libfile_46f2740d1bc88191a13e13222e17cbca",
+        "libfile_55f8856a10e88191a668330a2cf0cf64",
+        "libfile_566115c94bec8191a5a18b4b72fc18ec",
+        "libfile_56d33677767c81919a0199bf5d8bb017",
+        "libfile_5729928976688191aee1b77bd7784fb2",
+        "libfile_5e09b221f8dc81919515ae6e3d3376e5",
+        "libfile_60d42c154d3c819189e4e121f637765f",
+        "libfile_62da1954a6208191bc0a2452c17bd0a4",
+        "libfile_638241bf9a288191921f308b85126b6e",
+        "libfile_65d6cf04482c8191bc9fbeb28af0c5e1",
+        "libfile_670fa19221508191a7f2fadf244a6050",
+        "libfile_69197535dccc819182edf7549af449eb",
+        "libfile_6ac6bf5d595081919909bedae22d7b57",
+        "libfile_7035f12b547481918cd1c460764bb7d7",
+        "libfile_7107872040088191899b3b9decfb1426",
+        "libfile_747703d357648191ae34bf6a0f9446de",
+        "libfile_786fcd6d96ec81919a4e0fc8217d70c0",
+        "libfile_7d5ad19654d48191bd10a08e26733b77",
+        "libfile_7d8a1b0ec46881919d3dcccf47a8890d",
+        "libfile_7f1a582836e08191a68d48808090198f",
+        "libfile_85e40bf88798819197db5d64283d129a",
+        "libfile_910cca967de48191b27458072e84c45c",
+        "libfile_91b1547299d88191b0a433d9789e28d4",
+        "libfile_930707fb184481918c833ee5afd3684d",
+        "libfile_9d899167292c8191b4d2b087835fe7e6",
+        "libfile_a23d1348d7f081918a7627f5c102210a",
+        "libfile_a4bfd229cde48191b3e792c68ac0c49a",
+        "libfile_b042928c896881918ea294959e371d3f",
+        "libfile_b138647eb49881918f8653d0af330e52",
+        "libfile_b24328ebdc68819194ead4f923fe6fc1",
+        "libfile_b99c3d3637f88191b8dd01368ddd5a08",
+        "libfile_b9dfef82c324819188f28d197676a2b7",
+        "libfile_bf5f38598f3081919a1609c0d6ac2872",
+        "libfile_c02c5238fa508191a2029fc19a685a0d",
+        "libfile_c765e70ae88c8191aa505565ef5db00b",
+        "libfile_c83ae2992b2c8191a647e8a218f09890",
+        "libfile_d1f94e637d9c819184ee317c06c40fd7",
+        "libfile_d366e89e7be88191b771bf6f4d1d00a0",
+        "libfile_d914b5d5b2688191b5f1a12d87eb6461",
+        "libfile_da8c27eb7070819181164a99e6936187",
+        "libfile_e108896db7cc8191b2053624f60368e7",
+        "libfile_e160b9390de481918b5f6f4f1521ab68",
+        "libfile_e38610dc158881918995af211ac94ad4",
+        "libfile_e5341e1889fc8191b1212b0af21a970e",
+        "libfile_ee69842d95b88191ad449442b4217058",
+        "libfile_efc24e78a59481919c53db579bbdc1e7",
+        "libfile_f2ed7d283a488191a882954063288847",
+        "libfile_f5c43d68f3548191b7eafbd4654d5bfd"
+      ],
+      "expected_outputs": [
+        "verified landing or material blocker"
+      ],
+      "mutation_boundary": "inspect only; no external content mutation",
+      "verification": [
+        "current head",
+        "identity/version",
+        "recovery presence",
+        "live recontact",
+        "durable landing"
+      ],
+      "exit": "one bounded target; confirmed landing or blocker",
+      "recovery": "recontact target and named carriers; reconcile intent; never blind replay",
+      "accounting_rule": "one operation key once; stale skip zero; quota unclaimed",
+      "status": "COMPLETED",
+      "intent": {
+        "refs": [
+          "envelope:614264d21c5e19da1daff48a4cdbf11a26a733551e64be3f8388c7ed0dd5b212"
+        ],
+        "entry_verified": true,
+        "head_verified": true,
+        "recovery_present": true,
+        "recontact": true,
+        "outcome": "verified_inspection",
+        "operation_key": "614264d21c5e19da1daff48a4cdbf11a26a733551e64be3f8388c7ed0dd5b212",
+        "bytes": 0
+      },
+      "landing": {
+        "refs": [
+          "envelope:614264d21c5e19da1daff48a4cdbf11a26a733551e64be3f8388c7ed0dd5b212"
+        ],
+        "entry_verified": true,
+        "head_verified": true,
+        "recovery_present": true,
+        "recontact": true,
+        "outcome": "verified_inspection",
+        "operation_key": "614264d21c5e19da1daff48a4cdbf11a26a733551e64be3f8388c7ed0dd5b212",
+        "bytes": 0
+      }
+    },
+    "visualang-gif-reference-001": {
+      "id": "visualang-gif-reference-001",
+      "worker": null,
+      "entry_digest": "1232b9420e47393cf90d4a39c817d2d5c0979fb85c6cdad649de21cde863f496",
+      "target": {
+        "id": "libfile_3daaeaf1fbe0819180615a4d3af15a11",
+        "version": "1"
+      },
+      "authority": [
+        "inspect"
+      ],
+      "exclusions": [
+        "libfile_0137abb05de48191a1ae31ad826f6503",
+        "libfile_014b5cf507ec8191907bd540587917a1",
+        "libfile_04080d3373248191997252a198f4c2db",
+        "libfile_0694511709cc81919a639c93a7b53e6d",
+        "libfile_07a4029dc2108191a1262926bee8173f",
+        "libfile_12754374c42c819198ab8407e65f3908",
+        "libfile_203e65cc6f048191be2f961cc739d63c",
+        "libfile_2c213f8139408191a3ff31c3af90a5bb",
+        "libfile_331181a367408191b350519e31cea4b4",
+        "libfile_35b8c06e73cc8191ae912586c1006e87",
+        "libfile_36e1e027e4248191b784c7415300e1f0",
+        "libfile_3daaeaf1fbe0819180615a4d3af15a11",
+        "libfile_449ef57494e48191b0ff014b96f4e3f2",
+        "libfile_44f21c101fb08191a6590ec11d9b5576",
+        "libfile_46f2740d1bc88191a13e13222e17cbca",
+        "libfile_55f8856a10e88191a668330a2cf0cf64",
+        "libfile_566115c94bec8191a5a18b4b72fc18ec",
+        "libfile_56d33677767c81919a0199bf5d8bb017",
+        "libfile_5729928976688191aee1b77bd7784fb2",
+        "libfile_5e09b221f8dc81919515ae6e3d3376e5",
+        "libfile_60d42c154d3c819189e4e121f637765f",
+        "libfile_62da1954a6208191bc0a2452c17bd0a4",
+        "libfile_638241bf9a288191921f308b85126b6e",
+        "libfile_65d6cf04482c8191bc9fbeb28af0c5e1",
+        "libfile_670fa19221508191a7f2fadf244a6050",
+        "libfile_69197535dccc819182edf7549af449eb",
+        "libfile_6ac6bf5d595081919909bedae22d7b57",
+        "libfile_7035f12b547481918cd1c460764bb7d7",
+        "libfile_7107872040088191899b3b9decfb1426",
+        "libfile_747703d357648191ae34bf6a0f9446de",
+        "libfile_786fcd6d96ec81919a4e0fc8217d70c0",
+        "libfile_7d5ad19654d48191bd10a08e26733b77",
+        "libfile_7d8a1b0ec46881919d3dcccf47a8890d",
+        "libfile_7f1a582836e08191a68d48808090198f",
+        "libfile_85e40bf88798819197db5d64283d129a",
+        "libfile_8a13319f5c6c81918d66a5f10d78c8b1",
+        "libfile_910cca967de48191b27458072e84c45c",
+        "libfile_91b1547299d88191b0a433d9789e28d4",
+        "libfile_930707fb184481918c833ee5afd3684d",
+        "libfile_9d899167292c8191b4d2b087835fe7e6",
+        "libfile_a23d1348d7f081918a7627f5c102210a",
+        "libfile_a4bfd229cde48191b3e792c68ac0c49a",
+        "libfile_b042928c896881918ea294959e371d3f",
+        "libfile_b138647eb49881918f8653d0af330e52",
+        "libfile_b24328ebdc68819194ead4f923fe6fc1",
+        "libfile_b99c3d3637f88191b8dd01368ddd5a08",
+        "libfile_b9dfef82c324819188f28d197676a2b7",
+        "libfile_bf5f38598f3081919a1609c0d6ac2872",
+        "libfile_c02c5238fa508191a2029fc19a685a0d",
+        "libfile_c765e70ae88c8191aa505565ef5db00b",
+        "libfile_c83ae2992b2c8191a647e8a218f09890",
+        "libfile_d1f94e637d9c819184ee317c06c40fd7",
+        "libfile_d366e89e7be88191b771bf6f4d1d00a0",
+        "libfile_d914b5d5b2688191b5f1a12d87eb6461",
+        "libfile_da8c27eb7070819181164a99e6936187",
+        "libfile_e108896db7cc8191b2053624f60368e7",
+        "libfile_e160b9390de481918b5f6f4f1521ab68",
+        "libfile_e38610dc158881918995af211ac94ad4",
+        "libfile_e5341e1889fc8191b1212b0af21a970e",
+        "libfile_ee69842d95b88191ad449442b4217058",
+        "libfile_efc24e78a59481919c53db579bbdc1e7",
+        "libfile_f2ed7d283a488191a882954063288847",
+        "libfile_f5c43d68f3548191b7eafbd4654d5bfd"
+      ],
+      "expected_outputs": [
+        "verified landing or material blocker"
+      ],
+      "mutation_boundary": "inspect only; no external content mutation",
+      "verification": [
+        "current head",
+        "identity/version",
+        "recovery presence",
+        "live recontact",
+        "durable landing"
+      ],
+      "exit": "one bounded target; confirmed landing or blocker",
+      "recovery": "recontact target and named carriers; reconcile intent; never blind replay",
+      "accounting_rule": "one operation key once; stale skip zero; quota unclaimed",
+      "status": "COMPLETED",
+      "intent": {
+        "refs": [
+          "envelope:91ad0dfa078d4e9b05a43c85af11d8d0921109a2071ff288dc7b649cf36553ad"
+        ],
+        "entry_verified": true,
+        "head_verified": true,
+        "recovery_present": true,
+        "recontact": true,
+        "outcome": "verified_inspection",
+        "operation_key": "91ad0dfa078d4e9b05a43c85af11d8d0921109a2071ff288dc7b649cf36553ad",
+        "bytes": 0
+      },
+      "landing": {
+        "refs": [
+          "envelope:91ad0dfa078d4e9b05a43c85af11d8d0921109a2071ff288dc7b649cf36553ad"
+        ],
+        "entry_verified": true,
+        "head_verified": true,
+        "recovery_present": true,
+        "recontact": true,
+        "outcome": "verified_inspection",
+        "operation_key": "91ad0dfa078d4e9b05a43c85af11d8d0921109a2071ff288dc7b649cf36553ad",
+        "bytes": 0
+      }
+    },
+    "transport-attestation-001": {
+      "id": "transport-attestation-001",
+      "worker": null,
+      "entry_digest": "5373710296c407af28db32500832d0715af524d05659df922c08fb7dec93d9cc",
+      "target": {
+        "family": "JM transport provenance pilot",
+        "id": "libfile_db757ec184248191a51317a696803ec8",
+        "territory": "read-only canonical Pass84 content consistency and transport-capability inventory"
+      },
+      "authority": [
+        "inspect"
+      ],
+      "exclusions": [
+        "libfile_0137abb05de48191a1ae31ad826f6503",
+        "libfile_014b5cf507ec8191907bd540587917a1",
+        "libfile_04080d3373248191997252a198f4c2db",
+        "libfile_0694511709cc81919a639c93a7b53e6d",
+        "libfile_07a4029dc2108191a1262926bee8173f",
+        "libfile_12754374c42c819198ab8407e65f3908",
+        "libfile_203e65cc6f048191be2f961cc739d63c",
+        "libfile_2c213f8139408191a3ff31c3af90a5bb",
+        "libfile_331181a367408191b350519e31cea4b4",
+        "libfile_35b8c06e73cc8191ae912586c1006e87",
+        "libfile_36e1e027e4248191b784c7415300e1f0",
+        "libfile_3daaeaf1fbe0819180615a4d3af15a11",
+        "libfile_449ef57494e48191b0ff014b96f4e3f2",
+        "libfile_44f21c101fb08191a6590ec11d9b5576",
+        "libfile_46f2740d1bc88191a13e13222e17cbca",
+        "libfile_55f8856a10e88191a668330a2cf0cf64",
+        "libfile_566115c94bec8191a5a18b4b72fc18ec",
+        "libfile_56d33677767c81919a0199bf5d8bb017",
+        "libfile_5729928976688191aee1b77bd7784fb2",
+        "libfile_5e09b221f8dc81919515ae6e3d3376e5",
+        "libfile_60d42c154d3c819189e4e121f637765f",
+        "libfile_62da1954a6208191bc0a2452c17bd0a4",
+        "libfile_638241bf9a288191921f308b85126b6e",
+        "libfile_65d6cf04482c8191bc9fbeb28af0c5e1",
+        "libfile_670fa19221508191a7f2fadf244a6050",
+        "libfile_69197535dccc819182edf7549af449eb",
+        "libfile_6ac6bf5d595081919909bedae22d7b57",
+        "libfile_7035f12b547481918cd1c460764bb7d7",
+        "libfile_7107872040088191899b3b9decfb1426",
+        "libfile_747703d357648191ae34bf6a0f9446de",
+        "libfile_786fcd6d96ec81919a4e0fc8217d70c0",
+        "libfile_7d5ad19654d48191bd10a08e26733b77",
+        "libfile_7d8a1b0ec46881919d3dcccf47a8890d",
+        "libfile_7f1a582836e08191a68d48808090198f",
+        "libfile_85e40bf88798819197db5d64283d129a",
+        "libfile_8a13319f5c6c81918d66a5f10d78c8b1",
+        "libfile_910cca967de48191b27458072e84c45c",
+        "libfile_91b1547299d88191b0a433d9789e28d4",
+        "libfile_930707fb184481918c833ee5afd3684d",
+        "libfile_9d899167292c8191b4d2b087835fe7e6",
+        "libfile_a23d1348d7f081918a7627f5c102210a",
+        "libfile_a4bfd229cde48191b3e792c68ac0c49a",
+        "libfile_b042928c896881918ea294959e371d3f",
+        "libfile_b138647eb49881918f8653d0af330e52",
+        "libfile_b24328ebdc68819194ead4f923fe6fc1",
+        "libfile_b99c3d3637f88191b8dd01368ddd5a08",
+        "libfile_b9dfef82c324819188f28d197676a2b7",
+        "libfile_bf5f38598f3081919a1609c0d6ac2872",
+        "libfile_c02c5238fa508191a2029fc19a685a0d",
+        "libfile_c765e70ae88c8191aa505565ef5db00b",
+        "libfile_c83ae2992b2c8191a647e8a218f09890",
+        "libfile_d1f94e637d9c819184ee317c06c40fd7",
+        "libfile_d366e89e7be88191b771bf6f4d1d00a0",
+        "libfile_d914b5d5b2688191b5f1a12d87eb6461",
+        "libfile_da8c27eb7070819181164a99e6936187",
+        "libfile_e108896db7cc8191b2053624f60368e7",
+        "libfile_e160b9390de481918b5f6f4f1521ab68",
+        "libfile_e38610dc158881918995af211ac94ad4",
+        "libfile_e5341e1889fc8191b1212b0af21a970e",
+        "libfile_ee69842d95b88191ad449442b4217058",
+        "libfile_efc24e78a59481919c53db579bbdc1e7",
+        "libfile_f2ed7d283a488191a882954063288847",
+        "libfile_f5c43d68f3548191b7eafbd4654d5bfd"
+      ],
+      "expected_outputs": [
+        "verified landing or material blocker"
+      ],
+      "mutation_boundary": "inspect only; no external content mutation",
+      "verification": [
+        "current head",
+        "identity/version",
+        "recovery presence",
+        "live recontact",
+        "durable landing"
+      ],
+      "exit": "one bounded target; confirmed landing or blocker",
+      "recovery": "recontact target and named carriers; reconcile intent; never blind replay",
+      "accounting_rule": "one operation key once; stale skip zero; quota unclaimed",
+      "status": "COMPLETED",
+      "intent": {
+        "refs": [
+          "transport-envelope:ddbe96b58bd961f525b1b3d0c6c423a49d35741d9a579396eb79c64d8ac14483"
+        ],
+        "entry_verified": true,
+        "head_verified": true,
+        "recovery_present": true,
+        "recontact": true,
+        "outcome": "verified_inspection",
+        "operation_key": "ddbe96b58bd961f525b1b3d0c6c423a49d35741d9a579396eb79c64d8ac14483",
+        "bytes": 0
+      },
+      "landing": {
+        "refs": [
+          "transport-envelope:ddbe96b58bd961f525b1b3d0c6c423a49d35741d9a579396eb79c64d8ac14483"
+        ],
+        "entry_verified": true,
+        "head_verified": true,
+        "recovery_present": true,
+        "recontact": true,
+        "outcome": "verified_inspection",
+        "operation_key": "ddbe96b58bd961f525b1b3d0c6c423a49d35741d9a579396eb79c64d8ac14483",
+        "bytes": 0
+      }
+    }
+  },
+  "credited_keys": [
+    "inspect:playform:version1:recovery-001",
+    "614264d21c5e19da1daff48a4cdbf11a26a733551e64be3f8388c7ed0dd5b212",
+    "91ad0dfa078d4e9b05a43c85af11d8d0921109a2071ff288dc7b649cf36553ad",
+    "ddbe96b58bd961f525b1b3d0c6c423a49d35741d9a579396eb79c64d8ac14483"
+  ],
+  "last_landing": {
+    "cage": "transport-attestation-001",
+    "evidence": {
+      "refs": [
+        "transport-envelope:ddbe96b58bd961f525b1b3d0c6c423a49d35741d9a579396eb79c64d8ac14483"
+      ],
+      "entry_verified": true,
+      "head_verified": true,
+      "recovery_present": true,
+      "recontact": true,
+      "outcome": "verified_inspection",
+      "operation_key": "ddbe96b58bd961f525b1b3d0c6c423a49d35741d9a579396eb79c64d8ac14483",
+      "bytes": 0
+    }
+  },
+  "material_deltas": [
+    {
+      "revision": 1,
+      "kind": "issue",
+      "cage": "playform-recovery-001"
+    },
+    {
+      "revision": 2,
+      "kind": "claim",
+      "cage": "playform-recovery-001"
+    },
+    {
+      "revision": 3,
+      "kind": "intent",
+      "cage": "playform-recovery-001"
+    },
+    {
+      "revision": 4,
+      "kind": "recover",
+      "cage": "playform-recovery-001"
+    },
+    {
+      "revision": 5,
+      "kind": "issue",
+      "cage": "visualang-dependency-001"
+    },
+    {
+      "revision": 6,
+      "kind": "claim",
+      "cage": "visualang-dependency-001"
+    },
+    {
+      "revision": 7,
+      "kind": "intent",
+      "cage": "visualang-dependency-001"
+    },
+    {
+      "revision": 8,
+      "kind": "recover",
+      "cage": "visualang-dependency-001"
+    },
+    {
+      "revision": 9,
+      "kind": "issue",
+      "cage": "visualang-gif-reference-001"
+    },
+    {
+      "revision": 10,
+      "kind": "adapter_contact_hardened",
+      "cage": "visualang-gif-reference-001",
+      "reason": "Complete control contact beyond 1000-line cap; reject cross-page version changes"
+    },
+    {
+      "revision": 11,
+      "kind": "claim",
+      "cage": "visualang-gif-reference-001"
+    },
+    {
+      "revision": 12,
+      "kind": "intent",
+      "cage": "visualang-gif-reference-001"
+    },
+    {
+      "revision": 13,
+      "kind": "recover",
+      "cage": "visualang-gif-reference-001"
+    },
+    {
+      "revision": 14,
+      "kind": "issue",
+      "cage": "transport-attestation-001"
+    },
+    {
+      "revision": 15,
+      "kind": "claim",
+      "cage": "transport-attestation-001"
+    },
+    {
+      "revision": 16,
+      "kind": "intent",
+      "cage": "transport-attestation-001"
+    },
+    {
+      "revision": 17,
+      "kind": "recover",
+      "cage": "transport-attestation-001"
+    },
+    {
+      "revision": 18,
+      "kind": "transport-host-disagreement-recontact",
+      "cage": "transport-attestation-001"
+    },
+    {
+      "revision": 19,
+      "kind": "transport-invalid-paged-control-recovered",
+      "cage": "transport-attestation-001"
+    }
+  ],
+  "next_action": "Inspect-only next strengthening: establish an owner-governed out-of-band digest/key or independently governed mirror for the canonical safe target; register and verify provenance before enabling INDEPENDENTLY_CORROBORATED. No same-host renaming, no authority enlargement, no Visualang deletion or pointer repair.",
+  "pilot": {
+    "failure_tests": {
+      "A": "PASS: serialized claim survives worker disappearance",
+      "B": "PASS: independent landing evidence reconciles intent once; mutation adapter simulation only",
+      "C": "PASS: failed side effect never earns completion",
+      "D": "PASS: same cage and same target under different cage both denied",
+      "E": "PASS: stale digest denied",
+      "F": "PASS: missing recovery blocks landing",
+      "G": "PASS: fresh interpreter reconstructs state; disk CAS rejects stale writer",
+      "H": "PASS: unvalidated newer head blocks",
+      "I": "PASS: unsupported interpretation denied",
+      "J": "PASS: external success without commit remains unresolved, zero durable credit",
+      "stale_skip": "PASS: no failure and no credit",
+      "authority": "PASS: cage cannot enlarge scope"
+    },
+    "recovery_restore": {
+      "carrier_id": "libfile_7107872040088191899b3b9decfb1426",
+      "version": "1",
+      "bytes": 14124833,
+      "sha256": "2bb5e0e7a1d68e487ffb864a70be00a9e41a8224568a362f048bcb45360f7bf8",
+      "crc": "PASS",
+      "members": [
+        {
+          "member": "JM_PLAYFORM_v0_4_BT_FLAZ_CLOSURE_v1_1_LEAN/LINEAGE/JM_PLAYFORM_OFFPAGE_v0_1_ZIONFOLDER.zip",
+          "bytes": 1037115,
+          "sha256": "5fe8f0c6fa96b750a266eff27270b5b256ad17591e0c8d1dd5b343186f49a55d",
+          "restore_crc": "PASS"
+        },
+        {
+          "member": "JM_PLAYFORM_v0_4_BT_FLAZ_CLOSURE_v1_1_LEAN/LINEAGE/JM_PLAYFORM_OFFPAGE_v0_2_ZIONFOLDER.zip",
+          "bytes": 1439916,
+          "sha256": "7ef90e34ca302dee4d459f57088fff255e3581be13b439b6096d0b12d956c3fd",
+          "restore_crc": "PASS"
+        },
+        {
+          "member": "JM_PLAYFORM_v0_4_BT_FLAZ_CLOSURE_v1_1_LEAN/CURRENT/JM_PLAYFORM_OFFPAGE_v0_4_CROWN_FORGE_TOTAL_PACKAGE_ZIONFOLDER.zip",
+          "bytes": 8860045,
+          "sha256": "d1df2bde2e818a6a61b2c7579c5a2cb48b520dc2f3f93235b17ec615a543f605",
+          "restore_crc": "PASS"
+        }
+      ]
+    },
+    "old_entry": "Pass81 superseded by linked Pass84/83/82/MAX ancestry, not by timestamp alone",
+    "limitations": [
+      "Failure B is protocol simulation for mutation; actual external pilot is inspect-only",
+      "Fresh process replacement test, not an independent fresh ChatGPT conversation",
+      "Evidence envelopes require trustworthy adapter; engine cannot authenticate arbitrary AI-supplied refs"
+    ],
+    "remote_stale_write_test": {
+      "result": "PASS",
+      "expected_version": 0,
+      "actual_version": 1,
+      "error": "version_conflict; unchanged control"
+    },
+    "adapter_failure_recovered": "Cold worker stopped on absent library_file_id; fixed ref_id fallback. No state advance or credit at failed attempt.",
+    "cold_recovery": {
+      "result": "PASS",
+      "method": "fresh interpreter; durable control + downloaded engine + current carrier + current adapter contacts only",
+      "prior_worker_memory": false,
+      "retired_targets_skipped": 3,
+      "new_mutation_credit": 0,
+      "engine_version_tested": 2
+    },
+    "architecture_next_strengthening": "Implement and test an adapter that derives evidence from live operations and enforces target-version preconditions; if atomic target mutation is unavailable, retain inspect-only mode or a single authorized mutation writer."
+  },
+  "reentry": {
+    "launch": "Recover JM_MAGNIFYING_GLASS_CONTROL.json and its ENGINE from JM Magnifying Glass; validate current state and resume one inspect-only cage.",
+    "folder": "/Zionfolder/JM Estate/Storage, Recovery & Audit/JM Magnifying Glass",
+    "engine_name": "JM_MAGNIFYING_GLASS_ENGINE.py",
+    "rules": [
+      "Read by stable identity/current version",
+      "Check source-head changes and newer descendants; branch ambiguity blocks",
+      "Verify digest and referenced bodies",
+      "Unfinished intent is uncertainty, never permission to replay",
+      "Write guarded claim/intent before acting; guarded landing and readback before completion"
+    ]
+  },
+  "digest": "f0995bf8d6f12ce8c2f9e31a268f8c1d377651a7dfef7a4b7731bbf8bd424303",
+  "durability": {
+    "control_id": "libfile_f27ee50da5788191af089cc3cae7c250",
+    "engine_id": "libfile_b5083001fefc819188ddcc11e0fc8d40",
+    "engine_sha256": "65bb1f67dc1dd8806aa8894111b5af5ae5f2f09e2364e912e59419878e53c3e4",
+    "expected_engine_version": 11,
+    "control_write": "guarded same-ID replace; readback required",
+    "bootstrap": "Search exact CONTROL name; stable ID once resolved"
+  },
+  "adapter": {
+    "strict_cages": [
+      "visualang-dependency-001",
+      "visualang-gif-reference-001",
+      "transport-attestation-001"
+    ],
+    "version": "1.0",
+    "contact_entry_digest": "922c527d923e94726ba96ba5d73b4c9d53f87199c132d2c94b0ea117ef111abe",
+    "live_platform_mode": "inspect_only",
+    "conditional_target_and_survivor": false,
+    "mutation_dispatch": "PROHIBITED_ON_LIBRARY_WITHOUT_ATOMIC_PRECONDITIONS",
+    "trust_boundary": {
+      "live_contact": "host tool bridge normalizes actual responses; transport trusted, not platform-signed",
+      "machinery": "guarded control versions, authority and completed-ID ledgers",
+      "byte_evidence": "deterministic measurement and independent cold remeasurement",
+      "worker_interpretation": "routing only; raw evidence booleans rejected for adapter cages",
+      "historical_checkpoint": "context and exclusions; not fresh target proof"
+    },
+    "tests": {
+      "1_prepare_crash": "PASS: no assumed completion; fresh conditional execution possible",
+      "2_mutation_crash": "PASS: abrupt exit after mutation; cold process reconciles journal + landing once",
+      "3_success_post_disagrees": "PASS: response alone earns no credit; raw worker commit denied",
+      "4_failed_stale_commit": "PASS: response alone earns no credit; raw worker commit denied",
+      "5_two_workers": "PASS: stable identity blocks second prepare through another cage",
+      "6_target_changes": "PASS: fresh version/bytes block before dispatch",
+      "6_target_changes_race": "PASS: atomic backend rejects change AFTER contact",
+      "7_recovery_changes": "PASS: fresh version/bytes block before dispatch",
+      "7_recovery_changes_race": "PASS: atomic backend rejects change AFTER contact",
+      "8_control_advances": "PASS: live control and prepared revision reject stale continuation",
+      "8_control_advances_race": "PASS: dispatch guard rejects control change AFTER captured contact",
+      "unsupported_platform": "PASS: absent conditional capability blocks dispatch",
+      "tampering": "PASS: altered envelope rejected"
+    },
+    "replacement_route": "load current control+engine; evidence recover CAPTURE TARGET CLOSURE; guarded same-ID commit; never execute Library deletion",
+    "external_gif_route": "Fresh direct reference unavailable; complete nonrecursive root GIF listing does not return recorded path. No deletion or global absence claim. Exact original GIF recoverable from required closure. External destination NOT verified.",
+    "visualang_assessment": {
+      "origin": "byte-derived evidence + live contact",
+      "closure_role": "REQUIRED_RECOVERY",
+      "current_carrier_role": "HOLD_DISTINCT_MODIFIED_CARRIER",
+      "exact_redundancy": false,
+      "external_gif_route": "DESTINATION_UNVERIFIED; EXACT_RECOVERY_VERIFIED",
+      "shared_unchanged": 33,
+      "new_retirement_credit": 0,
+      "reference_evidence": "91ad0dfa078d4e9b05a43c85af11d8d0921109a2071ff288dc7b649cf36553ad"
+    },
+    "paged_contact_test": {
+      "live_result": "PASS",
+      "pages": 2,
+      "lines": 1079,
+      "same_version": true,      "complete_digest_verified": true,
+      "cross_page_version_race": "REJECTED before a contact envelope can be emitted"
+    },
+    "transport_frontier": {
+      "state": "BOUNDED_TRUST_EXPLICIT; NO_INDEPENDENT_ORIGIN_ATTESTATION",
+      "integrity": "Control/envelope hashes and fresh byte comparisons detect disagreement or corruption; no authenticity proof",
+      "corroboration": "Read, list, materialization and historical hashes share current host trust; do not count as independent authentication",
+      "next_bounded_task": "Inspect available platform-origin receipts, signed/version-bound digest attestations or an independently governed read route; define rejection rules for contradictory, replayed or unverifiable contact before implementing any authority change",
+      "prohibited": "Do not manufacture signatures, count duplicate same-host contacts as independent, infer deletion from unavailable, or enable destructive dispatch",
+      "gif_condition": "Destination verification not earned; no successor Reclaim cage issued on that condition",
+      "evidence": "transport.envelopes; mechanically classified source categories and shared trust roots"
+    },
+    "gif_reference_tests": {
+      "fresh_recontact_and_byte_remeasurement": "PASS",
+      "cold_isolated_process": "PASS; durable prepared envelope + fresh contact/bytes only",
+      "incomplete_scoped_listing": "REJECTED",
+      "control_advanced_after_landing": "BLOCKED",
+      "completed_cage_reclaim": "REJECTED",
+      "adapter_regressions": "13 PASS; local test store, not live Library mutation",
+      "destructive_actions": 0,
+      "byte_credit": 0
+    }
+  },
+  "evidence": {
+    "614264d21c5e19da1daff48a4cdbf11a26a733551e64be3f8388c7ed0dd5b212": {
+      "protocol": "JM.EvidenceEnvelope/1.0",
+      "id": "614264d21c5e19da1daff48a4cdbf11a26a733551e64be3f8388c7ed0dd5b212",
+      "cage": "visualang-dependency-001",
+      "sequence": 7,
+      "prepared_revision": 7,
+      "authority_hash": "c09e7336fb2d9833828dee0317c6f1c09e440f83d6f1d4932936763c3bf6d34a",
+      "authority": {
+        "origin": "durable_JM_machinery",
+        "control_id": "libfile_f27ee50da5788191af089cc3cae7c250",
+        "scope": [
+          "inspect"
+        ],
+        "destructive_enabled": false
+      },
+      "target": {
+        "id": "libfile_3daaeaf1fbe0819180615a4d3af15a11",
+        "ref": "library:libfile_3daaeaf1fbe0819180615a4d3af15a11",
+        "state": "ACTIVE",
+        "version": "1",
+        "size": 8931732,
+        "file_id": "file_0000000054c48243adc9e7791b2b1ded",
+        "modified_at": "2026-08-17T17:28:36.670366Z",
+        "name": "JM_Visualang_Verbalist_Studio_v4_5_1_Zionfolder.zip",
+        "source": "live_platform_tool_contact",
+        "sha256": "0b3c8ae4f97a71fca6d82f4afea3cfd340712eb8375454c5a04c313e636fe955"
+      },
+      "survivor": {
+        "id": "libfile_8a13319f5c6c81918d66a5f10d78c8b1",
+        "ref": "library:libfile_8a13319f5c6c81918d66a5f10d78c8b1",
+        "state": "ACTIVE",
+        "version": "1",
+        "size": 15661458,
+        "file_id": "file_0000000049e081f9aa3164ec97070c9a",
+        "modified_at": "2026-09-02T13:38:29.880572Z",
+        "name": "JM_Visualang_Beginning_to_Current_BT_FLAZ_Closure_v1_0_Zionfolder.zip",
+        "source": "live_platform_tool_contact",
+        "sha256": "64fb07bb555a9f550b1291848541b7dcb715642f76562cae9b541b13ddbb3238"
+      },
+      "action": "audit",
+      "observed": {
+        "origin": "host_tool_capture",
+        "method": "files/read",
+        "started_ms": 1791033940962,
+        "finished_ms": 1791033944986,
+        "response_sha256": "a5a99a9465c0fb3bd0b053ea10cc46b90f000c7642dda4186476553d8f7ea748",
+        "objects": {
+          "libfile_f27ee50da5788191af089cc3cae7c250": {
+            "id": "libfile_f27ee50da5788191af089cc3cae7c250",
+            "ref": "library:libfile_f27ee50da5788191af089cc3cae7c250",
+            "state": "ACTIVE",
+            "version": "3",
+            "size": 27572,
+            "file_id": "file_00000000a72481f598145161d8eb0e1c",
+            "modified_at": "2026-10-03T12:58:03.925313Z",
+            "name": "JM_MAGNIFYING_GLASS_CONTROL.json",
+            "source": "live_platform_tool_contact",
+            "control_revision": 5,
+            "control_digest": "5f6646a46d64b682b54568da4f313381c1aae0081f5315f4ef4aada7f2517ac2"
+          },
+          "libfile_3daaeaf1fbe0819180615a4d3af15a11": {
+            "id": "libfile_3daaeaf1fbe0819180615a4d3af15a11",
+            "ref": "library:libfile_3daaeaf1fbe0819180615a4d3af15a11",
+            "state": "ACTIVE",
+            "version": "1",
+            "size": 8931732,
+            "file_id": "file_0000000054c48243adc9e7791b2b1ded",
+            "modified_at": "2026-08-17T17:28:36.670366Z",
+            "name": "JM_Visualang_Verbalist_Studio_v4_5_1_Zionfolder.zip",
+            "source": "live_platform_tool_contact"
+          },
+          "libfile_8a13319f5c6c81918d66a5f10d78c8b1": {
+            "id": "libfile_8a13319f5c6c81918d66a5f10d78c8b1",
+            "ref": "library:libfile_8a13319f5c6c81918d66a5f10d78c8b1",
+            "state": "ACTIVE",
+            "version": "1",
+            "size": 15661458,
+            "file_id": "file_0000000049e081f9aa3164ec97070c9a",
+            "modified_at": "2026-09-02T13:38:29.880572Z",
+            "name": "JM_Visualang_Beginning_to_Current_BT_FLAZ_Closure_v1_0_Zionfolder.zip",
+            "source": "live_platform_tool_contact"
+          },
+          "libfile_db757ec184248191a51317a696803ec8": {
+            "id": "libfile_db757ec184248191a51317a696803ec8",
+            "ref": "library:libfile_db757ec184248191a51317a696803ec8",
+            "state": "ACTIVE",
+            "version": "1",
+            "size": 8280,
+            "file_id": "file_00000000cfbc8246a9ee37ca1262aead",
+            "modified_at": "2026-10-03T08:54:37.552180Z",
+            "name": "JM_LIBRARY_RECLAIM_WORK_CONTINUATION_2026-10-03_PASS_84.md",
+            "source": "live_platform_tool_contact",
+            "content_sha256": "3fe31222a8bd5c629fea0377bb29558565c3f26a4624491f1c5aeb9c8e6cfc0c"
+          }
+        },
+        "authenticity": "trusted host transport; no platform signature"
+      },
+      "measurement": {
+        "origin": "deterministic_byte_measurement",
+        "target": {
+          "size": 8931732,
+          "sha256": "0b3c8ae4f97a71fca6d82f4afea3cfd340712eb8375454c5a04c313e636fe955"
+        },
+        "survivor": {
+          "size": 15661458,
+          "sha256": "64fb07bb555a9f550b1291848541b7dcb715642f76562cae9b541b13ddbb3238"
+        },
+        "relationship": {
+          "kind": "UNEQUAL_LEAN_DESCENDANT",
+          "exact_duplicate": false,
+          "embedded_base": {
+            "member": "JM_Visualang_Beginning_to_Current_BT_FLAZ_Closure_v1_0_LEAN/JM_Visualang_Verbalist_Studio_v4_5_1_Zionfolder.zip",
+            "size": 12669192,
+            "sha256": "ec9824282a4478adbf759d89b34d6351fe74aa74a9f6c979af61a28fee730d5b"
+          },
+          "shared_unchanged": 33,
+          "shared_changed": [],
+          "removed": [
+            {
+              "member": "JM_Visualang_Verbalist_Studio_v4_5_1/qa/JM_ActorBody_ShotChain_v4_5.gif",
+              "size": 3745864,
+              "sha256": "a8554e46514c5ac09c16e5c182de193c7c38b8bf907375403eb5382d455c0e48"
+            }
+          ],
+          "added": [
+            {
+              "member": "JM_Visualang_Verbalist_Studio_v4_5_1/JM_THIRD_QUASH_GIF_ROUTE.json",
+              "size": 325,
+              "sha256": "40755a84c93dd73276111a03ca85fbb60521447f1c120ea7776de6c6995e54a4",
+              "route": {
+                "logical_path": "JM_Visualang_Verbalist_Studio_v4_5_1/qa/JM_ActorBody_ShotChain_v4_5.gif",
+                "bytes": 3745864,
+                "sha256": "a8554e46514c5ac09c16e5c182de193c7c38b8bf907375403eb5382d455c0e48",
+                "target": {
+                  "library_path": "/JM_ActorBody_ShotChain_v4_5.gif",
+                  "file_id": "file_00000000db5882468d7795761fd03906"
+                }
+              }
+            }
+          ],
+          "patches": [
+            {
+              "member": "JM_Visualang_Beginning_to_Current_BT_FLAZ_Closure_v1_0_LEAN/_JM_LEAN_RECOVERY/JM_Visualang_ActorBody_ShotChain_Freeze_Anchor_v4_0.zip.zstpatch",
+              "patch_sha256": "80115312a77ecc9d26c063669048bc83359a9bb5b1ee8a77a9278b7271c22e25",
+              "restored_bytes": 18842989,
+              "restored_sha256": "66ed8bc9b7c5f546db5a6db9c1ea91beac66bbaa00bb803aa5fa852d38f197f5",
+              "declared_sha256": "66ed8bc9b7c5f546db5a6db9c1ea91beac66bbaa00bb803aa5fa852d38f197f5",
+              "restore_crc": "PASS",
+              "embedded_base": "PASS",
+              "modified_base_matches": false
+            },
+            {
+              "member": "JM_Visualang_Beginning_to_Current_BT_FLAZ_Closure_v1_0_LEAN/_JM_LEAN_RECOVERY/JM_Visualang_Beginning_to_Current_BT_Closure_v1_0.docx.zstpatch",
+              "patch_sha256": "6853d18fb2a78763491a8b3169e9a294649416ff1097e4ca9438113f36dfd6c5",
+              "restored_bytes": 1861725,
+              "restored_sha256": "9f817431c551d88484e62069cf8b01d85a2b4fe54d22dff7bf9154159f9bcdf4",
+              "declared_sha256": "9f817431c551d88484e62069cf8b01d85a2b4fe54d22dff7bf9154159f9bcdf4",
+              "restore_crc": "PASS",
+              "embedded_base": "PASS",
+              "modified_base_matches": false
+            }
+          ],
+          "closure_required": true,
+          "mutation_proof": "NOT EXACT REDUNDANCY; closure embedded base is required by verified patches"
+        }
+      },
+      "historical": {
+        "source_head": {
+          "id": "libfile_db757ec184248191a51317a696803ec8",
+          "version": "1",
+          "content_sha256": "3fe31222a8bd5c629fea0377bb29558565c3f26a4624491f1c5aeb9c8e6cfc0c",
+          "hash_scope": "Library extracted text UTF-8; not original-file SHA",
+          "modified_at": "2026-10-03T08:54:37.552180Z"
+        },
+        "proof_role": "context, never live mutation proof"
+      },
+      "interpretation": {
+        "proof_role": "routing only; cannot authorize",
+        "claim": null
+      },
+      "precondition": {
+        "result": "PASS",
+        "reasons": [],
+        "at_ms": 1791034465944,
+        "control_revision": 7,
+        "contact_sha256": "5754fbc0f534780c98dd14b1d70035669e3e0eb27cd9ae62bcac35e6c319a5a5",
+        "measurement_sha256": "f5bde8fa189dec94531253d0cef6204e225d33e67642b3b9609ff55c496e3509",
+        "accounting_bytes": 0
+      },
+      "mutation": {
+        "attempted": false,
+        "response": null
+      },
+      "post": {
+        "contact": {
+          "origin": "host_tool_capture",
+          "method": "files/read",
+          "started_ms": 1791034460183,
+          "finished_ms": 1791034464420,
+          "response_sha256": "354380a6c3bb6edaaa35f6cca0d2df8a410ff544e7aa54c0843491233b429dd3",
+          "objects": {
+            "libfile_f27ee50da5788191af089cc3cae7c250": {
+              "id": "libfile_f27ee50da5788191af089cc3cae7c250",
+              "ref": "library:libfile_f27ee50da5788191af089cc3cae7c250",
+              "state": "ACTIVE",
+              "version": "6",
+              "size": 39385,
+              "file_id": "file_00000000816081f9aa88559d29aa4c5f",
+              "modified_at": "2026-10-03T13:32:30.530775Z",
+              "name": "JM_MAGNIFYING_GLASS_CONTROL.json",
+              "source": "live_platform_tool_contact",
+              "control_revision": 7,
+              "control_digest": "1f1942270386a34cf9c9cdb4e4c1498e53d75a8858049ac16595f60193ad3651"
+            },
+            "libfile_3daaeaf1fbe0819180615a4d3af15a11": {
+              "id": "libfile_3daaeaf1fbe0819180615a4d3af15a11",
+              "ref": "library:libfile_3daaeaf1fbe0819180615a4d3af15a11",
+              "state": "ACTIVE",
+              "version": "1",
+              "size": 8931732,
+              "file_id": "file_0000000054c48243adc9e7791b2b1ded",
+              "modified_at": "2026-08-17T17:28:36.670366Z",
+              "name": "JM_Visualang_Verbalist_Studio_v4_5_1_Zionfolder.zip",
+              "source": "live_platform_tool_contact"
+            },
+            "libfile_8a13319f5c6c81918d66a5f10d78c8b1": {
+              "id": "libfile_8a13319f5c6c81918d66a5f10d78c8b1",
+              "ref": "library:libfile_8a13319f5c6c81918d66a5f10d78c8b1",
+              "state": "ACTIVE",
+              "version": "1",
+              "size": 15661458,
+              "file_id": "file_0000000049e081f9aa3164ec97070c9a",
+              "modified_at": "2026-09-02T13:38:29.880572Z",
+              "name": "JM_Visualang_Beginning_to_Current_BT_FLAZ_Closure_v1_0_Zionfolder.zip",
+              "source": "live_platform_tool_contact"
+            },
+            "libfile_db757ec184248191a51317a696803ec8": {
+              "id": "libfile_db757ec184248191a51317a696803ec8",
+              "ref": "library:libfile_db757ec184248191a51317a696803ec8",
+              "state": "ACTIVE",
+              "version": "1",
+              "size": 8280,
+              "file_id": "file_00000000cfbc8246a9ee37ca1262aead",
+              "modified_at": "2026-10-03T08:54:37.552180Z",
+              "name": "JM_LIBRARY_RECLAIM_WORK_CONTINUATION_2026-10-03_PASS_84.md",
+              "source": "live_platform_tool_contact",
+              "content_sha256": "3fe31222a8bd5c629fea0377bb29558565c3f26a4624491f1c5aeb9c8e6cfc0c"
+            },
+            "file_00000000db5882468d7795761fd03906": {
+              "id": "file_00000000db5882468d7795761fd03906",
+              "ref": "library:file_00000000db5882468d7795761fd03906",
+              "state": "UNAVAILABLE",
+              "version": null,
+              "size": null,
+              "file_id": null,
+              "modified_at": null,
+              "name": null,
+              "source": "live_platform_tool_contact",
+              "contact_warning": [
+                "File is not visible in the requested files surface. Use a visible files.search/files.list/files.find/files.read citation reference such as turn2file0, or pass a file_id that appeared in one of those results."
+              ]
+            }
+          },
+          "authenticity": "trusted host transport; no platform signature"
+        },
+        "measurement_sha256": "f5bde8fa189dec94531253d0cef6204e225d33e67642b3b9609ff55c496e3509"
+      },
+      "accounting": {
+        "bytes": 0,
+        "quota_credit": null
+      },
+      "phase": "VERIFIED_INSPECTION",
+      "digest": "f31584217fbd14f35bb7f5c2090040a270a79f769287002f012f71bde686684d"
+    },
+    "91ad0dfa078d4e9b05a43c85af11d8d0921109a2071ff288dc7b649cf36553ad": {
+      "protocol": "JM.EvidenceEnvelope/1.0",
+      "id": "91ad0dfa078d4e9b05a43c85af11d8d0921109a2071ff288dc7b649cf36553ad",
+      "cage": "visualang-gif-reference-001",
+      "sequence": 12,
+      "prepared_revision": 12,
+      "authority_hash": "d41a6689e87006d6698eec9e3f9a5cb6409d5bf70418b861809c4e96d16b46a9",
+      "authority": {
+        "origin": "durable_JM_machinery",
+        "control_id": "libfile_f27ee50da5788191af089cc3cae7c250",
+        "scope": [
+          "inspect"
+        ],
+        "destructive_enabled": false
+      },
+      "target": {
+        "id": "libfile_3daaeaf1fbe0819180615a4d3af15a11",
+        "ref": "library:libfile_3daaeaf1fbe0819180615a4d3af15a11",
+        "state": "ACTIVE",
+        "version": "1",
+        "size": 8931732,
+        "file_id": "file_0000000054c48243adc9e7791b2b1ded",
+        "modified_at": "2026-08-17T17:28:36.670366Z",
+        "name": "JM_Visualang_Verbalist_Studio_v4_5_1_Zionfolder.zip",
+        "source": "live_platform_tool_contact",
+        "sha256": "0b3c8ae4f97a71fca6d82f4afea3cfd340712eb8375454c5a04c313e636fe955"
+      },
+      "survivor": {
+        "id": "libfile_8a13319f5c6c81918d66a5f10d78c8b1",
+        "ref": "library:libfile_8a13319f5c6c81918d66a5f10d78c8b1",
+        "state": "ACTIVE",
+        "version": "1",
+        "size": 15661458,
+        "file_id": "file_0000000049e081f9aa3164ec97070c9a",
+        "modified_at": "2026-09-02T13:38:29.880572Z",
+        "name": "JM_Visualang_Beginning_to_Current_BT_FLAZ_Closure_v1_0_Zionfolder.zip",
+        "source": "live_platform_tool_contact",
+        "sha256": "64fb07bb555a9f550b1291848541b7dcb715642f76562cae9b541b13ddbb3238"
+      },
+      "action": "audit",
+      "observed": {
+        "origin": "host_tool_capture",
+        "method": "files/read",
+        "started_ms": 1791040424875,
+        "finished_ms": 1791040429717,
+        "response_sha256": "0bd23fcbafc9a5666d6d165a79d2aee3ed99467e4fd2d0479ec53209558ccee6",
+        "objects": {
+          "libfile_f27ee50da5788191af089cc3cae7c250": {
+            "id": "libfile_f27ee50da5788191af089cc3cae7c250",
+            "ref": "library:libfile_f27ee50da5788191af089cc3cae7c250",
+            "state": "ACTIVE",
+            "version": "10",
+            "size": 49396,
+            "file_id": "file_0000000012dc8210a4c2241f844a14e4",
+            "modified_at": "2026-10-03T15:12:23.771237Z",
+            "name": "JM_MAGNIFYING_GLASS_CONTROL.json",
+            "source": "live_platform_tool_contact",
+            "control_revision": 11,
+            "control_digest": "922c527d923e94726ba96ba5d73b4c9d53f87199c132d2c94b0ea117ef111abe"
+          },
+          "libfile_3daaeaf1fbe0819180615a4d3af15a11": {
+            "id": "libfile_3daaeaf1fbe0819180615a4d3af15a11",
+            "ref": "library:libfile_3daaeaf1fbe0819180615a4d3af15a11",
+            "state": "ACTIVE",
+            "version": "1",
+            "size": 8931732,
+            "file_id": "file_0000000054c48243adc9e7791b2b1ded",
+            "modified_at": "2026-08-17T17:28:36.670366Z",
+            "name": "JM_Visualang_Verbalist_Studio_v4_5_1_Zionfolder.zip",
+            "source": "live_platform_tool_contact"
+          },
+          "libfile_8a13319f5c6c81918d66a5f10d78c8b1": {
+            "id": "libfile_8a13319f5c6c81918d66a5f10d78c8b1",
+            "ref": "library:libfile_8a13319f5c6c81918d66a5f10d78c8b1",
+            "state": "ACTIVE",
+            "version": "1",
+            "size": 15661458,
+            "file_id": "file_0000000049e081f9aa3164ec97070c9a",
+            "modified_at": "2026-09-02T13:38:29.880572Z",
+            "name": "JM_Visualang_Beginning_to_Current_BT_FLAZ_Closure_v1_0_Zionfolder.zip",
+            "source": "live_platform_tool_contact"
+          },
+          "libfile_db757ec184248191a51317a696803ec8": {
+            "id": "libfile_db757ec184248191a51317a696803ec8",
+            "ref": "library:libfile_db757ec184248191a51317a696803ec8",
+            "state": "ACTIVE",
+            "version": "1",
+            "size": 8280,
+            "file_id": "file_00000000cfbc8246a9ee37ca1262aead",
+            "modified_at": "2026-10-03T08:54:37.552180Z",
+            "name": "JM_LIBRARY_RECLAIM_WORK_CONTINUATION_2026-10-03_PASS_84.md",
+            "source": "live_platform_tool_contact",
+            "content_sha256": "3fe31222a8bd5c629fea0377bb29558565c3f26a4624491f1c5aeb9c8e6cfc0c"
+          },
+          "file_00000000db5882468d7795761fd03906": {
+            "id": "file_00000000db5882468d7795761fd03906",
+            "ref": "library:file_00000000db5882468d7795761fd03906",
+            "state": "UNAVAILABLE",
+            "version": null,
+            "size": null,
+            "file_id": null,
+            "modified_at": null,
+            "name": null,
+            "source": "live_platform_tool_contact",
+            "contact_warning": [
+              "File is not visible in the requested files surface. Use a visible files.search/files.list/files.find/files.read citation reference such as turn2file0, or pass a file_id that appeared in one of those results."
+            ]
+          }
+        },
+        "authenticity": "trusted host transport; no platform signature"
+      },
+      "measurement": {
+        "origin": "deterministic_byte_measurement",
+        "target": {
+          "size": 8931732,
+          "sha256": "0b3c8ae4f97a71fca6d82f4afea3cfd340712eb8375454c5a04c313e636fe955"
+        },
+        "survivor": {
+          "size": 15661458,
+          "sha256": "64fb07bb555a9f550b1291848541b7dcb715642f76562cae9b541b13ddbb3238"
+        },
+        "relationship": {
+          "kind": "UNEQUAL_LEAN_DESCENDANT",
+          "exact_duplicate": false,
+          "embedded_base": {
+            "member": "JM_Visualang_Beginning_to_Current_BT_FLAZ_Closure_v1_0_LEAN/JM_Visualang_Verbalist_Studio_v4_5_1_Zionfolder.zip",
+            "size": 12669192,
+            "sha256": "ec9824282a4478adbf759d89b34d6351fe74aa74a9f6c979af61a28fee730d5b"
+          },
+          "shared_unchanged": 33,
+          "shared_changed": [],
+          "removed": [
+            {
+              "member": "JM_Visualang_Verbalist_Studio_v4_5_1/qa/JM_ActorBody_ShotChain_v4_5.gif",
+              "size": 3745864,
+              "sha256": "a8554e46514c5ac09c16e5c182de193c7c38b8bf907375403eb5382d455c0e48"
+            }
+          ],
+          "added": [
+            {
+              "member": "JM_Visualang_Verbalist_Studio_v4_5_1/JM_THIRD_QUASH_GIF_ROUTE.json",
+              "size": 325,
+              "sha256": "40755a84c93dd73276111a03ca85fbb60521447f1c120ea7776de6c6995e54a4",
+              "route": {
+                "logical_path": "JM_Visualang_Verbalist_Studio_v4_5_1/qa/JM_ActorBody_ShotChain_v4_5.gif",
+                "bytes": 3745864,
+                "sha256": "a8554e46514c5ac09c16e5c182de193c7c38b8bf907375403eb5382d455c0e48",
+                "target": {
+                  "library_path": "/JM_ActorBody_ShotChain_v4_5.gif",
+                  "file_id": "file_00000000db5882468d7795761fd03906"
+                }
+              }
+            }
+          ],
+          "patches": [
+            {
+              "member": "JM_Visualang_Beginning_to_Current_BT_FLAZ_Closure_v1_0_LEAN/_JM_LEAN_RECOVERY/JM_Visualang_ActorBody_ShotChain_Freeze_Anchor_v4_0.zip.zstpatch",
+              "patch_sha256": "80115312a77ecc9d26c063669048bc83359a9bb5b1ee8a77a9278b7271c22e25",
+              "restored_bytes": 18842989,
+              "restored_sha256": "66ed8bc9b7c5f546db5a6db9c1ea91beac66bbaa00bb803aa5fa852d38f197f5",
+              "declared_sha256": "66ed8bc9b7c5f546db5a6db9c1ea91beac66bbaa00bb803aa5fa852d38f197f5",
+              "restore_crc": "PASS",
+              "embedded_base": "PASS",
+              "modified_base_matches": false
+            },
+            {
+              "member": "JM_Visualang_Beginning_to_Current_BT_FLAZ_Closure_v1_0_LEAN/_JM_LEAN_RECOVERY/JM_Visualang_Beginning_to_Current_BT_Closure_v1_0.docx.zstpatch",
+              "patch_sha256": "6853d18fb2a78763491a8b3169e9a294649416ff1097e4ca9438113f36dfd6c5",
+              "restored_bytes": 1861725,
+              "restored_sha256": "9f817431c551d88484e62069cf8b01d85a2b4fe54d22dff7bf9154159f9bcdf4",
+              "declared_sha256": "9f817431c551d88484e62069cf8b01d85a2b4fe54d22dff7bf9154159f9bcdf4",
+              "restore_crc": "PASS",
+              "embedded_base": "PASS",
+              "modified_base_matches": false
+            }
+          ],
+          "closure_required": true,
+          "mutation_proof": "NOT EXACT REDUNDANCY; closure embedded base is required by verified patches",
+          "reference_audit": {
+            "recorded": {
+              "library_path": "/JM_ActorBody_ShotChain_v4_5.gif",
+              "file_id": "file_00000000db5882468d7795761fd03906"
+            },
+            "live_reference": {
+              "id": "file_00000000db5882468d7795761fd03906",
+              "ref": "library:file_00000000db5882468d7795761fd03906",
+              "state": "UNAVAILABLE",
+              "version": null,
+              "size": null,
+              "file_id": null,
+              "modified_at": null,
+              "name": null,
+              "source": "live_platform_tool_contact",
+              "contact_warning": [
+                "File is not visible in the requested files surface. Use a visible files.search/files.list/files.find/files.read citation reference such as turn2file0, or pass a file_id that appeared in one of those results."
+              ]
+            },
+            "root_matches": [],
+            "root_scope": "nonrecursive /; GIF filter; complete returned listing only",
+            "recovery": {
+              "member": "JM_Visualang_Verbalist_Studio_v4_5_1/qa/JM_ActorBody_ShotChain_v4_5.gif",
+              "size": 3745864,
+              "sha256": "a8554e46514c5ac09c16e5c182de193c7c38b8bf907375403eb5382d455c0e48",
+              "format": "GIF"
+            },
+            "determination": "DESTINATION_UNVERIFIED",
+            "absence_claim": "not returned in scoped listing",
+            "deleted_claim": false,
+            "authenticity": "same host transport; no independent platform attestation"
+          }
+        }
+      },
+      "historical": {
+        "source_head": {
+          "id": "libfile_db757ec184248191a51317a696803ec8",
+          "version": "1",
+          "content_sha256": "3fe31222a8bd5c629fea0377bb29558565c3f26a4624491f1c5aeb9c8e6cfc0c",
+          "hash_scope": "Library extracted text UTF-8; not original-file SHA",
+          "modified_at": "2026-10-03T08:54:37.552180Z"
+        },
+        "proof_role": "context, never live mutation proof"
+      },
+      "interpretation": {
+        "proof_role": "routing only; cannot authorize",
+        "claim": null
+      },
+      "precondition": {
+        "result": "PASS",
+        "reasons": [],
+        "at_ms": 1791040589083,
+        "control_revision": 12,
+        "contact_sha256": "fccd37970a49cd8896ad04089eb15b3099c525c6c8578678c3801e744db086c5",
+        "measurement_sha256": "8225f7b092950b976fc9f959f543e622b8da0d713a2fa891b55c587a11584ead",
+        "accounting_bytes": 0
+      },
+      "mutation": {
+        "attempted": false,
+        "response": null
+      },
+      "post": {
+        "contact": {
+          "origin": "host_tool_capture",
+          "method": "files/read",
+          "started_ms": 1791040575051,
+          "finished_ms": 1791040581328,
+          "response_sha256": "5d3b9a55fa4c5d973d18f82cdf950f9b137c2c8d5057151126628ee0c8915b8e",
+          "objects": {
+            "libfile_f27ee50da5788191af089cc3cae7c250": {
+              "id": "libfile_f27ee50da5788191af089cc3cae7c250",
+              "ref": "library:libfile_f27ee50da5788191af089cc3cae7c250",
+              "state": "ACTIVE",
+              "version": "11",
+              "size": 60850,
+              "file_id": "file_0000000043bc81f5ae713bca556c2d2d",
+              "modified_at": "2026-10-03T15:15:12.503041Z",
+              "name": "JM_MAGNIFYING_GLASS_CONTROL.json",
+              "source": "live_platform_tool_contact",
+              "control_revision": 12,
+              "control_digest": "996b6f12f0577a4d104dc1348a8171d1595d55bfd5b19461e188ffcf3e940a94"
+            },
+            "libfile_3daaeaf1fbe0819180615a4d3af15a11": {
+              "id": "libfile_3daaeaf1fbe0819180615a4d3af15a11",
+              "ref": "library:libfile_3daaeaf1fbe0819180615a4d3af15a11",
+              "state": "ACTIVE",
+              "version": "1",
+              "size": 8931732,
+              "file_id": "file_0000000054c48243adc9e7791b2b1ded",
+              "modified_at": "2026-08-17T17:28:36.670366Z",
+              "name": "JM_Visualang_Verbalist_Studio_v4_5_1_Zionfolder.zip",
+              "source": "live_platform_tool_contact"
+            },
+            "libfile_8a13319f5c6c81918d66a5f10d78c8b1": {
+              "id": "libfile_8a13319f5c6c81918d66a5f10d78c8b1",
+              "ref": "library:libfile_8a13319f5c6c81918d66a5f10d78c8b1",
+              "state": "ACTIVE",
+              "version": "1",
+              "size": 15661458,
+              "file_id": "file_0000000049e081f9aa3164ec97070c9a",
+              "modified_at": "2026-09-02T13:38:29.880572Z",
+              "name": "JM_Visualang_Beginning_to_Current_BT_FLAZ_Closure_v1_0_Zionfolder.zip",
+              "source": "live_platform_tool_contact"
+            },
+            "libfile_db757ec184248191a51317a696803ec8": {
+              "id": "libfile_db757ec184248191a51317a696803ec8",
+              "ref": "library:libfile_db757ec184248191a51317a696803ec8",
+              "state": "ACTIVE",
+              "version": "1",
+              "size": 8280,
+              "file_id": "file_00000000cfbc8246a9ee37ca1262aead",
+              "modified_at": "2026-10-03T08:54:37.552180Z",
+              "name": "JM_LIBRARY_RECLAIM_WORK_CONTINUATION_2026-10-03_PASS_84.md",
+              "source": "live_platform_tool_contact",
+              "content_sha256": "3fe31222a8bd5c629fea0377bb29558565c3f26a4624491f1c5aeb9c8e6cfc0c"
+            },
+            "file_00000000db5882468d7795761fd03906": {
+              "id": "file_00000000db5882468d7795761fd03906",
+              "ref": "library:file_00000000db5882468d7795761fd03906",
+              "state": "UNAVAILABLE",
+              "version": null,
+              "size": null,
+              "file_id": null,
+              "modified_at": null,
+              "name": null,
+              "source": "live_platform_tool_contact",
+              "contact_warning": [
+                "File is not visible in the requested files surface. Use a visible files.search/files.list/files.find/files.read citation reference such as turn2file0, or pass a file_id that appeared in one of those results."
+              ]
+            }
+          },
+          "authenticity": "trusted host transport; no platform signature"
+        },
+        "measurement_sha256": "8225f7b092950b976fc9f959f543e622b8da0d713a2fa891b55c587a11584ead"
+      },
+      "accounting": {
+        "bytes": 0,
+        "quota_credit": null
+      },
+      "phase": "VERIFIED_INSPECTION",
+      "digest": "33fecd879041ba3c9482ab8224cd87a7eca5b239f96e98c543db7e11c7f8e162"
+    }
+  },
+  "transport": {
+    "protocol": "JM.TransportTrust/1.0",
+    "domains": {
+      "worker_interpretation": {
+        "domain": "worker",
+        "roots": [
+          "worker"
+        ],
+        "proof": "routing_only"
+      },
+      "jm_durable_control": {
+        "domain": "jm_control",
+        "roots": [
+          "openai_host",
+          "jm_governance"
+        ],
+        "proof": "durable_anchor_not_external_authentication"
+      },
+      "platform_metadata": {
+        "domain": "openai_host",
+        "roots": [
+          "openai_host"
+        ],
+        "proof": "unsigned_platform_report"
+      },
+      "platform_content_retrieval": {
+        "domain": "openai_host",
+        "roots": [
+          "openai_host"
+        ],
+        "proof": "unsigned_platform_report"
+      },
+      "platform_mutation_response": {
+        "domain": "openai_host",
+        "roots": [
+          "openai_host"
+        ],
+        "proof": "unsigned_receipt_not_current_landing"
+      },
+      "local_content_proof": {
+        "domain": "local_runtime",
+        "roots": [
+          "openai_host",
+          "local_runtime"
+        ],
+        "proof": "reproducible_integrity_not_origin"
+      },
+      "independent_recovery_carrier": {
+        "domain": "recovery_carrier",
+        "roots": [
+          "openai_host",
+          "local_runtime"
+        ],
+        "proof": "separate_object_not_independent_transport"
+      },
+      "external_attestation": {
+        "domain": "external_unconfigured",
+        "roots": [],
+        "proof": "unavailable_no_pinned_external_verifier"
+      }
+    },
+    "inventory": {
+      "stable_object_ids": {
+        "state": "AVAILABLE",
+        "basis": "live read/search library_file_id"
+      },
+      "version_identifiers": {
+        "state": "AVAILABLE",
+        "basis": "read/search version_id and guarded write current_version_number"
+      },
+      "immutable_revision_guarantee": {
+        "state": "UNKNOWN",
+        "basis": "concrete version observed; immutability contract not exposed"
+      },
+      "platform_content_digest": {
+        "state": "UNAVAILABLE",
+        "basis": "not exposed in current metadata/read/materialization schemas or observed result fields"
+      },
+      "etag": {
+        "state": "UNAVAILABLE",
+        "basis": "no ETag exposed in these routes; HTTP header route not available here"
+      },
+      "server_result_receipt": {
+        "state": "AVAILABLE",
+        "basis": "writes expose status, stable target ID, resulting file ID/version; unsigned response, not separately queryable receipt service"
+      },
+      "durable_queryable_mutation_id": {
+        "state": "UNAVAILABLE",
+        "basis": "no mutation-ID/journal lookup exposed"
+      },
+      "upload_session_id": {
+        "state": "AVAILABLE",
+        "basis": "prepared upload schema; transfer correlation only, not landing authentication"
+      },
+      "platform_timestamps": {
+        "state": "AVAILABLE",
+        "basis": "created_at/modified_at live response; host-relayed, unsigned"
+      },
+      "signed_response": {
+        "state": "UNAVAILABLE",
+        "basis": "no signature/attestation exposed by available Library tools"
+      },
+      "materialized_bytes": {
+        "state": "AVAILABLE",
+        "basis": "actual safe target download; same host trust"
+      },
+      "native_download_route": {
+        "state": "AVAILABLE",
+        "basis": "documented Library download endpoint; same origin, not an independent authenticated channel; not separately exercised"
+      },
+      "local_hash_recomputation": {
+        "state": "AVAILABLE",
+        "basis": "actual SHA-256 over retrieved raw bytes and extracted text"
+      },
+      "recovery_carrier_verification": {
+        "state": "AVAILABLE",
+        "basis": "existing protected Visualang byte verification; separate carrier, same-host retrieval; no origin independence claimed"
+      },
+      "independent_route_B": {
+        "state": "UNAVAILABLE",
+        "basis": "no configured distinct governed mirror/key/attestation for this target in current machinery or exposed Library routes"
+      },
+      "other_platform_capabilities": {
+        "state": "UNKNOWN",
+        "basis": "not inferred from unexposed backend possibilities"
+      }
+    },
+    "envelopes": {
+      "ddbe96b58bd961f525b1b3d0c6c423a49d35741d9a579396eb79c64d8ac14483": {
+        "protocol": "JM.TransportEnvelope/1.0",
+        "id": "ddbe96b58bd961f525b1b3d0c6c423a49d35741d9a579396eb79c64d8ac14483",
+        "binding": {
+          "target_id": "libfile_db757ec184248191a51317a696803ec8",
+          "target_version": "1",
+          "expected_sha256": "fdc97e6fec8860ab5185122ce0577755fdd918c070491405be3738e09fcadb14",
+          "raw_digest_origin": "local capture pin; not historical/platform digest",
+          "expected_extracted_sha256": "3fe31222a8bd5c629fea0377bb29558565c3f26a4624491f1c5aeb9c8e6cfc0c",
+          "control_id": "libfile_f27ee50da5788191af089cc3cae7c250",
+          "control_revision": 15,
+          "control_digest": "753c979b1cd01d46689dae06ebd2a6af48f1733675e4c956ccd19f51a9305f80",
+          "recovery_identity": {
+            "kind": "durable_control_digest_anchor",
+            "id": "libfile_f27ee50da5788191af089cc3cae7c250"
+          },
+          "expected_state": "ACTIVE"
+        },
+        "facts": [
+          {
+            "category": "platform_metadata",
+            "route": "files/read",
+            "provenance": {
+              "category": "platform_metadata",
+              "route": "files/read",
+              "domain": "openai_host",
+              "roots": [
+                "openai_host"
+              ],
+              "proof": "unsigned_platform_report"
+            },
+            "object_id": "libfile_db757ec184248191a51317a696803ec8",
+            "version": "1",
+            "file_id": "file_00000000cfbc8246a9ee37ca1262aead",
+            "size": 8280,
+            "scope": "raw_bytes",
+            "current_state": "ACTIVE",
+            "server_fields": {
+              "version_id": "1",
+              "file_id": "file_00000000cfbc8246a9ee37ca1262aead",
+              "library_file_id": "libfile_db757ec184248191a51317a696803ec8",
+              "created_at": "2026-10-03T02:16:09.401304Z",
+              "modified_at": "2026-10-03T08:54:37.552180Z"
+            }
+          },
+          {
+            "category": "platform_content_retrieval",
+            "route": "files/read",
+            "provenance": {
+              "category": "platform_content_retrieval",
+              "route": "files/read",
+              "domain": "openai_host",
+              "roots": [
+                "openai_host"
+              ],
+              "proof": "unsigned_platform_report"
+            },
+            "object_id": "libfile_db757ec184248191a51317a696803ec8",
+            "version": "1",
+            "file_id": "file_00000000cfbc8246a9ee37ca1262aead",
+            "retrieval": "SUCCEEDED",
+            "scope": "extracted_text_utf8",
+            "sha256": "3fe31222a8bd5c629fea0377bb29558565c3f26a4624491f1c5aeb9c8e6cfc0c",
+            "size": 8279,
+            "digest_computed_by": "local adapter over host-supplied text"
+          },
+          {
+            "category": "local_content_proof",
+            "route": "materialize+local_sha256",
+            "provenance": {
+              "category": "local_content_proof",
+              "route": "materialize+local_sha256",
+              "domain": "local_runtime",
+              "roots": [
+                "openai_host",
+                "local_runtime"
+              ],
+              "proof": "reproducible_integrity_not_origin"
+            },
+            "object_id": "libfile_db757ec184248191a51317a696803ec8",
+            "version": "1",
+            "file_id": "file_00000000cfbc8246a9ee37ca1262aead",
+            "retrieval": "SUCCEEDED",
+            "scope": "raw_bytes",
+            "sha256": "fdc97e6fec8860ab5185122ce0577755fdd918c070491405be3738e09fcadb14",
+            "size": 8280,
+            "input_domain": "openai_host"
+          },
+          {
+            "category": "local_content_proof",
+            "route": "extractor_equivalence",
+            "provenance": {
+              "category": "local_content_proof",
+              "route": "extractor_equivalence",
+              "domain": "local_runtime",
+              "roots": [
+                "openai_host",
+                "local_runtime"
+              ],
+              "proof": "reproducible_integrity_not_origin"
+            },
+            "object_id": "libfile_db757ec184248191a51317a696803ec8",
+            "version": "1",
+            "file_id": "file_00000000cfbc8246a9ee37ca1262aead",
+            "scope": "extracted_text_utf8",
+            "sha256": "3fe31222a8bd5c629fea0377bb29558565c3f26a4624491f1c5aeb9c8e6cfc0c",
+            "size": 8279,
+            "transform": "remove one terminal LF if present"
+          },
+          {
+            "category": "jm_durable_control",
+            "route": "control.source_head.content_sha256",
+            "provenance": {
+              "category": "jm_durable_control",
+              "route": "control.source_head.content_sha256",
+              "domain": "jm_control",
+              "roots": [
+                "openai_host",
+                "jm_governance"
+              ],
+              "proof": "durable_anchor_not_external_authentication"
+            },
+            "object_id": "libfile_db757ec184248191a51317a696803ec8",
+            "version": "1",
+            "file_id": "file_00000000cfbc8246a9ee37ca1262aead",
+            "scope": "extracted_text_utf8",
+            "sha256": "3fe31222a8bd5c629fea0377bb29558565c3f26a4624491f1c5aeb9c8e6cfc0c"
+          },
+          {
+            "category": "external_attestation",
+            "route": "capability_inventory",
+            "provenance": {
+              "category": "external_attestation",
+              "route": "capability_inventory",
+              "domain": "external_unconfigured",
+              "roots": [],
+              "proof": "unavailable_no_pinned_external_verifier"
+            },
+            "object_id": "libfile_db757ec184248191a51317a696803ec8",
+            "availability": "UNAVAILABLE",
+            "limitation": "No exposed signed response or independently governed target route"
+          }
+        ],
+        "capture": {
+          "started_ms": 1791045095652,
+          "finished_ms": 1791045100306,
+          "raw_response_sha256": "5aefb1eb1f03c700f5f14c4ae625cc5807ad10f5e69852d2c08b611c4d085e8c",
+          "timestamp_origin": "host clock, not independent server attestation"
+        },
+        "assessment": {
+          "status": "CONSISTENT",
+          "corroboration": "CORRELATED",
+          "independent_status": "UNVERIFIED",
+          "independently_corroborated": false,
+          "content_reproduced": true,
+          "authenticated_origin": false,
+          "decision": "INSPECTION_ONLY",
+          "reasons": [],
+          "trust_domains": [
+            "jm_control",
+            "local_runtime",
+            "openai_host"
+          ],
+          "boundary": "NO_CONFIGURED_EXTERNAL_ATTESTATION; HASH_IS_NOT_SIGNATURE"
+        },
+        "receipts": [],
+        "phase": "VERIFIED_INSPECTION",
+        "post": {
+          "decision": "INSPECTION_ONLY",
+          "reasons": [],
+          "fresh_response_sha256": "98f610e1fee1738eb624c7e97c59e9a4fd61af339af575b5bb4731accb254866",
+          "observed_target_version": "1",
+          "observed_raw_sha256": "fdc97e6fec8860ab5185122ce0577755fdd918c070491405be3738e09fcadb14",
+          "authenticity": "same host trusted; no signature"
+        },
+        "accounting": {
+          "bytes": 0,
+          "quota_credit": null
+        },
+        "digest": "b05aae0eeee9294cbfaa5b3b9651d0777fbe8abbce72155a1151b0e32fe6a057",
+        "cage": "transport-attestation-001",
+        "prepared_revision": 16,
+        "authority_hash": "d41a6689e87006d6698eec9e3f9a5cb6409d5bf70418b861809c4e96d16b46a9"
+      }
+    },
+    "legacy_evidence_provenance": {
+      "classification": "historical untagged captures remain host-relayed; measurements local over same-host inputs",
+      "earned_visualang_unchanged": true
+    },
+    "replacement_route": "Load current control/referenced engine; validate; transport-recover CONTROL KEY FRESH_CONTACT TARGET_BYTES; never promote correlated consistency into authenticated origin",
+    "machinery_receipts": [
+      {
+        "provenance": {
+          "category": "platform_mutation_response",
+          "route": "Library write response",
+          "domain": "openai_host",
+          "roots": [
+            "openai_host"
+          ],
+          "proof": "unsigned_receipt_not_current_landing"
+        },
+        "observed_response": {
+          "status": "succeeded",
+          "library_file_id": "libfile_b5083001fefc819188ddcc11e0fc8d40",
+          "file_id": "file_00000000a00881f9ab9a337053c44d71",
+          "current_version_number": 11
+        },
+        "control_revision_at_capture": 17,
+        "response_sha256": "228515952b2dfe47d1739294ac35994e154f75bd7d213d8bb8188ba8f9224c31",
+        "signed": false,
+        "proof_role": "historical response only; fresh landing required"
+      },
+      {
+        "provenance": {
+          "category": "platform_mutation_response",
+          "route": "Library write response",
+          "domain": "openai_host",
+          "roots": [
+            "openai_host"
+          ],
+          "proof": "unsigned_receipt_not_current_landing"
+        },
+        "observed_response": {
+          "status": "succeeded",
+          "library_file_id": "libfile_f27ee50da5788191af089cc3cae7c250",
+          "file_id": "file_00000000e5d081f9bae99ff877f01471",
+          "current_version_number": 15
+        },
+        "control_revision_at_capture": 17,
+        "response_sha256": "edbaac09c745233d15782a772c66906f1d98f00db154ebf83ac94ab78f43ce2c",
+        "signed": false,
+        "proof_role": "historical response only; fresh landing required"
+      }
+    ],
+    "tests": {
+      "A_metadata_exists_content_fails": "PASS: BLOCK_RECONTACT; zero credit",
+      "B_retrieval_wrong_version": "PASS: BLOCK_RECONTACT; zero credit",
+      "C_same_host_disagreement": "PASS: BLOCK_RECONTACT; zero credit",
+      "D_local_digest_disagrees": "PASS: BLOCK_RECONTACT; zero credit",
+      "E_recovery_disagrees": "PASS: BLOCK_RECONTACT; zero credit",
+      "F_success_actual_landing_disagrees": "PASS: BLOCK_RECONTACT; zero credit",
+      "G_historical_receipt_later_contradicted": "PASS: BLOCK_RECONTACT; zero credit",
+      "H_no_external_attestation": "PASS: UNVERIFIED independence, correlated consistency only",
+      "invented_domain": "PASS: REJECTED",
+      "unsupported_interpretation": "PASS: REJECTED as proof",
+      "live_pilot": "PASS: canonical text anchor + read/materialized text equivalence; raw SHA locally reproduced",
+      "replacement": "PASS: isolated Python -I process, freshly downloaded current machinery + preserved envelope + fresh contact only",
+      "fresh_version_injection": "BLOCK_RECONTACT",
+      "fresh_control_advance_injection": "BLOCK_RECONTACT",
+      "visualang_exact_preservation": "PASS: cages, evidence envelopes and earned relationship unchanged",
+      "simulation_scope": "A-G locally injected observations; H actual exposed boundary; no Library destructive mutation",
+      "live_stale_paged_digest": "PASS: rejected invalid complete control; pinned returned version bytes recovered exactly"
+    },    "classification_model": {
+      "consistency_states": [
+        "CONSISTENT",
+        "CONTRADICTED",
+        "UNVERIFIED"
+      ],
+      "corroboration_states": [
+        "CORRELATED",
+        "INDEPENDENTLY_CORROBORATED",
+        "UNVERIFIED"
+      ],
+      "independent_emission": "DISABLED until a genuinely independent governed verifier is installed; payload labels and new route names never suffice"
+    },
+    "launch_instruction": "Recover current control and its hash-bound engine; validate; read transport domains/inventory/envelopes. For PREPARED cage obtain fresh contact + target bytes, then transport-recover. CONTRADICTED or UNVERIFIED content: block/re-contact; correlated consistency never authenticates origin.",
+    "live_host_disagreement": {
+      "state": "CONTRADICTED",
+      "search_control_version": "14",
+      "write_response_control_version": 15,
+      "fresh_current_read_control_version": "15",
+      "action": "BLOCKED stale materialization; recontacted stable IDs; never downgraded canonical state",
+      "landing": "Complete current read matches committed control revision17 and referenced engine11",
+      "independent": false,
+      "cause": "UNKNOWN; indexed metadata may lag; no cause inferred",
+      "materialization": "failed for stale search reference; failure not absence/deletion",
+      "paged_contact": {
+        "returned_version": "15",
+        "parsed_revision": 17,
+        "declared_digest": "999dfb6d28a46717b32e53663327cc8a1a62dc802ed8c73ee2cf8f4f05f9a80f",
+        "recomputed_digest": "8d4258b2cbbc3da65ce632be92fa1b4f632d55527d5f45be672bdd05b93de994",
+        "decision": "REJECTED: full control digest invalid despite same-version pagination headers",
+        "cause": "UNKNOWN; no partial or stale read crowned"
+      },
+      "recovery": "Pinned exact file_id returned by guarded write; materialization succeeded; full raw bytes match and control/engine digests validate. Same-host consistency, no independent authentication."
+    }
+  }
+}

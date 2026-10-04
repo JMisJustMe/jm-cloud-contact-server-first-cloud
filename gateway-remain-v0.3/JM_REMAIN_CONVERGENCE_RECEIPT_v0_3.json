@@ -1,0 +1,39 @@
+{
+  "schema": "jm.sovereign-agent-gateway.remain-convergence-receipt/0.3",
+  "date": "2026-10-03",
+  "repository": "JMisJustMe/jm-cloud-contact-server-first-cloud",
+  "branch": "jm-sovereign-agent-gateway-v0.3-magnifying-glass",
+  "base_branch": "jm-sovereign-agent-gateway-cading-v0.2-durable",
+  "source_authorities": {
+    "gateway": "Cading / JM Coding Estate",
+    "worker_control": "JM.MagnifyingGlass/1.0"
+  },
+  "service_face": "gateway-remain-v0.3/JM_SOVEREIGN_AGENT_GATEWAY_REMAIN_v0_3.mjs",
+  "control_seed": {
+    "revision": 19,
+    "digest": "f0995bf8d6f12ce8c2f9e31a268f8c1d377651a7dfef7a4b7731bbf8bd424303"
+  },
+  "engine_sha256": "65bb1f67dc1dd8806aa8894111b5af5ae5f2f09e2364e912e59419878e53c3e4",
+  "tests": {
+    "control_selftest": "PASS",
+    "successor_commit": "PASS",
+    "stale_write_rejection": "PASS",
+    "restart_recovery": "PASS",
+    "authority_broadening_rejection": "PASS",
+    "service_proxy_integration_with_stub_gateway": "PASS"
+  },
+  "deployment": {
+    "docker_candidate": "PREPARED",
+    "render_blueprint": "PREPARED",
+    "existing_service_identity": "jm-cloud-contact-server",
+    "auto_deploy": false,
+    "hosted_v0_3_contact": "OPEN",
+    "persistent_disk_restart": "OPEN"
+  },
+  "authority": {
+    "destructive_enabled": false,
+    "claim": "No new destructive authority granted by convergence"
+  },
+  "keeper": "YOUR DOOR. MANY AGENTS. YOUR AUTHORITY.",
+  "boundary": "Candidate is locally functioning and restart-recoverable; hosted persistent Ding remains owner-gated."
+}

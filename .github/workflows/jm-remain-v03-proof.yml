@@ -1,0 +1,22 @@
+name: JM Remain v0.3 proof
+
+on:
+  pull_request:
+    branches:
+      - jm-sovereign-agent-gateway-cading-v0.2-durable
+  workflow_dispatch:
+
+jobs:
+  prove:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - name: Exact v0.3 preflight
+        run: npm run preflight
+      - name: Docker build proof
+        run: docker build -f deploy/Dockerfile -t jm-sovereign-agent-gateway:v0.3 .
