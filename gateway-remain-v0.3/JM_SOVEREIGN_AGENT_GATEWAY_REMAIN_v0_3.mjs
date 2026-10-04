@@ -126,7 +126,7 @@ export async function createRemainControl(options = {}) {
   const seedControlPath = path.resolve(options.seedControlPath || process.env.JM_REMAIN_SEED_CONTROL || path.join(here, 'JM_MAGNIFYING_GLASS_CONTROL.json'));
   const enginePath = path.resolve(options.enginePath || process.env.JM_REMAIN_ENGINE || path.join(here, 'JM_MAGNIFYING_GLASS_ENGINE.py'));
   const dataPath = path.resolve(options.dataPath || process.env.JM_REMAIN_DATA || path.join(here, '.data', 'JM_REMAIN_CONTROL_STORE_v0_3.json'));
-  const expectedEngineSha256 = options.expectedEngineSha256 || process.env.JM_REMAIN_ENGINE_SHA256 || '65bb1f67dc1dd8806aa8894111b5af5ae5f2f09e2364e912e59419878e53c3e4';
+  const expectedEngineSha256 = options.expectedEngineSha256 || process.env.JM_REMAIN_ENGINE_SHA256 || '975fec007d2d34b8dacbfff0b1ecd5fbb327f2f78ece89002b09ab97999744ad';
 
   const [engineBytes, seedText] = await Promise.all([fs.readFile(enginePath), fs.readFile(seedControlPath, 'utf8')]);
   const engineSha256 = sha256(engineBytes);
