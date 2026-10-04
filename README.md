@@ -74,8 +74,9 @@ The existing 1 GB persistent disk remains mounted at `/data`. The v0.3 face stor
 
 **Still open — do not silently crown:**
 
-- actual v0.3 container build on the deployment host;
-- live hosted persistent-disk restart Ding;
+- exact v0.3 build/preflight on Render: **PASS**;
+- free hosted runtime start on Render: **PASS**;
+- live hosted persistent-disk restart Ding: **OPEN**;
 - public HTTPS contact on the v0.3 descendant;
 - live ACP wire Ding through the v0.3 service face;
 - first real external replacement-worker round trip through the hosted face;
@@ -86,3 +87,7 @@ The existing 1 GB persistent disk remains mounted at `/data`. The v0.3 face stor
 
 PR updates are checked by the base-branch `JM Remain v0.3 proof` workflow: exact Node preflight plus Docker build. A green run is required before runtime crown.
 
+
+## 2026-10-04 executable proof
+
+Render executed the exact branch preflight. The first run correctly failed on an engine-byte hash mismatch; the bound digest was corrected to the bytes actually cloned by Render. The second run passed syntax checks, the control self-test, and the combined Gateway + Magnifying Glass restart integration test. A separate free runtime service then reached Render **live** status with `npm start` on the unified v0.3 face. This proves the candidate executes on the deployment host; it does **not** prove persistence across host replacement because the proof service is intentionally free/ephemeral.
