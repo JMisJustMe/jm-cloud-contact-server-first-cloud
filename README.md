@@ -82,3 +82,7 @@ The existing 1 GB persistent disk remains mounted at `/data`. The v0.3 face stor
 - owner-governed out-of-band attestation / independent transport trust.
 
 **No Ding, no claim.**
+## Executable proof rail
+
+PR updates are checked by the base-branch `JM Remain v0.3 proof` workflow: exact Node preflight plus Docker build. A green run is required before runtime crown.
+
