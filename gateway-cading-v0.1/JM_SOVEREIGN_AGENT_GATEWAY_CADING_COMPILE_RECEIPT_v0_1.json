@@ -1,0 +1,32 @@
+{
+  "schema": "jm.sovereign-agent-gateway.cading-compile/0.1",
+  "status": "PASS",
+  "sourceBody": "JM_SOVEREIGN_AGENT_GATEWAY_v0_1.cading",
+  "sourceAuthority": "Cading / JM Coding Estate",
+  "sourceSha256": "3f278782a375551a409562d1a701604c464138ad1e6c22546244e521d884d4df",
+  "compilerRuntime": "JM_CODING_ESTATE_REAL_BUILD_v1_0.mjs",
+  "compilerRuntimeSha256": "06caf0e5c785876bfb31a5a2eb571fba7a216152373f7d871937e5ca72a669a9",
+  "validation": {
+    "status": "PASS",
+    "errors": 0,
+    "warnings": 0,
+    "semanticDigest": "jm-46e32105",
+    "validationDigest": "jm-cee373be"
+  },
+  "ir": {
+    "kind": "cading-ir",
+    "body": "cading",
+    "version": "10.0-jm",
+    "normalizedKind": "jm-normalised-ir",
+    "normalizedDigest": "jm-77305f6e",
+    "entrypoints": [
+      "createTask",
+      "approveTask",
+      "dispatchTask",
+      "taskStatus",
+      "main"
+    ],
+    "fullLocalArtifactSha256": "2fe8445fe3eb00bbd2eb4ba5ab5c51cb65cdc19ed5b0db1f02a23107732ecb6c"
+  },
+  "claimBoundary": "CADING_PARSE_COMPILE_NORMALISE_PROVEN; FULL_IR_REGENERABLE; JS_EMITTER_ACP_EXTERNAL_AGENT_EXECUTION_NOT_CLAIMED"
+}

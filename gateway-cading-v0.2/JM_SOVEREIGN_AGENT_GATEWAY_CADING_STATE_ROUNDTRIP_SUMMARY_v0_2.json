@@ -1,0 +1,17 @@
+{
+  "schema": "jm.sovereign-agent-gateway.cading-state-roundtrip/0.2",
+  "status": "PASS",
+  "sourceSha256": "2a1a6e82f615599c9c79f8c5d21a0978cfbf977f566957de1f8324e276ac7479",
+  "fullRuntimeSha256": "06caf0e5c785876bfb31a5a2eb571fba7a216152373f7d871937e5ca72a669a9",
+  "irKind": "cading-ir",
+  "irVersion": "10.0-jm",
+  "normalizedDigest": "jm-b38b1862",
+  "checks": {
+    "taskCreated": true,
+    "preApprovalDispatchHeld": true,
+    "stateImported": true,
+    "approved": true,
+    "dispatchAfterImport": true,
+    "finalState": true
+  }
+}

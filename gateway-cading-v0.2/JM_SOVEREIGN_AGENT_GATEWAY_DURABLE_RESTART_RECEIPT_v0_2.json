@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "id": "task-1",
+  "createStatus": 201,
+  "clientCannotApprove": true,
+  "preApprovalDispatchHeld": true,
+  "approveStatus": 200,
+  "restoredAfterRestart": true,
+  "dispatchAfterRestart": true,
+  "finalAfterSecondRestart": true,
+  "ready": true,
+  "receiptCount": 7,
+  "headHash": "6980887bcec1316c4133fb9e250105002d3ad625948d477a6133aae4eae48364",
+  "startupRecovered": true
+}

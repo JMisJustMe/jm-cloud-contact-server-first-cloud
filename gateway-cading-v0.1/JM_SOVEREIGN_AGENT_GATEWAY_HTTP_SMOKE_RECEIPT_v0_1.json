@@ -1,0 +1,117 @@
+{
+  "schema": "jm.sovereign-agent-gateway.http-smoke/0.1",
+  "status": "PASS",
+  "health": {
+    "status": 200,
+    "body": {
+      "status": "UP",
+      "body": "JM SOVEREIGN AGENT GATEWAY",
+      "hostRole": "CARRIER_NOT_SOURCE_AUTHORITY"
+    }
+  },
+  "meta": {
+    "schema": "jm.sovereign-agent-gateway.api-carrier/0.1",
+    "name": "JM SOVEREIGN AGENT GATEWAY",
+    "version": "0.1.0",
+    "keeper": "YOUR DOOR. MANY AGENTS. YOUR AUTHORITY.",
+    "sourceAuthority": "Cading / JM Coding Estate",
+    "hostRole": "CARRIER_NOT_SOURCE_AUTHORITY",
+    "runtimeExecutionClaimed": true,
+    "source": {
+      "language": "Cading",
+      "sha256": "3f278782a375551a409562d1a701604c464138ad1e6c22546244e521d884d4df",
+      "irKind": "cading-ir",
+      "irVersion": "10.0-jm",
+      "validation": "PASS",
+      "normalizedDigest": "jm-77305f6e"
+    },
+    "runtime": {
+      "body": "JM_CODING_ESTATE_REAL_BUILD_v1_0",
+      "sha256": "06caf0e5c785876bfb31a5a2eb571fba7a216152373f7d871937e5ca72a669a9"
+    },
+    "adapters": {
+      "jmHttpApi": "ACTIVE_LOCAL_CARRIER",
+      "acp": "NOT_YET_MOUNTED",
+      "externalAgents": "NOT_YET_MOUNTED"
+    },
+    "claimBoundary": "HTTP_API_TO_CADING_RUNTIME_PROVABLE_HERE; ACP_AND_EXTERNAL_AGENT_EXECUTION_NOT_CLAIMED"
+  },
+  "created": {
+    "status": 201,
+    "body": {
+      "task": {
+        "id": "task-1",
+        "prompt": "build test",
+        "agent": "unbound-agent",
+        "status": "AWAITING_APPROVAL",
+        "approved": false,
+        "dispatched": false
+      }
+    }
+  },
+  "blocked": {
+    "status": 409,
+    "body": {
+      "result": null,
+      "task": {
+        "id": "task-1",
+        "prompt": "build test",
+        "agent": "unbound-agent",
+        "status": "AWAITING_APPROVAL",
+        "approved": false,
+        "dispatched": false
+      },
+      "authorityRequired": true
+    }
+  },
+  "approved": {
+    "status": 200,
+    "body": {
+      "result": true,
+      "task": {
+        "id": "task-1",
+        "prompt": "build test",
+        "agent": "unbound-agent",
+        "status": "APPROVED",
+        "approved": true,
+        "dispatched": false
+      }
+    }
+  },
+  "dispatched": {
+    "status": 200,
+    "body": {
+      "result": "READY_FOR_AGENT_ROUTE",
+      "task": {
+        "id": "task-1",
+        "prompt": "build test",
+        "agent": "unbound-agent",
+        "status": "READY_FOR_AGENT_ROUTE",
+        "approved": true,
+        "dispatched": true
+      },
+      "authorityRequired": false
+    }
+  },
+  "final": {
+    "status": 200,
+    "body": {
+      "task": {
+        "id": "task-1",
+        "prompt": "build test",
+        "agent": "unbound-agent",
+        "status": "READY_FOR_AGENT_ROUTE",
+        "approved": true,
+        "dispatched": true
+      }
+    }
+  },
+  "agents": {
+    "status": 200,
+    "body": {
+      "agents": [],
+      "state": "NO_EXTERNAL_AGENT_ADAPTER_MOUNTED"
+    }
+  },
+  "claimBoundary": "LOCAL_HTTP_TO_CADING_RUNTIME_PASS; ACP_EXTERNAL_AGENT_CONTACT_OPEN"
+}
