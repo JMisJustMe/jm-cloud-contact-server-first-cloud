@@ -1,3 +1,4 @@
+// CI proof entrypoint v2: trigger default-branch workflow.
 // CI proof entrypoint: executable convergence/restart proof.
 import fs from 'node:fs/promises';
 import os from 'node:os';
