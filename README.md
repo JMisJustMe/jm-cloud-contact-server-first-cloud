@@ -37,7 +37,7 @@ A replacement worker can recover the current control, validate it, claim only an
 
 The branch carries the current Magnifying Glass control at revision **19** and the engine bound by SHA-256:
 
-`65bb1f67dc1dd8806aa8894111b5af5ae5f2f09e2364e912e59419878e53c3e4`
+`975fec007d2d34b8dacbfff0b1ecd5fbb327f2f78ece89002b09ab97999744ad`
 
 Destructive authority remains **disabled**.
 
