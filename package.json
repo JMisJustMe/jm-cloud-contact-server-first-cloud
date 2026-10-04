@@ -3,12 +3,15 @@
   "version": "0.3.0",
   "private": true,
   "type": "module",
-  "engines": {"node": ">=22"},
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "start": "node gateway-remain-v0.3/JM_SOVEREIGN_AGENT_GATEWAY_REMAIN_v0_3.mjs",
     "check": "node --check gateway-cading-v0.2/JM_SOVEREIGN_AGENT_GATEWAY_CADING_JS_CARRIER_v0_2.mjs && node --check gateway-cading-v0.2/JM_SOVEREIGN_AGENT_GATEWAY_API_CARRIER_v0_2.mjs && node --check gateway-remain-v0.3/JM_SOVEREIGN_AGENT_GATEWAY_REMAIN_v0_3.mjs && node --check gateway-remain-v0.3/JM_REMAIN_SELFTEST_v0_3.mjs",
     "remain:selftest": "node gateway-remain-v0.3/JM_REMAIN_SELFTEST_v0_3.mjs",
-    "preflight": "npm run check && npm run remain:selftest"
+    "preflight": "npm run check && npm run remain:selftest && npm run remain:integration",
+    "remain:integration": "node gateway-remain-v0.3/JM_REMAIN_INTEGRATION_TEST_v0_3.mjs"
   },
   "dependencies": {
     "@agentclientprotocol/sdk": "1.4.0",
