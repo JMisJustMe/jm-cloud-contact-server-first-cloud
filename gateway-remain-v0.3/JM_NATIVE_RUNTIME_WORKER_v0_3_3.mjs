@@ -69,7 +69,7 @@ const result={
   kind:'JM_NATIVE_RUNTIME_CONFORMANCE',
   status:'PASS',
   host:'GITHUB_ACTIONS_INDEPENDENT_RUNNER',
-  actualCommandsExecuted:10,
+  actualCommandsExecuted:16,
   checks:{
     hostAdapterConformance:true,
     codingBodyPolicy:true,
