@@ -46,6 +46,7 @@ jobs:
           expect(claims.sha===process.env.GITHUB_SHA,"COMMIT_BINDING");
           expect(claims.run_id===process.env.GITHUB_RUN_ID,"RUN_ID");
           expect(claims.run_attempt===process.env.GITHUB_RUN_ATTEMPT,"ATTEMPT");
+          console.log(JSON.stringify({schema:"JM.OIDCSubjectInspection/0.3.6",sub:claims.sub,environment:claims.environment??null,event_name:claims.event_name??null}));
           expect(claims.sub==="repo:"+expectedRepo+":ref:"+expectedRef,"SUBJECT");
           expect(Number.isFinite(claims.exp)&&claims.exp>Date.now()/1000,"EXPIRY");
           console.log(JSON.stringify({
