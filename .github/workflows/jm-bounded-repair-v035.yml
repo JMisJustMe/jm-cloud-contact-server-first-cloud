@@ -1,0 +1,94 @@
+name: JM v0.3.5 bounded auto-repair — three cloud runners
+on:
+  push:
+    branches:
+      - jm-sovereign-agent-gateway-v0.3.5-atomic-self-repair-20261014
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: jm-v035-auto-repair
+  cancel-in-progress: false
+jobs:
+  seed-bound-task:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install inherited Gateway dependencies
+        run: npm install --no-audit --no-fund
+      - name: Verify protected Gateway and inherited worker-return tests
+        run: npm run preflight
+      - name: Authorise bounded synthetic source-repair task and preserve state
+        run: node gateway-remain-v0.3/JM_BOUNDED_REPAIR_HANDOFF_v0_3_5.mjs seed
+      - name: Pass ephemeral state to separate cloud runner
+        uses: actions/upload-artifact@v4
+        with:
+          name: jm-v035-repair-job
+          path: .handoff/
+          include-hidden-files: true
+          retention-days: 1
+          if-no-files-found: error
+  execute-real-jm-code:
+    needs: seed-bound-task
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Recover JM candidate source at immutable revision, without write token
+        uses: actions/checkout@v4
+        with:
+          repository: JMisJustMe/JM-cading-lab
+          ref: 18cb13123020e0df7c05f6402f774a24ff8f4a8e
+          path: native-src
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/download-artifact@v4
+        with:
+          name: jm-v035-repair-job
+          path: .handoff
+      - name: Let worker diagnose, patch disposable JM source and prove interrupted-write recovery
+        run: node gateway-remain-v0.3/JM_BOUNDED_REPAIR_HANDOFF_v0_3_5.mjs work
+      - name: Return minimal fault repair witness and patch for review
+        uses: actions/upload-artifact@v4
+        with:
+          name: jm-v035-repair-result
+          path: |
+            .handoff/worker-report.json
+            .handoff/auto-repair.patch
+          retention-days: 1
+          if-no-files-found: error
+  recover-and-receipt:
+    needs: execute-real-jm-code
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install existing gateway implementation
+        run: npm install --no-audit --no-fund
+      - uses: actions/download-artifact@v4
+        with:
+          name: jm-v035-repair-job
+          path: .handoff
+      - uses: actions/download-artifact@v4
+        with:
+          name: jm-v035-repair-result
+          path: .handoff
+      - name: Recover Cading and Magnifying Glass, validate repair witness and restart
+        run: node gateway-remain-v0.3/JM_BOUNDED_REPAIR_HANDOFF_v0_3_5.mjs recover
+      - name: Preserve returned receipt, not a second source repository
+        uses: actions/upload-artifact@v4
+        with:
+          name: jm-v035-repair-recovery-receipt
+          path: .handoff/recovery-result.json
+          retention-days: 3
+          if-no-files-found: error
