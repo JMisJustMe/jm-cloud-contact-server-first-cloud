@@ -50,7 +50,7 @@ export async function createWorkerReturnLedger({dataPath}) {
       if (typeof taskId !== 'string' || taskId.length > 128 ||
           typeof workerId !== 'string' || !/^[a-z0-9._-]{1,96}$/i.test(workerId) ||
           !evidence || Array.isArray(evidence) || typeof evidence !== 'object' ||
-          !['READ_ONLY_GATEWAY_CONTACT','JM_NATIVE_RUNTIME_CONFORMANCE','JM_SOURCE_PROPOSAL'].includes(evidence.kind) ||
+          !['READ_ONLY_GATEWAY_CONTACT','JM_NATIVE_RUNTIME_CONFORMANCE','JM_SOURCE_PROPOSAL','JM_BOUNDED_AUTO_REPAIR'].includes(evidence.kind) ||
           Buffer.byteLength(JSON.stringify(evidence)) > 16384) {
         return {status:'HOLD', reason:'BOUNDED_EVIDENCE_REQUIRED'};
       }
@@ -83,6 +83,26 @@ export async function createWorkerReturnLedger({dataPath}) {
            evidence.changedFilesCount !== 3 ||
            evidence.sourceWriteAuthority !== false)) {
         return {status:'HOLD',reason:'SOURCE_PROPOSAL_EVIDENCE_INVALID'};
+      }
+      if (evidence.kind === 'JM_BOUNDED_AUTO_REPAIR' &&
+          (evidence.sourceRepository !== 'JMisJustMe/JM-cading-lab' ||
+           evidence.sourceCommit !== '18cb13123020e0df7c05f6402f774a24ff8f4a8e' ||
+           evidence.decision !== 'ATOMIC_RECEIPT_REPLACEMENT' ||
+           !/^[0-9a-f]{64}$/.test(evidence.sourceDiffSha256 || '') ||
+           !/^[0-9a-f]{64}$/.test(evidence.externalReportSha256 || '') ||
+           evidence.changedFilesCount !== 1 ||
+           evidence.workerTests?.baselineFaultObserved !== true ||
+           evidence.workerTests?.workerSelectedAllowlistedRepair !== true ||
+           evidence.workerTests?.candidateSourceActuallyModified !== true ||
+           evidence.workerTests?.JMHostAdapterConformancePassed !== true ||
+           evidence.workerTests?.JMExistingMachineReceiptRegressionPassed !== true ||
+           evidence.workerTests?.failureBeforeAtomicCommitPreservedOldReceipt !== true ||
+           evidence.workerTests?.noOrphanTempFiles !== true ||
+           evidence.workerTests?.healthyAtomicCommitProducedValidReceipt !== true ||
+           evidence.workerTests?.onlyAllowlistedFileChanged !== true ||
+           evidence.publishedSource !== false ||
+           evidence.sourceWriteAuthority !== false)) {
+        return {status:'HOLD',reason:'BOUNDED_AUTO_REPAIR_WITNESS_INVALID'};
       }
       const evidenceSha256 = sha(canonical(evidence));
       const old = get(taskId);
