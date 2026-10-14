@@ -1,0 +1,21 @@
+name: JM worker return v0.3.1 isolated integration proof
+on:
+  push:
+    branches:
+      - jm-sovereign-agent-gateway-v0.3.1-worker-return-20261014
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  bounded-return:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install existing v0.3 dependencies
+        run: npm install --no-audit --no-fund
+      - name: Exact original and descendant preflight
+        run: npm run preflight
