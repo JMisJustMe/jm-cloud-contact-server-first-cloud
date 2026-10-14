@@ -1,0 +1,92 @@
+name: JM v0.3.4 source proposal review — three cloud runners
+on:
+  push:
+    branches:
+      - jm-sovereign-agent-gateway-v0.3.4-source-proposal-20261014
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: jm-v034-source-review
+  cancel-in-progress: false
+jobs:
+  seed-bound-task:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install inherited Gateway dependencies
+        run: npm install --no-audit --no-fund
+      - name: Verify protected Gateway and inherited worker-return tests
+        run: npm run preflight
+      - name: Create bounded synthetic source-proposal review job and preserve state
+        run: node gateway-remain-v0.3/JM_SOURCE_REVIEW_HANDOFF_v0_3_4.mjs seed
+      - name: Pass ephemeral state to separate cloud runner
+        uses: actions/upload-artifact@v4
+        with:
+          name: jm-v034-source-job
+          path: .handoff/
+          include-hidden-files: true
+          retention-days: 1
+          if-no-files-found: error
+  execute-real-jm-code:
+    needs: seed-bound-task
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Recover JM candidate source at immutable revision, without write token
+        uses: actions/checkout@v4
+        with:
+          repository: JMisJustMe/JM-cading-lab
+          ref: 18cb13123020e0df7c05f6402f774a24ff8f4a8e
+          path: native-src
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/download-artifact@v4
+        with:
+          name: jm-v034-source-job
+          path: .handoff
+      - name: Execute actual JM source proposal tests, failure controls and diff bound
+        run: node gateway-remain-v0.3/JM_SOURCE_REVIEW_HANDOFF_v0_3_4.mjs work
+      - name: Return bounded source proposal evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: jm-v034-source-result
+          path: .handoff/worker-report.json
+          retention-days: 1
+          if-no-files-found: error
+  recover-and-receipt:
+    needs: execute-real-jm-code
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install existing gateway implementation
+        run: npm install --no-audit --no-fund
+      - uses: actions/download-artifact@v4
+        with:
+          name: jm-v034-source-job
+          path: .handoff
+      - uses: actions/download-artifact@v4
+        with:
+          name: jm-v034-source-result
+          path: .handoff
+      - name: Recover Cading and Magnifying Glass, record source proposal review and restart
+        run: node gateway-remain-v0.3/JM_SOURCE_REVIEW_HANDOFF_v0_3_4.mjs recover
+      - name: Preserve only proof digest and status, not duplicate project source
+        uses: actions/upload-artifact@v4
+        with:
+          name: jm-v034-source-recovery-receipt
+          path: .handoff/recovery-result.json
+          retention-days: 3
+          if-no-files-found: error
