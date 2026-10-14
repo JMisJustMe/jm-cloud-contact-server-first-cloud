@@ -1,0 +1,123 @@
+name: JM v0.3.6 sovereign route to bounded repair — four cloud runners
+on:
+  push:
+    branches:
+      - jm-sovereign-agent-gateway-v0.3.6-sovereign-route-20261014
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: jm-v036-route-repair
+  cancel-in-progress: false
+jobs:
+  seed-bound-task:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - name: Inherit real protected Cading/Magnifying Glass tests
+        run: npm run preflight
+      - name: Create bounded Cading task with separate synthetic human approval
+        run: node gateway-remain-v0.3/JM_SOVEREIGN_ROUTED_HANDOFF_v0_3_6.mjs seed
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jm-v036-seed-state
+          path: .handoff/
+          include-hidden-files: true
+          retention-days: 1
+          if-no-files-found: error
+  independently-route-with-jm:
+    needs: seed-bound-task
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: JMisJustMe/JM-cading-lab
+          ref: e26d1ce5605016ea94a670596ab12c52b0499d33
+          path: native-src
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/download-artifact@v4
+        with:
+          name: jm-v036-seed-state
+          path: .handoff
+      - name: Execute actual sovereign route in Node and Python; reject forged proposals
+        run: node gateway-remain-v0.3/JM_SOVEREIGN_ROUTER_BRIDGE_v0_3_6.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jm-v036-route-decision
+          path: .handoff/sovereign-route.json
+          retention-days: 1
+          if-no-files-found: error
+  execute-allowlisted-repair:
+    needs: independently-route-with-jm
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: JMisJustMe/JM-cading-lab
+          ref: 18cb13123020e0df7c05f6402f774a24ff8f4a8e
+          path: native-src
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/download-artifact@v4
+        with:
+          name: jm-v036-seed-state
+          path: .handoff
+      - uses: actions/download-artifact@v4
+        with:
+          name: jm-v036-route-decision
+          path: .handoff
+      - name: Refuse unbound route; run actual isolated JM source fault-repair
+        run: node gateway-remain-v0.3/JM_SOVEREIGN_ROUTED_HANDOFF_v0_3_6.mjs work
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jm-v036-execution-result
+          path: |
+            .handoff/worker-report.json
+            .handoff/auto-repair.patch
+          retention-days: 1
+          if-no-files-found: error
+  return-and-recover:
+    needs: execute-allowlisted-repair
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - uses: actions/download-artifact@v4
+        with:
+          name: jm-v036-seed-state
+          path: .handoff
+      - uses: actions/download-artifact@v4
+        with:
+          name: jm-v036-route-decision
+          path: .handoff
+      - uses: actions/download-artifact@v4
+        with:
+          name: jm-v036-execution-result
+          path: .handoff
+      - name: Check separate routing proof and existing gated repair; recover after restart
+        run: node gateway-remain-v0.3/JM_SOVEREIGN_ROUTED_HANDOFF_v0_3_6.mjs recover
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jm-v036-final-scoped-receipt
+          path: .handoff/recovery-result.json
+          retention-days: 3
+          if-no-files-found: error
