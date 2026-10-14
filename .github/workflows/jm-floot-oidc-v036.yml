@@ -1,0 +1,59 @@
+name: JM v0.3.6 bounded OIDC identity proof (no public ingestion)
+on:
+  push:
+    branches:
+      - jm-sovereign-agent-gateway-v0.3.6-oidc-20261014
+  workflow_dispatch:
+permissions:
+  contents: read
+  id-token: write
+jobs:
+  verify-oidc-attestation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Obtain genuine short-lived GitHub OIDC token, validate binding offline
+        env:
+          JM_EXPECTED_AUDIENCE: jm-floot-lab-receipt-v036
+          JM_EXPECTED_REPOSITORY: JMisJustMe/jm-cloud-contact-server-first-cloud
+          JM_EXPECTED_REF: refs/heads/jm-sovereign-agent-gateway-v0.3.6-oidc-20261014
+        run: |
+          node --input-type=module <<'NODE'
+          const fail = (reason) => {throw new Error("JM_OIDC_HOLD:"+reason);}
+          const audience=process.env.JM_EXPECTED_AUDIENCE;
+          const req=process.env.ACTIONS_ID_TOKEN_REQUEST_URL;
+          const bearer=process.env.ACTIONS_ID_TOKEN_REQUEST_TOKEN;
+          if(!req||!bearer)fail("OIDC_RUNNER_UNAVAILABLE");
+          const url=new URL(req);
+          url.searchParams.set("audience",audience);
+          const res=await fetch(url,{headers:{Authorization:"Bearer "+bearer}});
+          if(!res.ok)fail("OIDC_ISSUANCE_FAILED_"+res.status);
+          const {value:token}=await res.json();
+          if(typeof token!=="string"||token.split(".").length!==3)fail("TOKEN_SHAPE");
+          const [h,p]=token.split(".");
+          const header=JSON.parse(Buffer.from(h,"base64url").toString("utf8"));
+          const claims=JSON.parse(Buffer.from(p,"base64url").toString("utf8"));
+          const expectedRepo=process.env.JM_EXPECTED_REPOSITORY;
+          const expectedRef=process.env.JM_EXPECTED_REF;
+          const expectedWorkflow=expectedRepo+"/.github/workflows/jm-floot-oidc-v036.yml@"+expectedRef;
+          const expect=(ok,msg)=>{if(!ok)fail(msg)};
+          expect(header.alg==="RS256","ALGORITHM");
+          expect(claims.iss==="https://token.actions.githubusercontent.com","ISSUER");
+          expect(claims.aud===audience,"AUDIENCE");
+          expect(claims.repository===expectedRepo,"REPOSITORY");
+          expect(claims.ref===expectedRef,"BRANCH");
+          expect(claims.workflow_ref===expectedWorkflow,"WORKFLOW");
+          expect(claims.sha===process.env.GITHUB_SHA,"COMMIT_BINDING");
+          expect(claims.run_id===process.env.GITHUB_RUN_ID,"RUN_ID");
+          expect(claims.run_attempt===process.env.GITHUB_RUN_ATTEMPT,"ATTEMPT");
+          expect(claims.sub==="repo:"+expectedRepo+":ref:"+expectedRef,"SUBJECT");
+          expect(Number.isFinite(claims.exp)&&claims.exp>Date.now()/1000,"EXPIRY");
+          console.log(JSON.stringify({
+            schema:"JM.GitHubOIDCIssuanceContact/0.3.6",status:"PASS",
+            repository:claims.repository,ref:claims.ref,sha:claims.sha,
+            workflow_ref:claims.workflow_ref,run_id:claims.run_id,
+            audienceValidated:true,shortLived:true,
+            tokenAndRunnerSecretsLogged:false,
+            boundary:"GITHUB_ISSUANCE_AND_LOCAL_CLAIM_CHECK_ONLY; NO_FLOOT_EXTERNAL_POST; NO_SIGNATURE_CHECK_ON_GITHUB_STAGE"
+          }));
+          NODE
