@@ -1,0 +1,159 @@
+name: JM v0.3.7 accountable Gateway return with cloud signer HOLD — five runners
+on:
+  push:
+    branches:
+      - jm-sovereign-agent-gateway-v0.3.7-proposal-proof-20261014
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: jm-v037-proposal-return-hold
+  cancel-in-progress: false
+jobs:
+  authorised-task:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - name: Verify protected existing control and worker tests
+        run: npm run preflight
+      - name: Create synthetic approved bounded Cading task
+        run: node gateway-remain-v0.3/JM_SOVEREIGN_ROUTED_HANDOFF_v0_3_6.mjs seed
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jm-v037-seed
+          path: .handoff/
+          include-hidden-files: true
+          retention-days: 1
+          if-no-files-found: error
+  real-jm-route:
+    needs: authorised-task
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: JMisJustMe/JM-cading-lab
+          ref: e26d1ce5605016ea94a670596ab12c52b0499d33
+          path: native-src
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/download-artifact@v4
+        with:
+          name: jm-v037-seed
+          path: .handoff
+      - name: Real JM Node and Python router with untrusted-route negative tests
+        run: node gateway-remain-v0.3/JM_SOVEREIGN_ROUTER_BRIDGE_v0_3_6.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jm-v037-router
+          path: .handoff/sovereign-route.json
+          retention-days: 1
+          if-no-files-found: error
+  untrusted-source-proposal:
+    needs: real-jm-route
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: JMisJustMe/JM-cading-lab
+          ref: 960b7455030701d1d9484fda6f8a7d0695e5670e
+          path: proposal-src
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/download-artifact@v4
+        with:
+          name: jm-v037-seed
+          path: .handoff
+      - uses: actions/download-artifact@v4
+        with:
+          name: jm-v037-router
+          path: .handoff
+      - name: Review actual durable source and reject 15 forbidden proposal mutations
+        run: node gateway-remain-v0.3/JM_PROPOSAL_ADMISSION_v0_3_7.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jm-v037-proposal
+          path: .handoff/proposal-proof.json
+          retention-days: 1
+          if-no-files-found: error
+  bounded-source-worker:
+    needs: untrusted-source-proposal
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: JMisJustMe/JM-cading-lab
+          ref: 18cb13123020e0df7c05f6402f774a24ff8f4a8e
+          path: native-src
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/download-artifact@v4
+        with:
+          name: jm-v037-seed
+          path: .handoff
+      - uses: actions/download-artifact@v4
+        with:
+          name: jm-v037-router
+          path: .handoff
+      - name: Independently reproduce fault and run actual bounded JM source patch
+        run: node gateway-remain-v0.3/JM_SOVEREIGN_ROUTED_HANDOFF_v0_3_6.mjs work
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jm-v037-bounded-work
+          path: |
+            .handoff/worker-report.json
+            .handoff/auto-repair.patch
+          retention-days: 1
+          if-no-files-found: error
+  recovered-gateway-with-signer-hold:
+    needs: bounded-source-worker
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - uses: actions/download-artifact@v4
+        with:
+          name: jm-v037-seed
+          path: .handoff
+      - uses: actions/download-artifact@v4
+        with:
+          name: jm-v037-router
+          path: .handoff
+      - uses: actions/download-artifact@v4
+        with:
+          name: jm-v037-proposal
+          path: .handoff
+      - uses: actions/download-artifact@v4
+        with:
+          name: jm-v037-bounded-work
+          path: .handoff
+      - name: Bind actual tested proposal to original Gateway return; external signer remains HOLD
+        run: node gateway-remain-v0.3/JM_PROPOSAL_GATEWAY_HOLD_RETURN_v0_3_7.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jm-v037-final-scoped-hold
+          path: .handoff/recovery-result.json
+          retention-days: 3
+          if-no-files-found: error
