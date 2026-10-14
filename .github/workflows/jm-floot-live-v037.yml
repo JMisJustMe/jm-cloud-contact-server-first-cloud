@@ -1,0 +1,82 @@
+name: JM Floot v0.3.7 manual authenticated storage contact
+on:
+  workflow_dispatch:
+    inputs:
+      floot_url:
+        description: "Published Floot Bridge Lab base URL (https://your-subdomain.floot.app)"
+        required: true
+        type: string
+permissions:
+  contents: read
+  id-token: write
+jobs:
+  owner-triggered-receipt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Obtain GitHub OIDC and contact published isolated Floot receipt endpoint
+        env:
+          JM_FLOOT_URL: ${{ inputs.floot_url }}
+        run: |
+          node --input-type=module <<'NODE'
+          import {createHash} from "node:crypto";
+          const fail = (why) => {throw new Error("JM_FLOOT_EXTERNAL_HOLD:"+why);};
+          const base = process.env.JM_FLOOT_URL?.trim() ?? "";
+          if(!/^https:\/\/[a-z0-9][a-z0-9-]{0,39}\.floot\.app\/?$/.test(base)) fail("ONLY_PUBLISHED_FLOOT_APP_ORIGIN_ALLOWED");
+          const url=new URL(base);
+          if(url.username||url.password||url.port||url.search||url.hash||url.pathname!=="/") fail("INVALID_PUBLISH_ORIGIN");
+          const endpoint=new URL("/_api/jm_receipt_ingest",url.origin);
+          const baseHeaders={Accept:"application/json","Content-Type":"application/json"};
+          const unauthenticated=await fetch(endpoint,{
+            method:"POST",headers:baseHeaders,body:"{}",signal:AbortSignal.timeout(8000),redirect:"error"
+          });
+          if(unauthenticated.status!==401) fail("PUBLIC_INGRESS_DID_NOT_HOLD_UNAUTH_"+unauthenticated.status);
+          const oidcUrl=process.env.ACTIONS_ID_TOKEN_REQUEST_URL;
+          const oidcRequester=process.env.ACTIONS_ID_TOKEN_REQUEST_TOKEN;
+          if(!oidcUrl||!oidcRequester)fail("GITHUB_OIDC_PERMISSION_MISSING");
+          const req=new URL(oidcUrl);
+          req.searchParams.set("audience","jm-floot-lab-receipt-v036");
+          const identityResponse=await fetch(req,{headers:{Authorization:"Bearer "+oidcRequester},signal:AbortSignal.timeout(8000)});
+          if(!identityResponse.ok)fail("GITHUB_OIDC_ISSUANCE_"+identityResponse.status);
+          const {value:token}=await identityResponse.json();
+          if(typeof token!=="string"||token.split(".").length!==3)fail("TOKEN_SHAPE");
+          const r=process.env.GITHUB_REPOSITORY;
+          const run=process.env.GITHUB_RUN_ID;
+          const attempt=process.env.GITHUB_RUN_ATTEMPT;
+          const sha=process.env.GITHUB_SHA;
+          if(r!=="JMisJustMe/jm-cloud-contact-server-first-cloud"||!/^\d+$/.test(run||"")||!/^\d+$/.test(attempt||"")||!/^[0-9a-f]{40}$/.test(sha||""))fail("GITHUB_SOURCE_BOUNDARY");
+          const evidence = createHash("sha256").update(JSON.stringify({
+            kind:"JM_FLOOT_ISOLATED_OIDC_CONTACT",
+            repository:r,sha,run,attempt,
+            schema:"JM.FlootIsolatedReceiptTrial/0.3.6",
+            boundary:"NO_PRODUCTION_GATEWAY_AUTHORITY"
+          })).digest("hex");
+          const body={
+            id:"jm-v036-"+run+"-"+attempt,
+            schema_name:"JM.FlootIsolatedReceiptTrial/0.3.6",
+            source_commit:sha,
+            source_run:"https://github.com/"+r+"/actions/runs/"+run,
+            evidence_sha256:evidence
+          };
+          const stored=await fetch(endpoint,{
+            method:"POST",headers:{...baseHeaders,Authorization:"Bearer "+token},
+            body:JSON.stringify(body),signal:AbortSignal.timeout(12000),redirect:"error"
+          });
+          let answer;
+          try{answer=await stored.json();}catch{fail("NO_JSON_RESPONSE_"+stored.status);}
+          if(![200,201].includes(stored.status)|| !["STORED","IDEMPOTENT"].includes(answer.status) ||
+             answer.id!==body.id||answer.evidence_sha256!==evidence ||
+             answer.authority!=="ISOLATED_FLOOT_LAB_TRIAL_NOT_GATEWAY_AUTHORITY" ||
+             answer.destructiveAuthority!==false) {
+             fail("RECEIPT_NOT_ACCEPTED_"+stored.status+"_"+String(answer?.reason??answer?.status??"unknown"));
+          }
+          console.log(JSON.stringify({
+            schema:"JM.CrossProviderOidcStorageContact/0.3.7",
+            status:"PASS",githubRun:run,sourceCommit:sha,
+            flootHost:url.hostname,writeStatus:answer.status,
+            evidenceSha256:evidence,recordId:body.id,
+            unauthenticatedHeld:true,shortLivedOidc:true,loggedBearer:false,
+            authority:"ISOLATED_FLOOT_LAB_TRIAL_NOT_GATEWAY_AUTHORITY",
+            proofBoundary:"EXTERNAL_GITHUB_TO_FLOOT_POST_AND_INGEST_RESPONSE_ONLY; INDEPENDENT_DB_RECOVERY_AND_LIVE_GATEWAY_RETURN_NOT_YET_PROVED"
+          }));
+          NODE
