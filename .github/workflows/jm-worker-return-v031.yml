@@ -19,3 +19,5 @@ jobs:
         run: npm install --no-audit --no-fund
       - name: Exact original and descendant preflight
         run: npm run preflight
+      - name: Independent cloud-worker HTTPS contact
+        run: node gateway-remain-v0.3/JM_LIVE_EXTERNAL_WORKER_CONTACT_v0_3_1.mjs
