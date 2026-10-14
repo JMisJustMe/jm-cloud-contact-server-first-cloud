@@ -50,9 +50,24 @@ export async function createWorkerReturnLedger({dataPath}) {
       if (typeof taskId !== 'string' || taskId.length > 128 ||
           typeof workerId !== 'string' || !/^[a-z0-9._-]{1,96}$/i.test(workerId) ||
           !evidence || Array.isArray(evidence) || typeof evidence !== 'object' ||
-          evidence.kind !== 'READ_ONLY_GATEWAY_CONTACT' ||
+          !['READ_ONLY_GATEWAY_CONTACT','JM_NATIVE_RUNTIME_CONFORMANCE'].includes(evidence.kind) ||
           Buffer.byteLength(JSON.stringify(evidence)) > 16384) {
         return {status:'HOLD', reason:'BOUNDED_EVIDENCE_REQUIRED'};
+      }
+      if (evidence.kind === 'JM_NATIVE_RUNTIME_CONFORMANCE' &&
+          (evidence.sourceRepository !== 'JMisJustMe/JM-cading-lab' ||
+           !/^[0-9a-f]{40}$/.test(evidence.sourceCommit || '') ||
+           !/^[0-9a-f]{64}$/.test(evidence.externalReportSha256 || '') ||
+           evidence.workerTests?.hostAdapterConformance !== true ||
+           evidence.workerTests?.codingBodyPolicy !== true ||
+           evidence.workerTests?.activationByteParity !== true ||
+           evidence.workerTests?.negativeControlDetected !== true ||
+           evidence.workerTests?.sourceRestored !== true ||
+           evidence.workerTests?.coreByteParityQueries !== 4 ||
+           evidence.codingIdentities !== 64 ||
+           evidence.activeRoute !== 12 ||
+           evidence.availableNotSelected !== 52)) {
+        return {status:'HOLD',reason:'JM_NATIVE_WORKER_EVIDENCE_INVALID'};
       }
       const evidenceSha256 = sha(canonical(evidence));
       const old = get(taskId);
@@ -74,7 +89,7 @@ export async function createWorkerReturnLedger({dataPath}) {
         verifiedTaskStatus:approvedTask.status,
         verifiedApproval:true,
         event:'EXTERNAL_WORKER_RETURN_RECEIVED',
-        claimBoundary:'TASK_AND_CONTROL_FIELDS_BOUND_TO_LIVE_GATEWAY; WORKER_EXTRA_FIELDS_UNATTESTED; JOB_EXECUTION_NOT_ATTESTED; ORIGINAL_TASK_NOT_COMPLETED',
+        claimBoundary:'TASK_AND_CONTROL_BOUND_TO_LIVE_GATEWAY; WORKER_REPORTED_TESTS_CONTENT_HASHED_NOT_INDEPENDENT_SIGNATURE_ATTESTED; ORIGINAL_TASK_NOT_COMPLETED',
         previousHash:store.headHash,
       };
       entry.hash = hashReceipt(entry);
