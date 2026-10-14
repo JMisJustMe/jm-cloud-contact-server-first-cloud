@@ -291,7 +291,7 @@ export async function startRemainService(options = {}) {
         if (!workerOk) return json(res, 401, { error:'WORKER_TOKEN_REQUIRED', requestId });
         const body = await readJson(req);
         const task = typeof body.taskId === 'string' ? gateway.runtime.invoke('taskStatus', [body.taskId]) : null;
-        const result = await workerReturns.submit({taskId:body.taskId, workerId:body.workerId, evidence:body.evidence, approvedTask:task});
+        const result = await workerReturns.submit({taskId:body.taskId, workerId:body.workerId, evidence:body.evidence, approvedTask:task, expectedControl:remain.control()});
         const status = result.status === 'RETURN_RECORDED' ? 201 : result.status === 'IDEMPOTENT_REPLAY' ? 200 : result.status === 'CONFLICT' ? 409 : 422;
         return json(res, status, {...result, requestId});
       }
