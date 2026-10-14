@@ -85,7 +85,7 @@ async function seed(){
 async function worker(){
   const manifest=await readJson(manifestPath);
   const saved=await readJson(path.join(root,'job-manifest-digest.json'));
-  ensure(manifest.schema==='JM.BoundedAutoRepairHandoff/0.3.5' && saved.sha256===hash(manifest),'SEED_CUSTODY');
+  ensure(manifest.schema==='JM.BoundedAutoRepairHandoff/0.3.6' && saved.sha256===hash(manifest),'SEED_CUSTODY');
   const route=await checkedRoute(manifest);
   const proc=spawnSync('python3',['gateway-remain-v0.3/JM_BOUNDED_ATOMIC_REPAIR_v0_3_5.py'],{cwd:process.cwd(),encoding:'utf8',timeout:240000,maxBuffer:5*1024*1024});
   ensure(proc.status===0,'BOUNDED_REPAIR_EXECUTION_'+(proc.stderr||proc.stdout).slice(-1700));
