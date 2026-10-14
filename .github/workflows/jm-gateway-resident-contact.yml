@@ -1,0 +1,31 @@
+name: JM estate cloud contact worker (read-only)
+# One operational schedule, no extra paid service, no new data residency.
+# Audit scope: public HTTPS health/contact only. NOT an autonomous job executor.
+on:
+  push:
+    paths:
+      - '.github/workflows/jm-gateway-resident-contact.yml'
+  schedule:
+    - cron: '7 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: jm-cloud-contact-worker
+  cancel-in-progress: false
+jobs:
+  contact:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Recover tested JM candidate (immutable source revision)
+        uses: actions/checkout@v4
+        with:
+          ref: b36025e6930b680a64d981ca47d2f80940b123ad
+          persist-credentials: false
+      - name: Use Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Independent public HTTPS worker contact
+        run: node gateway-remain-v0.3/JM_LIVE_EXTERNAL_WORKER_CONTACT_v0_3_1.mjs
