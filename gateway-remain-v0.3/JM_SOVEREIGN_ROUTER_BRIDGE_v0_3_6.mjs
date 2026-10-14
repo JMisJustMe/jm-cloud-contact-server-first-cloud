@@ -23,7 +23,7 @@ function cli(program,args){
 }
 const source=JSON.parse(await fs.readFile(MANIFEST,'utf8'));
 const manifestDigest=JSON.parse(await fs.readFile(path.join(DEST,'job-manifest-digest.json'),'utf8'));
-assert(source.schema==='JM.BoundedAutoRepairHandoff/0.3.6'&&/^task-[a-zA-Z0-9_-]{1,100}$/.test(source.taskId)&&manifestDigest.sha256===hash(source),'TASK_CUSTODY');
+assert(source.schema==='JM.BoundedAutoRepairHandoff/0.3.6'&&/^task-[a-zA-Z0-9_-]{1,100}$/.test(source.taskId)&&manifestDigest.sha256===createHash('sha256').update(JSON.stringify(source)).digest('hex'),'TASK_CUSTODY');
 assert(source.routerSourceCommit===PIN&&source.routingQuery===QUERY&&source.requestedAction===ACTION&&source.allowedFile===FILE&&source.worker==='PINNED_ATOMIC_REPAIR_ONLY'&&source.authority==='HUMAN_FINAL_TEST_ONLY'&&source.destructiveAuthority===false,'BOUND_OWNER_TEST_AUTHORITY');
 assert(cli('git',['rev-parse','HEAD'])===PIN,'ROUTER_PINNED_SOURCE_COMMIT');
 const node=cli('node',['agent-runtime/jm-agent-runtime.mjs','--core-only','--query',QUERY]);
