@@ -1,8 +1,5 @@
 name: JM v0.3.7 proposal admission and signed-cloud return — six runners
 on:
-  push:
-    branches:
-      - jm-sovereign-agent-gateway-v0.3.7-proposal-proof-20261014
   workflow_dispatch:
 permissions:
   contents: read
