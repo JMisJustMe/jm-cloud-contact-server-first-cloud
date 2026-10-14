@@ -44,7 +44,7 @@ const allow=[
  'agent-runtime/host-adapters/test_atomic_machine_receipt.py'
 ].sort();
 insist(JSON.stringify(changes)===JSON.stringify(allow),'DIFF_SCOPE');
-const patch=run('git',['diff','--no-ext-diff',BASE,CANDIDATE,'--',TARGET]);
+const patch=run('git',['diff','--no-ext-diff',BASE,CANDIDATE,'--',TARGET])+'\n';
 insist(sha(patch)===PROVEN_DIFF,'UNVERIFIED_CLOUD_REPAIR_DIFF');
 const fullSHA=sha(run('git',['diff','--no-ext-diff',BASE,CANDIDATE]));
 const proposal={
