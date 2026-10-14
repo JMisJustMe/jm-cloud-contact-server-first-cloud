@@ -41,7 +41,7 @@ export async function createWorkerReturnLedger({dataPath}) {
   }
   let tail = Promise.resolve();
   const get = id => store.receipts.find(r => r.taskId === id) || null;
-  const submit = ({taskId, workerId, evidence, approvedTask}) => {
+  const submit = ({taskId, workerId, evidence, approvedTask, expectedControl}) => {
     const op = tail.then(async () => {
       if (!approvedTask || approvedTask.id !== taskId || !approvedTask.approved ||
           approvedTask.status !== 'READY_FOR_AGENT_ROUTE') {
@@ -59,13 +59,22 @@ export async function createWorkerReturnLedger({dataPath}) {
       if (old) return old.workerId === workerId && old.evidenceSha256 === evidenceSha256
         ? {status:'IDEMPOTENT_REPLAY', receipt:old}
         : {status:'CONFLICT', reason:'RESULT_ALREADY_RECORDED', receipt:old};
+      // Evidence is checked against live Cading and Magnifying Glass controls;
+      // extra worker-provided details remain observations, not attestations.
+      if (!expectedControl || evidence.taskId !== taskId ||
+          evidence.taskStatus !== approvedTask.status ||
+          evidence.remainRevision !== expectedControl.revision ||
+          evidence.remainDigest !== expectedControl.digest ||
+          evidence.destructiveAuthority !== false) {
+        return {status:'HOLD', reason:'EVIDENCE_NOT_BOUND_TO_GATEWAY_STATE'};
+      }
       const entry = {
         schema:SCHEMA, sequence:store.receipts.length+1,
         taskId, workerId, evidence, evidenceSha256,
         verifiedTaskStatus:approvedTask.status,
         verifiedApproval:true,
         event:'EXTERNAL_WORKER_RETURN_RECEIVED',
-        claimBoundary:'TASK_GATE_VERIFIED; WORKER_EVIDENCE_SUPPLIED; EXECUTION_NOT_INDEPENDENTLY_ATTESTED; ORIGINAL_TASK_NOT_COMPLETED',
+        claimBoundary:'TASK_AND_CONTROL_FIELDS_BOUND_TO_LIVE_GATEWAY; WORKER_EXTRA_FIELDS_UNATTESTED; JOB_EXECUTION_NOT_ATTESTED; ORIGINAL_TASK_NOT_COMPLETED',
         previousHash:store.headHash,
       };
       entry.hash = hashReceipt(entry);
