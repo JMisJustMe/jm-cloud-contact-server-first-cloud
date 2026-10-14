@@ -20,7 +20,7 @@ const insist=(ok,label)=>{if(!ok)throw Error('JM_PROPOSAL_ADMISSION_HOLD:'+label
 const read=async p=>JSON.parse(await fs.readFile(path.join(jobRoot,p),'utf8'));
 const run=(cmd,args)=>{
   const p=spawnSync(cmd,args,{cwd:sourceRoot,encoding:'utf8',timeout:120000,maxBuffer:5*1024*1024});
-  insist(p.status===0,'EXEC_'+cmd+'_'+(p.stderr||p.stdout||p.error?.message).slice(-550));
+  insist(p.status===0,'EXEC_'+cmd+'_'+(p.stderr||p.stdout||p.error?.message||'').slice(-550));
   return p.stdout.trim();
 };
 const seed=await read('job-manifest.json'),digest=await read('job-manifest-digest.json'),route=await read('sovereign-route.json');
