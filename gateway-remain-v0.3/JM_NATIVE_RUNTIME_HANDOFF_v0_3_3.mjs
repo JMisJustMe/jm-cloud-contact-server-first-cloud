@@ -51,7 +51,7 @@ async function seed(){
 async function worker(){
   const manifest=await readJson(manifestPath);
   const saved=await readJson(path.join(root,'job-manifest-digest.json'));
-  ensure(manifest.schema==='JM.CrossRunnerHandoff/0.3.2' && saved.sha256===hash(manifest),'SEED_CUSTODY');
+  ensure(manifest.schema==='JM.NativeWorkHandoff/0.3.3' && saved.sha256===hash(manifest),'SEED_CUSTODY');
   const proc=spawnSync(process.execPath,['gateway-remain-v0.3/JM_NATIVE_RUNTIME_WORKER_v0_3_3.mjs'],{cwd:process.cwd(),encoding:'utf8',timeout:240000,maxBuffer:5*1024*1024});
   ensure(proc.status===0,'NATIVE_EXECUTION_'+(proc.stderr||proc.stdout).slice(-1100));
   const native=await readJson(path.join(root,'native-work-report.json'));
