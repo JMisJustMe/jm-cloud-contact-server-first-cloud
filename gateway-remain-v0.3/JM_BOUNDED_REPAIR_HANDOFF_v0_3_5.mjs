@@ -106,7 +106,8 @@ async function recover(){
     ensure(task.json.task?.status===manifest.approvedStatus && task.json.task?.approved===true,'TASK_DRIFT');
     const workerCannotApprove=await api('/api/v1/tasks/'+manifest.taskId+'/approve',{method:'POST',token:tokens.worker,body:{}});
     ensure(workerCannotApprove.status===401,'WORKER_BECAME_HUMAN');
-    const evidence={kind:'JM_BOUNDED_AUTO_REPAIR',taskId:manifest.taskId,taskStatus:task.json.task.status,remainRevision:control.json.control.revision,remainDigest:control.json.control.digest,destructiveAuthority:false,externalReportSha256:hash(report),sourceRepository:manifest.sourceRepository,sourceCommit:manifest.sourceCommit,decision:report.repair.decision,sourceDiffSha256:report.repair.sourceDiffSha256,changedFilesCount:1,workerTests:report.repair.checks,publishedSource:false,sourceWriteAuthority:false}
+    const evidence={kind:'JM_BOUNDED_AUTO_REPAIR',taskId:manifest.taskId,taskStatus:task.json.task.status,remainRevision:control.json.control.revision,remainDigest:control.json.control.digest,destructiveAuthority:false,externalReportSha256:hash(report),sourceRepository:manifest.sourceRepository,sourceCommit:manifest.sourceCommit,decision:report.repair.decision,sourceDiffSha256:report.repair.sourceDiffSha256,changedFilesCount:1,workerTests:report.repair.checks,publishedSource:false,sourceWriteAuthority:false};
+    const returned=await api('/remain/job-returns',{method:'POST',token:tokens.worker,body:{taskId:manifest.taskId,workerId:'jm-atomic-repair-worker-v035',evidence}});
     ensure(returned.status===201 && returned.json.status==='RETURN_RECORDED','RETURN_NOT_RECORDED');
     receiptHash=returned.json.receipt.hash;
     const repeat=await api('/remain/job-returns',{method:'POST',token:tokens.worker,body:{taskId:manifest.taskId,workerId:'jm-atomic-repair-worker-v035',evidence}});
