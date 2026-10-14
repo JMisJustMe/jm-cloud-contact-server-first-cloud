@@ -3,6 +3,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash, timingSafeEqual, randomUUID } from 'node:crypto';
+import { createWorkerReturnLedger } from './JM_WORKER_RETURN_LEDGER_v0_3_1.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const STORE_SCHEMA = 'jm.sovereign-agent-gateway.remain-store/0.3';
@@ -231,6 +232,8 @@ export async function startRemainService(options = {}) {
   const authorityToken = options.authorityToken || process.env.JM_GATEWAY_AUTHORITY_TOKEN || process.env.JM_GATEWAY_TOKEN;
   if (!clientToken) throw new Error('JM_GATEWAY_CLIENT_TOKEN_REQUIRED');
   if (!authorityToken) throw new Error('JM_GATEWAY_AUTHORITY_TOKEN_REQUIRED');
+  const workerToken = options.workerToken || process.env.JM_REMAIN_WORKER_TOKEN || null;
+  if (workerToken && (workerToken === clientToken || workerToken === authorityToken)) throw new Error('WORKER_TOKEN_MUST_BE_SEPARATE_FROM_HUMAN_AUTHORITY');
 
   const dataRoot = path.resolve(options.dataRoot || process.env.JM_REMAIN_DATA_ROOT || '/data');
   const remain = await createRemainControl({
@@ -255,6 +258,9 @@ export async function startRemainService(options = {}) {
     gateway.server.listen(0, '127.0.0.1', resolve);
   });
   const innerPort = gateway.server.address().port;
+  const workerReturns = await createWorkerReturnLedger({
+    dataPath: options.workerReturnDataPath || path.join(dataRoot, 'JM_WORKER_RETURNS_v0_3_1.json'),
+  });
 
   const server = http.createServer(async (req, res) => {
     const requestId = randomUUID();
@@ -271,13 +277,32 @@ export async function startRemainService(options = {}) {
           engineSha256: remain.engineSha256,
           startupRecovered: remain.startupRecovered,
           destructiveAuthority: false,
+          workerReturn: { enabled: Boolean(workerToken), verified: workerReturns.verify().ok, count: workerReturns.count(), startupRecovered: workerReturns.startupRecovered },
           requestId,
         });
       }
       const token = bearer(req);
       const clientOk = safeTokenMatch(token, clientToken) || safeTokenMatch(token, authorityToken);
       const authorityOk = safeTokenMatch(token, authorityToken);
+      const workerOk = workerToken ? safeTokenMatch(token, workerToken) : false;
+      // The external worker can RETURN EVIDENCE, but cannot approve, dispatch or advance control.
+      if (url.pathname === '/remain/job-returns' && req.method === 'POST') {
+        if (!workerToken) return json(res, 503, { error:'WORKER_RETURN_DISABLED', requestId });
+        if (!workerOk) return json(res, 401, { error:'WORKER_TOKEN_REQUIRED', requestId });
+        const body = await readJson(req);
+        const task = typeof body.taskId === 'string' ? gateway.runtime.invoke('taskStatus', [body.taskId]) : null;
+        const result = await workerReturns.submit({taskId:body.taskId, workerId:body.workerId, evidence:body.evidence, approvedTask:task, expectedControl:remain.control()});
+        const status = result.status === 'RETURN_RECORDED' ? 201 : result.status === 'IDEMPOTENT_REPLAY' ? 200 : result.status === 'CONFLICT' ? 409 : 422;
+        return json(res, status, {...result, requestId});
+      }
       if (url.pathname.startsWith('/remain/') && !clientOk) return json(res, 401, { error: 'UNAUTHORISED', requestId });
+      if (url.pathname === '/remain/job-returns' && req.method === 'GET') {
+        const taskId = url.searchParams.get('taskId');
+        if (!taskId || taskId.length > 128) return json(res, 400, {error:'taskId_required',requestId});
+        const receipt = workerReturns.get(taskId);
+        return receipt ? json(res, 200, {receipt, verified:workerReturns.verify().ok, requestId}) :
+          json(res, 404, {error:'RETURN_NOT_FOUND', requestId});
+      }
       if (req.method === 'GET' && url.pathname === '/remain/control') {
         const control = remain.control();
         return json(res, 200, { control, requestId }, { etag: `"${control.digest}"`, 'x-jm-control-revision': String(control.revision) });
@@ -330,7 +355,7 @@ export async function startRemainService(options = {}) {
     server.once('error', reject);
     server.listen(port, host, resolve);
   });
-  return { server, remain, gateway, innerPort, host, port };
+  return { server, remain, gateway, workerReturns, innerPort, host, port };
 }
 
 if (import.meta.url === new URL(`file://${process.argv[1] || ''}`).href) {
