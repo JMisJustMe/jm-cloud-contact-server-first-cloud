@@ -1,0 +1,91 @@
+name: JM v0.3.3 actual sovereign-runtime work — three cloud runners
+on:
+  push:
+    branches:
+      - jm-sovereign-agent-gateway-v0.3.3-native-work-20261014
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: jm-v033-native-work
+  cancel-in-progress: false
+jobs:
+  seed-bound-task:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install inherited Gateway dependencies
+        run: npm install --no-audit --no-fund
+      - name: Verify protected Gateway and inherited worker-return tests
+        run: npm run preflight
+      - name: Create synthetic authorised JM native-code job and preserve state
+        run: node gateway-remain-v0.3/JM_NATIVE_RUNTIME_HANDOFF_v0_3_3.mjs seed
+      - name: Pass ephemeral state to separate cloud runner
+        uses: actions/upload-artifact@v4
+        with:
+          name: jm-v033-native-job
+          path: .handoff/
+          include-hidden-files: true
+          retention-days: 1
+          if-no-files-found: error
+  execute-real-jm-code:
+    needs: seed-bound-task
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Recover actual JM Sovereign Agent source at fixed commit
+        uses: actions/checkout@v4
+        with:
+          repository: JMisJustMe/JM-cading-lab
+          ref: e26d1ce5605016ea94a670596ab12c52b0499d33
+          path: native-src
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/download-artifact@v4
+        with:
+          name: jm-v033-native-job
+          path: .handoff
+      - name: Execute actual JM Node/Python runtime, conformance and negative control
+        run: node gateway-remain-v0.3/JM_NATIVE_RUNTIME_HANDOFF_v0_3_3.mjs work
+      - name: Return only bounded source and test witness
+        uses: actions/upload-artifact@v4
+        with:
+          name: jm-v033-native-result
+          path: .handoff/worker-report.json
+          retention-days: 1
+          if-no-files-found: error
+  recover-and-receipt:
+    needs: execute-real-jm-code
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install existing gateway implementation
+        run: npm install --no-audit --no-fund
+      - uses: actions/download-artifact@v4
+        with:
+          name: jm-v033-native-job
+          path: .handoff
+      - uses: actions/download-artifact@v4
+        with:
+          name: jm-v033-native-result
+          path: .handoff
+      - name: Recover original authority, bind native test result and restart
+        run: node gateway-remain-v0.3/JM_NATIVE_RUNTIME_HANDOFF_v0_3_3.mjs recover
+      - name: Keep minimal exact result (no full-source duplication)
+        uses: actions/upload-artifact@v4
+        with:
+          name: jm-v033-native-recovery-receipt
+          path: .handoff/recovery-result.json
+          retention-days: 3
+          if-no-files-found: error
