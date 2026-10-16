@@ -1,9 +1,5 @@
+import {runMarketAnalysis} from './JM_MARKET_ANALYSIS_RUNNER.mjs';
 import {parseNumericObservation} from './JM_MARKET_SERIES_PARSE_v0_1.mjs';
-import {quantifyClock} from './JM_MARKET_CLOCK_ENGINE_v0_3.mjs';
-import {stressClockPair} from './JM_MARKET_CLOCK_STRESS_v0_1.mjs';
-import {nullField} from './JM_MARKET_NULL_FIELD_v0_1.mjs';
-import {lagRarity} from './JM_MARKET_LAG_RARITY_v0_1.mjs';
-import {confirmFrozenLag} from './JM_MARKET_FROZEN_LAG_CONFIRM_v0_1.mjs';
 import {splitDateRange,mergeHistoricalRows} from './JM_MARKET_HISTORY_RECOVERY_v0_1.mjs';
 import {evaluateProspectiveClock} from './JM_MARKET_PROSPECTIVE_CLOCK_v0_1.mjs';
 import {cadenceProfile} from './JM_MARKET_CADENCE_v0_1.mjs';
@@ -53,13 +49,13 @@ async function clockTest(sourceA,seriesA,sourceB,seriesB,from,to,maxLag,threshol
  if(!da||!db)throw Error('source/series not whitelisted');
  const [a,b]=await Promise.all([historySeries(sa,aa,from,to),historySeries(sb,bb,from,to)]);
  const th=threshold==null||threshold===''?da.defaultThreshold:+threshold;
- const result=quantifyClock(a.rows,b.rows,{maxLag,threshold:th,frictionBps,sourceTransform:da.transform,targetTransform:db.transform});
+ const result=await runMarketAnalysis('quantifyClock',[a.rows,b.rows,{maxLag,threshold:th,frictionBps,sourceTransform:da.transform,targetTransform:db.transform}]);
  return {ok:true,...result,source:{source:a.source,series:a.series,label:a.label,count:a.count,transform:da.transform,defaultThreshold:da.defaultThreshold},target:{source:b.source,series:b.series,label:b.label,count:b.count,transform:db.transform},from:a.from,to:a.to,durationMs:Date.now()-t};
 }
 async function clockMatrix(source='fred',from,to,maxLag=20,frictionBps=20){
  const t=Date.now(),src=String(source||'fred').toLowerCase(),defs=HISTORY[src]?.series;if(!defs)throw Error('matrix source not whitelisted');
  const names=Object.keys(defs),series={};await Promise.all(names.map(async name=>{try{series[name]=await historySeries(src,name,from,to)}catch(e){series[name]={ok:false,source:src,series:name,error:String(e.message||e),rows:[]}}}));
- const results=[];for(const a of names)for(const b of names){if(a===b)continue;const A=series[a],B=series[b],da=defs[a],db=defs[b];if(!A?.ok||!B?.ok)continue;try{const q=quantifyClock(A.rows,B.rows,{maxLag,threshold:da.defaultThreshold,frictionBps,sourceTransform:da.transform,targetTransform:db.transform});results.push({source:a,target:b,sourceLabel:da.label,targetLabel:db.label,sourceTransform:da.transform,targetTransform:db.transform,lagBars:q.lagBars,observedLagHours:q.observedLagHours,clockBand:q.clockBand,trainingCorrelation:q.trainingCorrelation,direction:q.direction,validationN:q.validation.n,testN:q.test.n,validationAssociationMean:q.validation.associationMean,testAssociationMean:q.test.associationMean,historicalSurvivalCandidate:q.historicalSurvivalCandidate,mismatchedClockCandidate:q.mismatchedClockCandidate,paperSurvivalCandidate:q.paperSurvivalCandidate})}catch(e){results.push({source:a,target:b,error:String(e.message||e),historicalSurvivalCandidate:false,mismatchedClockCandidate:false,paperSurvivalCandidate:false})}}
+ const results=[];for(const a of names)for(const b of names){if(a===b)continue;const A=series[a],B=series[b],da=defs[a],db=defs[b];if(!A?.ok||!B?.ok)continue;try{const q=await runMarketAnalysis('quantifyClock',[A.rows,B.rows,{maxLag,threshold:da.defaultThreshold,frictionBps,sourceTransform:da.transform,targetTransform:db.transform}]);results.push({source:a,target:b,sourceLabel:da.label,targetLabel:db.label,sourceTransform:da.transform,targetTransform:db.transform,lagBars:q.lagBars,observedLagHours:q.observedLagHours,clockBand:q.clockBand,trainingCorrelation:q.trainingCorrelation,direction:q.direction,validationN:q.validation.n,testN:q.test.n,validationAssociationMean:q.validation.associationMean,testAssociationMean:q.test.associationMean,historicalSurvivalCandidate:q.historicalSurvivalCandidate,mismatchedClockCandidate:q.mismatchedClockCandidate,paperSurvivalCandidate:q.paperSurvivalCandidate})}catch(e){results.push({source:a,target:b,error:String(e.message||e),historicalSurvivalCandidate:false,mismatchedClockCandidate:false,paperSurvivalCandidate:false})}}
  const completed=results.filter(x=>!x.error),candidates=completed.filter(x=>x.mismatchedClockCandidate).sort((x,y)=>(y.lagBars-x.lagBars)||Math.abs(y.trainingCorrelation)-Math.abs(x.trainingCorrelation)),sameBar=completed.filter(x=>x.historicalSurvivalCandidate&&!x.mismatch&&x.lagBars===0);
  return {ok:true,schema:'JM.MarketClockMatrix/0.1',source:src,series:names,seriesCount:names.length,orderedPairs:results.length,completedPairs:completed.length,failedPairs:results.length-completed.length,mismatchedCandidates:candidates,sameBarCandidates:sameBar,results,durationMs:Date.now()-t,claimBoundary:'Batch historical screening only. Pairwise survival does not establish causation, live persistence, execution, or capital authority.'};
 }
@@ -68,7 +64,7 @@ async function clockStress(source,seriesA,seriesB,to,opts={}){
  if(!da||!db||a===b)throw Error('stress source/series pair not whitelisted or identical');
  const T=ymd(to)||new Date().toISOString().slice(0,10),d=new Date(T+'T00:00:00Z'),fromDate=new Date(d);fromDate.setUTCFullYear(fromDate.getUTCFullYear()-20);const F=fromDate.toISOString().slice(0,10);
  const [A,B]=await Promise.all([historySeries(src,a,F,T),historySeries(src,b,F,T)]);
- const q=stressClockPair(A.rows,B.rows,da,db,{toMs:Date.parse(T+'T00:00:00Z'),windowsYears:opts.windowsYears,lagCaps:opts.lagCaps,thresholdMultipliers:opts.thresholdMultipliers,rollingWindowYears:opts.rollingWindowYears,rollingStepYears:opts.rollingStepYears,placeboShifts:opts.placeboShifts,frictionBps:opts.frictionBps,screenedPairs:opts.screenedPairs});
+ const q=await runMarketAnalysis('stressClockPair',[A.rows,B.rows,da,db,{toMs:Date.parse(T+'T00:00:00Z'),windowsYears:opts.windowsYears,lagCaps:opts.lagCaps,thresholdMultipliers:opts.thresholdMultipliers,rollingWindowYears:opts.rollingWindowYears,rollingStepYears:opts.rollingStepYears,placeboShifts:opts.placeboShifts,frictionBps:opts.frictionBps,screenedPairs:opts.screenedPairs}]);
  return {ok:true,source:{source:src,series:a,label:da.label,count:A.count,transform:da.transform,defaultThreshold:da.defaultThreshold},target:{source:src,series:b,label:db.label,count:B.count,transform:db.transform,defaultThreshold:db.defaultThreshold},...q,durationMs:Date.now()-t};
 }
 async function clockNullField(source='fred',from,to,opts={}){
@@ -76,14 +72,14 @@ async function clockNullField(source='fred',from,to,opts={}){
  const range=dateRange(from,to),names=Object.keys(defs),series={},errors=[];
  await Promise.all(names.map(async name=>{try{const q=await historySeries(src,name,range.from,range.to);series[name]=q.rows}catch(e){errors.push({series:name,error:String(e.message||e)});series[name]=[]}}));
  if(errors.length)throw Error('null-field source fetch failed: '+errors.map(x=>x.series+': '+x.error).join('; '));
- const q=nullField(series,defs,{maxLag:opts.maxLag,familyRounds:opts.familyRounds,pairPlacebos:opts.pairPlacebos,minShift:opts.minShift,frictionBps:opts.frictionBps});
+ const q=await runMarketAnalysis('nullField',[series,defs,{maxLag:opts.maxLag,familyRounds:opts.familyRounds,pairPlacebos:opts.pairPlacebos,minShift:opts.minShift,frictionBps:opts.frictionBps}]);
  return {ok:true,source:src,series:names,from:range.from,to:range.to,...q,durationMs:Date.now()-t};
 }
 async function clockLagRarity(source,seriesA,seriesB,from,to,opts={}){
  const t=Date.now(),src=String(source||'fred').toLowerCase(),a=String(seriesA||'').toUpperCase(),b=String(seriesB||'').toUpperCase(),defs=HISTORY[src]?.series,da=defs?.[a],db=defs?.[b];
  if(!da||!db||a===b)throw Error('lag-rarity source/series pair not whitelisted or identical');
  const [A,B]=await Promise.all([historySeries(src,a,from,to),historySeries(src,b,from,to)]);
- const q=lagRarity(A.rows,B.rows,da,db,{maxLag:opts.maxLag,frictionBps:opts.frictionBps,placeboCount:opts.placeboCount,minShift:opts.minShift});
+ const q=await runMarketAnalysis('lagRarity',[A.rows,B.rows,da,db,{maxLag:opts.maxLag,frictionBps:opts.frictionBps,placeboCount:opts.placeboCount,minShift:opts.minShift}]);
  return {ok:true,source:{source:src,series:a,label:da.label,count:A.count,transform:da.transform,defaultThreshold:da.defaultThreshold},target:{source:src,series:b,label:db.label,count:B.count,transform:db.transform,defaultThreshold:db.defaultThreshold},from:A.from,to:A.to,...q,durationMs:Date.now()-t};
 }
 async function clockFrozenConfirm(source,seriesA,seriesB,windows,opts={}){
@@ -92,7 +88,7 @@ async function clockFrozenConfirm(source,seriesA,seriesB,windows,opts={}){
  const lagBars=clamp(Math.trunc(Number.isFinite(+opts.lagBars)?+opts.lagBars:0),0,90),direction=String(opts.direction||'same').toLowerCase()==='inverse'?'inverse':'same',frictionBps=clamp(Number.isFinite(+opts.frictionBps)?+opts.frictionBps:20,0,10000);
  const parsed=(Array.isArray(windows)?windows:String(windows||'').split(';')).map(x=>String(x).trim()).filter(Boolean).map(x=>{const [from,to]=x.split('..');if(!ymd(from)||!ymd(to)||Date.parse(from)>Date.parse(to))throw Error('invalid confirmation window '+x);return{from,to}});
  if(!parsed.length||parsed.length>8)throw Error('need 1..8 frozen confirmation windows');
- const results=[];for(const w of parsed){try{const [A,B]=await Promise.all([historySeriesResilient(src,a,w.from,w.to),historySeriesResilient(src,b,w.from,w.to)]),q=confirmFrozenLag(A.rows,B.rows,da,db,{lagBars,direction,frictionBps});results.push({ok:true,from:w.from,to:w.to,sourceCount:A.count,targetCount:B.count,sourceRecovery:A.recovery,targetRecovery:B.recovery,...q})}catch(e){results.push({ok:false,from:w.from,to:w.to,error:String(e.message||e),splitSurvival:false,paperSplitSurvival:false})}}
+ const results=[];for(const w of parsed){try{const [A,B]=await Promise.all([historySeriesResilient(src,a,w.from,w.to),historySeriesResilient(src,b,w.from,w.to)]),q=await runMarketAnalysis('confirmFrozenLag',[A.rows,B.rows,da,db,{lagBars,direction,frictionBps}]);results.push({ok:true,from:w.from,to:w.to,sourceCount:A.count,targetCount:B.count,sourceRecovery:A.recovery,targetRecovery:B.recovery,...q})}catch(e){results.push({ok:false,from:w.from,to:w.to,error:String(e.message||e),splitSurvival:false,paperSplitSurvival:false})}}
  const complete=results.filter(x=>x.ok),survived=complete.filter(x=>x.splitSurvival),paper=complete.filter(x=>x.paperSplitSurvival),recovered=complete.filter(x=>x.sourceRecovery?.mode!=='direct'||x.targetRecovery?.mode!=='direct');
  return {ok:true,schema:'JM.FrozenLagConfirmationSet/0.2',source:{source:src,series:a,label:da.label,transform:da.transform,defaultThreshold:da.defaultThreshold},target:{source:src,series:b,label:db.label,transform:db.transform,defaultThreshold:db.defaultThreshold},predeclared:{lagBars,direction,threshold:da.defaultThreshold},windowCount:parsed.length,completedWindows:complete.length,failedWindows:results.length-complete.length,recoveredWindows:recovered.length,contactComplete:complete.length===parsed.length,splitSurvivalWindows:survived.length,paperSplitSurvivalWindows:paper.length,allWindowsSplitSurvive:complete.length===parsed.length&&survived.length===parsed.length,results,durationMs:Date.now()-t,claimBoundary:'Lag and direction are frozen before each non-overlapping confirmation window is contacted. Transport recovery may split a requested window into non-overlapping fetch ranges without changing the frozen rule or evaluation window. These are retrospective independent historical windows, not prospective live proof, causation, execution evidence, or capital authority.'};
 }
