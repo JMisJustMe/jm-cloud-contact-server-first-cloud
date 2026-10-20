@@ -28,6 +28,23 @@ jobs:
         run: node qa/JM_CC_CP09_V05_DESCENDANT_INTEGRATION_QA.mjs
       - name: Production-mode CORS and authorization negative suite
         run: node --test qa/JM_CC_CP09_SECURITY_NEGATIVE.test.mjs
+      - name: Build actual isolated candidate Docker image (no deploy)
+        run: docker build --file CP09/Dockerfile --tag jm-cc-cp09:test .
+      - name: Run candidate container against loopback with dummy credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          CID=$(docker run --rm -d -p 127.0.0.1:18962:8791 \
+            -e JM_CLOUD_ADMIN_TOKEN=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA \
+            -e JM_CLOUD_SERVER_SECRET=SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS \
+            -e JM_CLOUD_ORIGINS=https://jm-cloud-contact-server-v05-cp09-stage.onrender.com \
+            jm-cc-cp09:test)
+          trap 'docker rm -f "$CID" >/dev/null 2>&1 || true' EXIT
+          for i in $(seq 1 40); do
+            if curl -fsS http://127.0.0.1:18962/ready > /tmp/cp09-ready.json; then break; fi
+            sleep 1
+          done
+          node --input-type=module -e "const u='http://127.0.0.1:18962'; for(const p of ['/ready','/health','/meta','/profiles']){const r=await fetch(u+p); if(!r.ok)throw Error(p+':'+r.status); const j=await r.json();if(p==='/ready'&&!j.ready)throw Error('not ready');if(p==='/health'&&j.version!=='0.5.2-hc1')throw Error('version mismatch');console.log(p,r.status)}"
       - name: Preserve portable sources and candidate evidence
         uses: actions/upload-artifact@v4
         with:
@@ -46,3 +63,4 @@ jobs:
             market/
             zezu/
             JM_CLOUD_CONTACT_SERVER_CONTRACT_HOSTED_v0_5_1.json
+            CP09/
