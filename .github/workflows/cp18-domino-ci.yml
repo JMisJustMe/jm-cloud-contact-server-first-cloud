@@ -17,6 +17,6 @@ jobs:
       - name: Install only inherited server dependencies
         run: npm install --ignore-scripts --no-audit --no-fund
       - name: JM CP18 domino signed readback against actual inherited hosted v5
-        run: node --test CP18/jmcc-v5-passby.test.mjs
+        run: node --test CP18/jmcc-v5-passby.test.mjs CP18/jmcc-inherited-passbys.test.mjs
       - name: Existing hosted v5 regression suite
         run: npm test
