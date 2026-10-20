@@ -1,0 +1,17 @@
+{
+  "schema": "JMCC.DominoCarrierReceipt/1.0",
+  "id": "JMCC-CP17-DOMINO-20261020-ROUTE01",
+  "stage": "GMAIL_TO_OUTLOOK_RECEIVED",
+  "source": "gmail",
+  "target": "outlook",
+  "receivedAt": "2026-10-20T22:13:26Z",
+  "classification": "NON_SENSITIVE",
+  "assertions": {
+    "gmailSendAcknowledged": true,
+    "outlookMessageFetched": true,
+    "recipientVerified": true,
+    "markerInBody": true
+  },
+  "next": "GITHUB_READBACK",
+  "metadataOnly": true
+}
