@@ -3,6 +3,8 @@ on:
   push:
     branches: [jm-cc-cp14-dual-carrier-proof]
   workflow_dispatch:
+  pull_request:
+    branches: [jm-cc-cp09-v05-security-descendant]
 permissions:
   contents: read
 jobs:
