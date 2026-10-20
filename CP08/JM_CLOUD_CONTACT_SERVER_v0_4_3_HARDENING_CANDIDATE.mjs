@@ -28,7 +28,9 @@ const startedAt=new Date().toISOString();
 if(!ADMIN_TOKEN||!SERVER_SECRET){console.error(`${NAME} ${VERSION}: JM_CLOUD_ADMIN_TOKEN and JM_CLOUD_SERVER_SECRET required`);process.exit(2)}
 if(MODE==='production'){
   if(ADMIN_TOKEN.length<32||SERVER_SECRET.length<32){console.error(`${NAME} ${VERSION}: production requires admin token and server secret >=32 characters`);process.exit(2)}
-  if(ORIGINS.length===0||ORIGINS.some(o=>{try{const u=new URL(o);return u.protocol!=='https:'||u.origin!==o}catch{return true}})){console.error(`${NAME} ${VERSION}: production requires explicit canonical HTTPS JM_CLOUD_ORIGINS`);process.exit(2)}
+  if(ORIGINS.length===0||ORIGINS.some(o=>{try{const u=new URL(o);return u.protocol!=='https:'||u.origin!==o}catch{return true}})){
+    console.error(`${NAME} ${VERSION}: production requires explicit canonical HTTPS JM_CLOUD_ORIGINS (self/wildcard disallowed)`);process.exit(2)
+  }
 }
 
 let db={schema:SCHEMA,version:4,nextCommandId:1,nextSignalId:1,spaces:{}};
@@ -40,7 +42,7 @@ const b64=b=>Buffer.from(b).toString('base64url');
 const token=(p='jmcl_')=>p+b64(crypto.randomBytes(32));
 const safe=s=>/^[A-Za-z0-9._:-]{1,128}$/.test(String(s||''));
 const canonical=v=>v===null||typeof v!=='object'?JSON.stringify(v):Array.isArray(v)?'['+v.map(canonical).join(',')+']':'{'+Object.keys(v).sort().map(k=>JSON.stringify(k)+':'+canonical(v[k])).join(',')+'}';
-// CP08 candidate: equal-size digests for timingSafeEqual; hash work remains input-length dependent.
+// Security hardening descendant CP07: fixed-size digest comparison; long inputs still cost more to hash.
 const timing=(a,b)=>{const A=crypto.createHash('sha256').update(String(a),'utf8').digest(),B=crypto.createHash('sha256').update(String(b),'utf8').digest();return crypto.timingSafeEqual(A,B)};
 const tokenHash=t=>hmac(`member-token\n${t}`);
 const legacyTokenHash=t=>sha(`${SERVER_SECRET}\n${t}`);
@@ -58,10 +60,14 @@ function isAdmin(req){return timing(bearer(req),ADMIN_TOKEN)}
 function memberByToken(space,t){if(!t)return null;const current=tokenHash(t),legacy=legacyTokenHash(t);for(const [id,m] of Object.entries(space.members||{})){if(m.revokedAt)continue;const scheme=m.tokenScheme||'legacy-v0.2';const candidate=scheme==='hmac-sha256-v1'?current:legacy;if(timing(m.tokenHash,candidate))return{id,...m}}return null}
 function authMember(req,space){return memberByToken(space,bearer(req))}
 function originAllowed(req,o){
+  // Reject non-origin values (paths, credentials, 'null', malformed URLs).
   if(MODE!=='production'&&ORIGINS.includes('*'))return '*';
   let u;try{u=new URL(o);if(u.origin!==o)return ''}catch{return ''}
   if(ORIGINS.includes(o))return o;
-  if(MODE!=='production'&&ORIGINS.includes('self')&&u.host===String(req.headers.host||''))return o;
+  // Legacy 'self' contact is allowed only in development, never production.
+  if(MODE!=='production'&&ORIGINS.includes('self')){
+    if(u.host===String(req.headers.host||''))return o;
+  }
   return '';
 }
 function cors(req){const o=String(req.headers.origin||''),allow=originAllowed(req,o);const headers={'Vary':'Origin','Access-Control-Allow-Headers':'Authorization, Content-Type, X-JM-Request-ID','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer','Permissions-Policy':'camera=(), microphone=(), geolocation=()','Cross-Origin-Resource-Policy':'same-site'};if(allow)headers['Access-Control-Allow-Origin']=allow;return headers}
