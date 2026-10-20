@@ -35,3 +35,6 @@ jobs:
             CP08/security_regression.test.mjs
             CP08/render.candidate.yaml
             CP08/README_HOLD.md
+            public/
+            deploy/Dockerfile
+            package.json
