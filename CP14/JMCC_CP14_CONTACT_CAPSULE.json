@@ -1,0 +1,25 @@
+{
+  "contact": {
+    "action": "CONTACT_PROBE",
+    "authority": {
+      "execution": "none",
+      "requires_owner_approval_for_send": true,
+      "store_secrets": false
+    },
+    "correlation_id": "839871690ae6c1f1ae0f6cb2383ac0d1",
+    "expires_at": "2026-10-22T21:04:34Z",
+    "issued_at": "2026-10-20T21:04:34Z",
+    "mission_id": "JMCC-CP14-EMAIL-GITHUB-CONTACT",
+    "payload": {
+      "classification": "non-sensitive",
+      "purpose": "Prove source-preserving dual transport via GitHub and Gmail draft; no model calls or mail sent",
+      "requires_external_execution": false
+    },
+    "schema": "JMCC.ContactEnvelope/1.0",
+    "sender": "JMCC_OWNER_CONTROLLED",
+    "target": "CONTACT_ROUTER_TEST"
+  },
+  "contact_sha256": "46b34880776e5585d0ebb5f93f5b016b972454db4a2c6f69158f62f9fc2b6720",
+  "hash_scope": "canonical compact JSON of contact with keys sorted; UTF-8",
+  "verification": "transport and consistency only, NOT signed sender identity"
+}
