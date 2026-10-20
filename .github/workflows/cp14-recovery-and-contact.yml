@@ -1,0 +1,29 @@
+name: CP14 isolated recovery and capsule check
+on:
+  push:
+    branches: [jm-cc-cp14-dual-carrier-proof]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  restore-synthetic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify stable JM contact capsule schema and digest
+        run: |
+          python3 - <<'PY'
+          import json,hashlib
+          x=json.load(open('CP14/JMCC_CP14_CONTACT_CAPSULE.json'))
+          c=x['contact']
+          assert c['schema']=='JMCC.ContactEnvelope/1.0'
+          assert c['action']=='CONTACT_PROBE'
+          assert c['authority']['requires_owner_approval_for_send'] is True
+          assert c['authority']['execution']=='none'
+          canon=json.dumps(c,sort_keys=True,separators=(',',':')).encode()
+          assert hashlib.sha256(canon).hexdigest()==x['contact_sha256']
+          print('CP14 GitHub original source contact-capsule integrity PASS')
+          PY
+      - name: Restore synthetic directory archive in disposable Postgres 18
+        run: bash CP14/restore_synthetic_ci.sh
