@@ -33,3 +33,5 @@ jobs:
             render.yaml
             CP08/JM_CLOUD_CONTACT_SERVER_v0_4_3_HARDENING_CANDIDATE.mjs
             CP08/security_regression.test.mjs
+            CP08/render.candidate.yaml
+            CP08/README_HOLD.md
