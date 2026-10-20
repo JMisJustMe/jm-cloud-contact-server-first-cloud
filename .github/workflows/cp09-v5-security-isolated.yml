@@ -1,0 +1,48 @@
+name: JM CC CP09 v5 Security Descendant - Isolated QA
+on:
+  push:
+    branches: [jm-cc-cp09-v05-security-descendant]
+  pull_request:
+    branches: [hosted-v0.5-descendant]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  cp09-v5:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install project dependencies
+        run: npm install --no-audit --no-fund --ignore-scripts
+      - name: Check original plus candidate syntax
+        run: |
+          node --check JM_CLOUD_CONTACT_SERVER_v0_5_1_HOSTED_DESCENDANT.mjs
+          node --check JM_CLOUD_CONTACT_SERVER_v0_5_2_SECURITY_CANDIDATE.mjs
+      - name: Baseline existing full suite on untouched v0.5.1-hosted
+        run: npm test
+      - name: Full 27-check inherited v5 integration on candidate
+        run: node qa/JM_CC_CP09_V05_DESCENDANT_INTEGRATION_QA.mjs
+      - name: Production-mode CORS and authorization negative suite
+        run: node --test qa/JM_CC_CP09_SECURITY_NEGATIVE.test.mjs
+      - name: Preserve portable sources and candidate evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: jm-cc-cp09-v5-source-test-binder
+          retention-days: 30
+          path: |
+            JM_CLOUD_CONTACT_SERVER_v0_5_1_HOSTED_DESCENDANT.mjs
+            JM_CLOUD_CONTACT_SERVER_v0_5_2_SECURITY_CANDIDATE.mjs
+            render.yaml
+            package.json
+            deploy/Dockerfile
+            qa/
+            profiles/
+            mesh/
+            game/
+            market/
+            zezu/
+            JM_CLOUD_CONTACT_SERVER_CONTRACT_HOSTED_v0_5_1.json
