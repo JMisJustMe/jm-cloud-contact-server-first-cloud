@@ -22,3 +22,14 @@ jobs:
         run: node --check CP08/JM_CLOUD_CONTACT_SERVER_v0_4_3_HARDENING_CANDIDATE.mjs
       - name: Real server loopback HTTP regression (dummy credentials)
         run: node --test CP08/security_regression.test.mjs
+
+      - name: Save CP08 portable source and QA evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: jm-cc-cp08-source-and-tests
+          retention-days: 30
+          path: |
+            JM_CLOUD_CONTACT_SERVER_v0_4_2.mjs
+            render.yaml
+            CP08/JM_CLOUD_CONTACT_SERVER_v0_4_3_HARDENING_CANDIDATE.mjs
+            CP08/security_regression.test.mjs
