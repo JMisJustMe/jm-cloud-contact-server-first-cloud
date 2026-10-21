@@ -13,8 +13,8 @@ let live=null;
 const providerCalls=[];
 const fakeProvider=async(url,opts)=>{
   providerCalls.push({url,method:opts.method,body:JSON.parse(opts.body)});
-  if(url.includes('googleapis.com'))return {ok:true,json:async()=>({candidates:[{content:{parts:[{text:'Gemini analysis: synthetic evidence'}]}}]})};
-  if(url.includes('api.openai.com'))return {ok:true,json:async()=>({output:[{type:'message',content:[{type:'output_text',text:'OpenAI synthesis: no action authorised'}]}]})};
+  if(url.includes('googleapis.com'))return {ok:true,json:async()=>({candidates:[{finishReason:'STOP',content:{parts:[{text:'Gemini analysis: synthetic evidence'}]}}]})};
+  if(url.includes('api.openai.com'))return {ok:true,json:async()=>({status:'completed',output:[{type:'message',content:[{type:'output_text',text:'OpenAI synthesis: no action authorised'}]}]})};
   throw new Error('UNKNOWN_PROVIDER');
 };
 const opts={host,port,dataRoot:root,clientToken:client,authorityToken:human,
@@ -69,6 +69,9 @@ try {
   equalStatus(result,200,'status read');
   assert.equal(result.data.item.outputSha256,first.data.outputSha256);
   assert.equal(result.data.verified,true);
+  assert.equal(result.data.item.stages.length,2,'two independent provider stage receipts');
+  assert.equal(result.data.item.stages[0].provider,'gemini');
+  assert.equal(result.data.item.stages[1].provider,'openai');
   equalStatus(await post('/remain/cross-ai/run',human,{taskId:id,...authority}),200,'idempotent run');
   assert.equal(providerCalls.length,calls+2,'idempotence MUST not bill providers again');
 
