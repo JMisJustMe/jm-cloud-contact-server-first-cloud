@@ -26,6 +26,9 @@ function verify(store) {
   for (const [id,t] of Object.entries(store?.tasks||{})) {
     if (t.taskId!==id || !['IN_FLIGHT','COMPLETE','HOLD'].includes(t.status)) errors.push('TASK');
     if (t.status==='COMPLETE' && t.outputSha256!==sha(t.output)) errors.push('OUTPUT_HASH');
+    const last = (store?.journal||[]).filter(e=>e.taskId===id).at(-1);
+    if (!last || last.status!==t.status) errors.push('TASK_JOURNAL_STATE');
+    if (t.status==='COMPLETE' && last?.outputSha256!==t.outputSha256) errors.push('TASK_JOURNAL_OUTPUT_BINDING');
   }
   return {ok:errors.length===0, errors, headHash:prev};
 }
@@ -90,9 +93,6 @@ export async function createCrossAiRelay({dataPath,enabled=false,geminiKey,opena
     if(!/^[a-zA-Z0-9._-]{1,100}$/.test(cfg.geminiModel)||!/^[a-zA-Z0-9._-]{1,100}$/.test(cfg.openaiModel))
       return {status:'HOLD',reason:'MODEL_IDENTIFIER_INVALID'};
     if(typeof taskId!=='string'||!/^[a-zA-Z0-9._-]{1,128}$/.test(taskId)) return {status:'HOLD',reason:'TASK_ID_INVALID'};
-    const existing=store.tasks[taskId];
-    if(existing) return existing.status==='COMPLETE' ? {status:'IDEMPOTENT_REPLAY',receipt:store.headHash,output:existing.output,outputSha256:existing.outputSha256} :
-      {status:'HOLD',reason:'PRIOR_ATTEMPT_REQUIRES_RECONCILIATION',previous:existing.status};
     if(!approvedTask||approvedTask.id!==taskId||approvedTask.approved!==true||approvedTask.dispatched!==true||approvedTask.status!=='READY_FOR_AGENT_ROUTE')
       return {status:'HOLD',reason:'HUMAN_FINAL_APPROVAL_AND_DISPATCH_REQUIRED'};
     const chain=ALLOWED[approvedTask.agent];
@@ -101,6 +101,15 @@ export async function createCrossAiRelay({dataPath,enabled=false,geminiKey,opena
       return {status:'HOLD',reason:'TASK_PROMPT_OUT_OF_BOUNDS'};
     if(!control||expectedRevision!==control.revision||expectedDigest!==control.digest||control.authority?.destructive_enabled!==false)
       return {status:'HOLD',reason:'MAGNIFYING_CONTROL_STALE_OR_UNSAFE'};
+    const existing=store.tasks[taskId];
+    if(existing) {
+      if(existing.promptSha256!==sha(approvedTask.prompt) || existing.controlDigest!==control.digest ||
+         canon(existing.chain)!==canon(chain))
+        return {status:'HOLD',reason:'TASK_IDENTITY_CONFLICT'};
+      return existing.status==='COMPLETE' ?
+        {status:'IDEMPOTENT_REPLAY',receipt:store.headHash,output:existing.output,outputSha256:existing.outputSha256} :
+        {status:'HOLD',reason:'PRIOR_ATTEMPT_REQUIRES_RECONCILIATION',previous:existing.status};
+    }
     await save(taskId,'IN_FLIGHT',{controlDigest:control.digest,promptSha256:sha(approvedTask.prompt),chain});
     try {
       const taskPrompt=approvedTask.prompt;
