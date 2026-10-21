@@ -12,8 +12,8 @@ const returned={schema:RETURN_SCHEMA,claimedProvider:'gemini',challengeId:reques
   nonce:request.nonce,sourceSha256:digest,analysis:'Synthetic sample summary (not from Gemini).'};
 const verify=(r=request,x=returned,b=source)=>verifySourceReturn({request:r,returned:x,sourceBytes:b});
 test('source bytes and nonce produce a narrowly scoped PASS',()=>{
- const x=verify();assert.equal(x.status,'SOURCE_RETURN_BYTES_BOUND');assert.equal(x.sourceContactVerified,true);
- assert.equal(x.providerIdentityVerified,false);assert.equal(x.providerExecutionVerified,false);
+ const x=verify();assert.equal(x.status,'SOURCE_RETURN_BYTES_BOUND');assert.equal(x.localSourceBytesVerified,true);
+ assert.equal(x.providerIdentityVerified,false);assert.equal(x.providerExecutionVerified,false);assert.equal(x.externalProviderContactVerified,false);
 });
 test('source changed by one byte cannot pass',()=>{
  assert.deepEqual(verify(request,returned,Buffer.from('changed')).errors,['SOURCE_BYTE_COUNT_MISMATCH','SOURCE_SHA256_MISMATCH','RETURN_SOURCE_HASH_MISMATCH']);
