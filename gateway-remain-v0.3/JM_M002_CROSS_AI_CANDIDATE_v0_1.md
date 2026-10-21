@@ -46,3 +46,24 @@ An existing ChatGPT or Google AI subscription **does not itself establish API bi
 - Current artifact: [draft PR #66](https://github.com/JMisJustMe/jm-cloud-contact-server-first-cloud/pull/66). Candidate branch only; ancestor untouched.
 - Next external proof requires explicit owner approval to send a tiny, non-sensitive synthetic test prompt to two providers, valid separate API credentials, and accepted billing limits. The provider calls may incur usage costs and are NOT covered by ChatGPT Plus or Google AI Pro subscriptions.
 - Do not enable `JM_CROSS_AI_ENABLED` or deploy over the established server to reach this gate. Verify an isolated runtime / reversible rollback and read back both receipt hashes after a genuine call.
+
+
+## One-shot live provider proof — owner actions
+
+Manual workflow: https://github.com/JMisJustMe/jm-cloud-contact-server-first-cloud/actions/workflows/jm-m002-live-provider-proof.yml
+
+- Added independently to the repository default branch (main); no scheduled, push or PR trigger.
+- Checkout is fixed at tested candidate commit 899c6dd082e8f0494699827572c691cbbb960a0f. It does not follow mutable branch changes.
+- GitHub actor is required to be JMisJustMe; manual owner approval phrase is I_APPROVE_ONE_TWO_PROVIDER_API_EXCHANGE.
+- Secrets are never committed and are made available only to the live execution step, following a fresh preflight.
+
+Owner configuration, required to actually earn the external-contact Ding:
+1. In the OpenAI Platform account, enable separately billed API usage and create a narrowly scoped key. ChatGPT Plus does not include API usage.
+2. In Google AI Studio, create a Gemini API authorization key; review project rate limits and free-tier eligibility.
+3. In GitHub repository Settings > Secrets and variables > Actions > New repository secret, set these two names: JM_M002_OPENAI_API_KEY and JM_M002_GEMINI_API_KEY. Do not paste values in chat, issues, or commits.
+4. In the GitHub Actions tab, select JM M002 One-shot live provider proof, use Run workflow, and type I_APPROVE_ONE_TWO_PROVIDER_API_EXCHANGE.
+5. Read GitHub execution summary and verify external-return hashes, restart recovery and zero repeated provider calls.
+
+The proof is capped in code at TWO outbound provider HTTP requests across one synthetic Gemini to OpenAI task. Both model outputs are bounded at 350 tokens by API parameters, and each request uses a 15-second timeout. No tool access, external actions, private Estate context or production deploy is authorised by this workflow. Secrets are not printed to logs; generated text remains local to the temporary GitHub runner and is deleted after the smoke.
+
+PROOF SCOPE: CI run 39649618678 passed inherited preflight and Docker build on the pinned code. Real external provider inference is still HOLD until owner credentials and the manual trigger are completed. Existing public JM servers remain unchanged.
