@@ -1,0 +1,42 @@
+# JM Mission 002 — one-shot LIVE Gemini → OpenAI proof.
+# Default-branch workflow registration only; checks out hash-pinned audited candidate.
+# NEVER schedule or trigger on push/PR. Never expose keys to untrusted commits.
+name: JM M002 One-shot live provider proof
+
+on:
+  workflow_dispatch:
+    inputs:
+      owner_approval:
+        description: "Type I_APPROVE_ONE_TWO_PROVIDER_API_EXCHANGE to authorise TWO billable-capable model requests"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  live-proof:
+    if: github.actor == 'JMisJustMe' && inputs.owner_approval == 'I_APPROVE_ONE_TWO_PROVIDER_API_EXCHANGE'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout exact candidate (reviewed Git commit, not mutable branch)
+        uses: actions/checkout@v4
+        with:
+          ref: 899c6dd082e8f0494699827572c691cbbb960a0f
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install (no provider credentials available)
+        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Prove inherited offline gates before any paid-capable call
+        run: npm run preflight
+      - name: Owner-approved minimal live cross-provider request (max TWO HTTP calls)
+        env:
+          JM_LIVE_PROOF_APPROVED: ${{ inputs.owner_approval }}
+          JM_GEMINI_API_KEY: ${{ secrets.JM_M002_GEMINI_API_KEY }}
+          JM_OPENAI_API_KEY: ${{ secrets.JM_M002_OPENAI_API_KEY }}
+          JM_GEMINI_MODEL: gemini-3.1-flash-lite
+          JM_OPENAI_MODEL: gpt-4o-mini
+        run: npm run m002:live-proof
