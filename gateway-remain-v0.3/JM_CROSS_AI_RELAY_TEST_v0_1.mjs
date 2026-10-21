@@ -37,3 +37,11 @@ test('tampered journal is refused during recovery',async()=>{
   const v=JSON.parse(await fs.readFile(p,'utf8'));v.journal[0].status='COMPLETE';await fs.writeFile(p,JSON.stringify(v));
   await assert.rejects(()=>make(p),/CROSS_AI_LEDGER_INVALID/);
 });
+
+test('task identity cannot be swapped after result completed',async()=>{
+  const p=await pathFor(),a=await make(p),start=calls.length;
+  await a.run(args('t8'));assert.equal(calls.length-start,2);
+  const changed={...task('t8'),prompt:'Different approved task'};
+  assert.equal((await a.run({...args('t8'),approvedTask:changed})).reason,'TASK_IDENTITY_CONFLICT');
+  assert.equal(calls.length-start,2);
+});
