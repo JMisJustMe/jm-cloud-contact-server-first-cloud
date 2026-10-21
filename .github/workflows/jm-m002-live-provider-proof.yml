@@ -32,6 +32,26 @@ jobs:
         run: npm install --ignore-scripts --no-audit --no-fund
       - name: Prove inherited offline gates before any paid-capable call
         run: npm run preflight
+      - name: Verify both named credentials with READ-ONLY provider endpoints
+        env:
+          JM_PRECHECK_OPENAI_KEY: ${{ secrets.JM_M002_OPENAI_API_KEY }}
+          JM_PRECHECK_GEMINI_KEY: ${{ secrets.JM_M002_GEMINI_API_KEY }}
+        run: |
+          set +x
+          if [ -z "$JM_PRECHECK_OPENAI_KEY" ]; then echo "HOLD: JM_M002_OPENAI_API_KEY_MISSING"; exit 1; fi
+          if [ -z "$JM_PRECHECK_GEMINI_KEY" ]; then echo "HOLD: JM_M002_GEMINI_API_KEY_MISSING"; exit 1; fi
+          openai_status=$(curl --silent --show-error --max-time 15 --output /dev/null --write-out '%{http_code}' --header "Authorization: Bearer $JM_PRECHECK_OPENAI_KEY" https://api.openai.com/v1/models) || openai_status="NETWORK_HOLD"
+          case "$openai_status" in
+            200) echo "JM_OPENAI_AUTH_PASS" ;;
+            401) echo "HOLD: OPENAI_API_KEY_UNAUTHORISED"; exit 1 ;;
+            *) echo "HOLD: OPENAI_AUTH_HTTP_$openai_status"; exit 1 ;;
+          esac
+          gemini_status=$(curl --silent --show-error --max-time 15 --output /dev/null --write-out '%{http_code}' --header "x-goog-api-key: $JM_PRECHECK_GEMINI_KEY" https://generativelanguage.googleapis.com/v1beta/models) || gemini_status="NETWORK_HOLD"
+          case "$gemini_status" in
+            200) echo "JM_GEMINI_AUTH_PASS" ;;
+            400|401|403) echo "HOLD: GEMINI_KEY_REJECTED_HTTP_$gemini_status"; exit 1 ;;
+            *) echo "HOLD: GEMINI_AUTH_HTTP_$gemini_status"; exit 1 ;;
+          esac
       - name: Owner-approved minimal live cross-provider request (max TWO HTTP calls)
         env:
           JM_LIVE_PROOF_APPROVED: ${{ inputs.owner_approval }}
