@@ -34,5 +34,21 @@ jobs:
           echo "GOOGLE_GENERATIVE_AI_API_KEY_EXISTS=$GOOGLE_GENAI_DEFINED"
           echo "GENAI_API_KEY_EXISTS=$GENAI_DEFINED"
           echo "JM_M002_OPENAI_API_KEY_EXISTS=$M002_OPENAI_DEFINED"
+      - name: Verify existing OpenAI credential via non-inference model-list endpoint
+        env:
+          JM_OPENAI_KEY: ${{ secrets.JM_M002_OPENAI_API_KEY }}
+        run: |
+          set +x
+          if [ -z "$JM_OPENAI_KEY" ]; then echo "OPENAI_AUTH=KEY_MISSING"; exit 0; fi
+          status=$(curl --silent --show-error --max-time 12 --output /dev/null --write-out '%{http_code}' \\
+            --header "Authorization: Bearer $JM_OPENAI_KEY" \\
+            https://api.openai.com/v1/models) || status="NETWORK_FAILURE"
+          case "$status" in
+            200) echo "OPENAI_AUTH=VALID" ;;
+            401) echo "OPENAI_AUTH=UNAUTHORISED" ;;
+            403) echo "OPENAI_AUTH=FORBIDDEN" ;;
+            NETWORK_FAILURE) echo "OPENAI_AUTH=NETWORK_HOLD" ;;
+            *) echo "OPENAI_AUTH=HTTP_$status" ;;
+          esac
       - name: Exact Docker build (NO DEPLOY)
         run: docker build -f deploy/Dockerfile -t jm-sovereign-agent-gateway:m002-candidate .
