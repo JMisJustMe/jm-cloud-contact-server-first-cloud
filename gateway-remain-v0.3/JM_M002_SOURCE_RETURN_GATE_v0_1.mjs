@@ -28,7 +28,7 @@ export function verifySourceReturn({request,returned,sourceBytes}={}){
     typeof returned.analysis!=='string'||returned.analysis.length<1||returned.analysis.length>2400||
     !validDigest(returned.sourceSha256))errors.push('RETURN_INVALID');
   if(!Buffer.isBuffer(sourceBytes) && !(sourceBytes instanceof Uint8Array))errors.push('SOURCE_BYTES_MISSING');
-  if(errors.length)return {status:'HOLD',errors,sourceContactVerified:false,providerIdentityVerified:false,providerExecutionVerified:false};
+  if(errors.length)return {status:'HOLD',errors,localSourceBytesVerified:false,providerIdentityVerified:false,providerExecutionVerified:false,externalProviderContactVerified:false};
   const observed=sha(sourceBytes);
   if(sourceBytes.length!==request.source.bytes)errors.push('SOURCE_BYTE_COUNT_MISMATCH');
   if(!same(observed,request.source.sha256))errors.push('SOURCE_SHA256_MISMATCH');
@@ -40,13 +40,14 @@ export function verifySourceReturn({request,returned,sourceBytes}={}){
   return {
     status:pass?'SOURCE_RETURN_BYTES_BOUND':'HOLD',
     errors,
-    sourceContactVerified:pass,
+    localSourceBytesVerified:pass,
     returnedAnalysisSha256:pass?sha(Buffer.from(returned.analysis,'utf8')):null,
     sourceSha256:observed,
     claimedProvider:returned.claimedProvider,
     providerIdentityVerified:false,
     providerExecutionVerified:false,
-    boundary:pass?'SOURCE_BYTES_AND_NONCE_BINDING_PASS_PROVIDER_EXECUTION_UNVERIFIED':'NO_COMPLETION_CLAIM'
+    externalProviderContactVerified:false,
+    boundary:pass?'LOCAL_SOURCE_BYTES_AND_RETURN_NONCE_BINDING_PASS_EXTERNAL_PROVIDER_CONTACT_UNVERIFIED':'NO_COMPLETION_CLAIM'
   };
 }
 if(process.argv[1] && import.meta.url===pathToFileURL(process.argv[1]).href){
