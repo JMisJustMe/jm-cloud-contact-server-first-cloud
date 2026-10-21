@@ -40,9 +40,7 @@ jobs:
         run: |
           set +x
           if [ -z "$JM_OPENAI_KEY" ]; then echo "OPENAI_AUTH=KEY_MISSING"; exit 0; fi
-          status=$(curl --silent --show-error --max-time 12 --output /dev/null --write-out '%{http_code}' \\
-            --header "Authorization: Bearer $JM_OPENAI_KEY" \\
-            https://api.openai.com/v1/models) || status="NETWORK_FAILURE"
+          status=$(curl --silent --show-error --max-time 12 --output /dev/null --write-out '%{http_code}' --header "Authorization: Bearer $JM_OPENAI_KEY" https://api.openai.com/v1/models) || status="NETWORK_FAILURE"
           case "$status" in
             200) echo "OPENAI_AUTH=VALID" ;;
             401) echo "OPENAI_AUTH=UNAUTHORISED" ;;
