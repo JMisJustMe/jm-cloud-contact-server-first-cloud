@@ -28,7 +28,7 @@ test('reused return from another challenge is refused',()=>{
 test('malformed claims rejected, no provider identity trust',()=>{
  assert.equal(verify(request,{...returned,claimedProvider:'unrecognised'}).status,'HOLD');
  assert.equal(verify(request,{...returned,analysis:' ' .repeat(2401)}).status,'HOLD');
- assert.equal(verify(request,returned,undefined).status,'HOLD');
+ assert.equal(verify(request,returned,null).status,'HOLD');
 });
 test('unknown source and replayed names cannot establish provenance',()=>{
  assert.equal(verify({...request,source:{...request.source,sha256:'a'.repeat(64)}}).status,'HOLD');
