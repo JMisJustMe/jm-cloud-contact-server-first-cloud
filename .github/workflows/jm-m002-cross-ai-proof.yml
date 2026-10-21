@@ -19,5 +19,20 @@ jobs:
         run: npm install --no-audit --no-fund
       - name: Inherited preflight including M002 offline provider tests
         run: npm run preflight
+      - name: Diagnose candidate secret NAMES ONLY (no secret values)
+        env:
+          M002_GEMINI_DEFINED: ${{ secrets.JM_M002_GEMINI_API_KEY != '' }}
+          GEMINI_DEFINED: ${{ secrets.GEMINI_API_KEY != '' }}
+          GOOGLE_DEFINED: ${{ secrets.GOOGLE_API_KEY != '' }}
+          GOOGLE_GENAI_DEFINED: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY != '' }}
+          GENAI_DEFINED: ${{ secrets.GENAI_API_KEY != '' }}
+          M002_OPENAI_DEFINED: ${{ secrets.JM_M002_OPENAI_API_KEY != '' }}
+        run: |
+          echo "JM_M002_GEMINI_API_KEY_EXISTS=$M002_GEMINI_DEFINED"
+          echo "GEMINI_API_KEY_EXISTS=$GEMINI_DEFINED"
+          echo "GOOGLE_API_KEY_EXISTS=$GOOGLE_DEFINED"
+          echo "GOOGLE_GENERATIVE_AI_API_KEY_EXISTS=$GOOGLE_GENAI_DEFINED"
+          echo "GENAI_API_KEY_EXISTS=$GENAI_DEFINED"
+          echo "JM_M002_OPENAI_API_KEY_EXISTS=$M002_OPENAI_DEFINED"
       - name: Exact Docker build (NO DEPLOY)
         run: docker build -f deploy/Dockerfile -t jm-sovereign-agent-gateway:m002-candidate .
