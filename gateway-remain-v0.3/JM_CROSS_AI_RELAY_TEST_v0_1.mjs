@@ -9,13 +9,14 @@ const task=(id,agent='jm-cross-ai:gemini>openai')=>({id,agent,prompt:'Evaluate e
 const args=id=>({taskId:id,approvedTask:task(id),control,expectedRevision:19,expectedDigest:'correct'});
 const pathFor=async()=>path.join(await fs.mkdtemp(path.join(os.tmpdir(),'jm-cross-ai-')),'relay.json');
 const calls=[];
-const mock=async(url,opts)=>{calls.push({url,opts});if(url.includes('googleapis'))return {ok:true,json:async()=>({candidates:[{content:{parts:[{text:'gemini bounded output'}]}}]})};return {ok:true,json:async()=>({output:[{type:'message',content:[{type:'output_text',text:'openai final output'}]}]})};};
+const mock=async(url,opts)=>{calls.push({url,opts});if(url.includes('googleapis'))return {ok:true,json:async()=>({candidates:[{finishReason:'STOP',content:{parts:[{text:'gemini bounded output'}]}}]})};return {ok:true,json:async()=>({status:'completed',output:[{type:'message',content:[{type:'output_text',text:'openai final output'}]}]})};};
 const make=async(dataPath,extra={})=>createCrossAiRelay({dataPath,enabled:true,geminiKey:'offline-test',openaiKey:'offline-test',geminiModel:'test-gemini',openaiModel:'test-openai',fetchImpl:mock,...extra});
 test('disabled fails closed',async()=>{const a=await createCrossAiRelay({dataPath:await pathFor()});assert.equal((await a.run(args('t1'))).reason,'CROSS_AI_DISABLED');});
 test('approved task two-provider route, idempotent and restart-recovered',async()=>{
   const p=await pathFor(),a=await make(p),start=calls.length;
   const out=await a.run(args('t1'));assert.equal(out.status,'COMPLETE');assert.equal(out.output,'openai final output');assert.equal(calls.length-start,2);
   assert.equal((await a.run(args('t1'))).status,'IDEMPOTENT_REPLAY');assert.equal(calls.length-start,2);
+  assert.equal(a.get('t1').stages.length,2);assert.equal(a.get('t1').stages[0].provider,'gemini');assert.equal(a.get('t1').stages[1].provider,'openai');
   assert.equal(a.verify().ok,true);const b=await make(p);assert.equal(b.startupRecovered,true);assert.equal((await b.run(args('t1'))).status,'IDEMPOTENT_REPLAY');
   const forward=calls.slice(start);assert.ok(forward[0].url.includes('googleapis'));assert.ok(forward[1].url.includes('openai.com'));assert.ok(JSON.parse(forward[1].opts.body).input.includes('untrusted evidence'));
 });
@@ -44,4 +45,22 @@ test('task identity cannot be swapped after result completed',async()=>{
   const changed={...task('t8'),prompt:'Different approved task'};
   assert.equal((await a.run({...args('t8'),approvedTask:changed})).reason,'TASK_IDENTITY_CONFLICT');
   assert.equal(calls.length-start,2);
+});
+
+test('provider truncation cannot be marked complete or forwarded',async()=>{
+ const p=await pathFor();let n=0;
+ const incomplete=async()=>{n++;return {ok:true,json:async()=>({candidates:[{finishReason:'MAX_TOKENS',content:{parts:[{text:'partial'}]}}]})};};
+ const a=await make(p,{fetchImpl:incomplete});
+ const result=await a.run(args('t9'));
+ assert.equal(result.status,'HOLD');assert.equal(result.reason,'GEMINI_INCOMPLETE_OR_BLOCKED');
+ assert.equal(n,1);assert.equal(a.verify().ok,true);
+ assert.equal((await a.run(args('t9'))).reason,'PRIOR_ATTEMPT_REQUIRES_RECONCILIATION');
+ assert.equal(n,1);
+});
+test('stage hash alteration fails independent restart verification',async()=>{
+ const p=await pathFor();const a=await make(p);await a.run(args('t10'));
+ const store=JSON.parse(await fs.readFile(p,'utf8'));
+ store.tasks.t10.stages[0].outputSha256='0'.repeat(64);
+ await fs.writeFile(p,JSON.stringify(store));
+ await assert.rejects(()=>make(p),/STAGE_JOURNAL_BINDING/);
 });
