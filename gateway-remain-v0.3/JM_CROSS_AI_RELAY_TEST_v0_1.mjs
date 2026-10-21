@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
+import {spawnSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
 import {createCrossAiRelay} from './JM_CROSS_AI_RELAY_v0_1.mjs';
 const control={revision:19,digest:'correct',authority:{destructive_enabled:false}};
 const task=(id,agent='jm-cross-ai:gemini>openai')=>({id,agent,prompt:'Evaluate evidence from a harmless synthetic scenario',approved:true,dispatched:true,status:'READY_FOR_AGENT_ROUTE'});
@@ -63,4 +65,15 @@ test('stage hash alteration fails independent restart verification',async()=>{
  store.tasks.t10.stages[0].outputSha256='0'.repeat(64);
  await fs.writeFile(p,JSON.stringify(store));
  await assert.rejects(()=>make(p),/STAGE_JOURNAL_BINDING/);
+});
+
+test('live proof refuses unapproved invocation before creating state or contacting providers',()=>{
+  const file=new URL('./JM_M002_LIVE_PROVIDER_PROOF_v0_1.mjs',import.meta.url);
+  const env={...process.env};
+  delete env.JM_LIVE_PROOF_APPROVED;
+  delete env.JM_GEMINI_API_KEY;
+  delete env.JM_OPENAI_API_KEY;
+  const check=spawnSync(process.execPath,[fileURLToPath(file)],{env,encoding:'utf8',timeout:15000});
+  assert.notEqual(check.status,0);
+  assert.match(check.stderr,/HOLD_EXPLICIT_OWNER_APPROVAL_REQUIRED/);
 });
