@@ -1,0 +1,23 @@
+name: JM M002 Cross-AI candidate proof
+on:
+  push:
+    branches:
+      - jm-m002-cross-ai-execution-v0.1-20261021
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  candidate-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install inherited gateway dependencies
+        run: npm install --no-audit --no-fund
+      - name: Inherited preflight including M002 offline provider tests
+        run: npm run preflight
+      - name: Exact Docker build (NO DEPLOY)
+        run: docker build -f deploy/Dockerfile -t jm-sovereign-agent-gateway:m002-candidate .

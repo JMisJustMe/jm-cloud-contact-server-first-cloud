@@ -4,6 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash, timingSafeEqual, randomUUID } from 'node:crypto';
 import { createWorkerReturnLedger } from './JM_WORKER_RETURN_LEDGER_v0_3_1.mjs';
+import { createCrossAiRelay } from './JM_CROSS_AI_RELAY_v0_1.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const STORE_SCHEMA = 'jm.sovereign-agent-gateway.remain-store/0.3';
@@ -262,6 +263,19 @@ export async function startRemainService(options = {}) {
     dataPath: options.workerReturnDataPath || path.join(dataRoot, 'JM_WORKER_RETURNS_v0_3_1.json'),
   });
 
+  // Provider execution is a descendant of the existing approved Cading task.
+  // It is OFF by default and cannot create, approve or dispatch tasks itself.
+  const crossAi = await createCrossAiRelay({
+    dataPath: options.crossAiDataPath || path.join(dataRoot, 'JM_CROSS_AI_RELAY_STORE_v0_1.json'),
+    enabled: options.crossAiEnabled ?? (process.env.JM_CROSS_AI_ENABLED === 'true'),
+    geminiKey: options.geminiKey || process.env.JM_GEMINI_API_KEY,
+    openaiKey: options.openaiKey || process.env.JM_OPENAI_API_KEY,
+    geminiModel: options.geminiModel || process.env.JM_GEMINI_MODEL,
+    openaiModel: options.openaiModel || process.env.JM_OPENAI_MODEL,
+    fetchImpl: options.crossAiFetchImpl,
+    timeoutMs: options.crossAiTimeoutMs,
+  });
+
   const server = http.createServer(async (req, res) => {
     const requestId = randomUUID();
     try {
@@ -278,6 +292,7 @@ export async function startRemainService(options = {}) {
           startupRecovered: remain.startupRecovered,
           destructiveAuthority: false,
           workerReturn: { enabled: Boolean(workerToken), verified: workerReturns.verify().ok, count: workerReturns.count(), startupRecovered: workerReturns.startupRecovered },
+          crossAi: { enabled: crossAi.enabled, verified: crossAi.verify().ok, count: crossAi.count(), startupRecovered: crossAi.startupRecovered },
           requestId,
         });
       }
@@ -296,6 +311,27 @@ export async function startRemainService(options = {}) {
         return json(res, status, {...result, requestId});
       }
       if (url.pathname.startsWith('/remain/') && !clientOk) return json(res, 401, { error: 'UNAUTHORISED', requestId });
+      // Only the human authority token may initiate an external paid model call.
+      if (url.pathname === '/remain/cross-ai/run' && req.method === 'POST') {
+        if (!authorityOk) return json(res, 403, {error:'HUMAN_AUTHORITY_TOKEN_REQUIRED',requestId});
+        const body = await readJson(req);
+        const task = typeof body.taskId === 'string' ? gateway.runtime.invoke('taskStatus', [body.taskId]) : null;
+        const result = await crossAi.run({
+          taskId:body.taskId, approvedTask:task, control:remain.control(),
+          expectedRevision:body.expectedRevision, expectedDigest:body.expectedDigest,
+        });
+        const status = ['COMPLETE','IDEMPOTENT_REPLAY'].includes(result.status) ? 200 :
+          ['CROSS_AI_DISABLED','PROVIDER_CREDENTIALS_OR_MODELS_MISSING'].includes(result.reason) ? 503 : 422;
+        return json(res,status,{...result,requestId});
+      }
+      if (url.pathname === '/remain/cross-ai/status' && req.method === 'GET') {
+        if (!authorityOk) return json(res,403,{error:'HUMAN_AUTHORITY_TOKEN_REQUIRED',requestId});
+        const taskId = url.searchParams.get('taskId');
+        if(!taskId || taskId.length>128) return json(res,400,{error:'taskId_required',requestId});
+        const item = crossAi.get(taskId);
+        return item ? json(res,200,{item,verified:crossAi.verify().ok,requestId}) :
+          json(res,404,{error:'CROSS_AI_TASK_NOT_FOUND',requestId});
+      }
       if (url.pathname === '/remain/job-returns' && req.method === 'GET') {
         const taskId = url.searchParams.get('taskId');
         if (!taskId || taskId.length > 128) return json(res, 400, {error:'taskId_required',requestId});
@@ -355,7 +391,7 @@ export async function startRemainService(options = {}) {
     server.once('error', reject);
     server.listen(port, host, resolve);
   });
-  return { server, remain, gateway, workerReturns, innerPort, host, port };
+  return { server, remain, gateway, workerReturns, crossAi, innerPort, host, port };
 }
 
 if (import.meta.url === new URL(`file://${process.argv[1] || ''}`).href) {
