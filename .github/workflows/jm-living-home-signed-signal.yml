@@ -5,6 +5,8 @@ on:
       - "JM_CLOUD_CONTACT_SERVER_v0_5_1_HOSTED_DESCENDANT.mjs"
       - "qa/JM_LIVING_HOME_SIGNED_SIGNAL_QA_v0_1.mjs"
       - "package.json"
+      - "contact/JM_CLOUD_CONTACT_PG_DURABLE_v0_1.mjs"
+      - "qa/JM_CLOUD_CONTACT_PG_DURABLE_QA_v0_1.mjs"
       - ".github/workflows/jm-living-home-signed-signal.yml"
   workflow_dispatch:
 permissions:
@@ -13,6 +15,18 @@ jobs:
   signed-existing-server:
     runs-on: ubuntu-latest
     timeout-minutes: 12
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: jm_qa
+          POSTGRES_PASSWORD: qa123
+          POSTGRES_DB: jm_cloud_qa
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U jm_qa -d jm_cloud_qa"
+          --health-interval 5s --health-timeout 3s --health-retries 12
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -23,3 +37,7 @@ jobs:
         run: node qa/JM_LIVING_HOME_SIGNED_SIGNAL_QA_v0_1.mjs
       - name: Retain existing v05 server preflight checks
         run: npm test
+      - name: Existing v05 cloud contact durability against disposable PostgreSQL
+        env:
+          JM_QA_POSTGRES_URL: postgres://jm_qa:qa123@localhost:5432/jm_cloud_qa
+        run: node qa/JM_CLOUD_CONTACT_PG_DURABLE_QA_v0_1.mjs
