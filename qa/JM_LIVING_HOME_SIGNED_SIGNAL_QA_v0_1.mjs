@@ -9,6 +9,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {verifyLivingHomeReturn} from '../contact/JM_LIVING_HOME_RETURN_VERIFY_v0_1.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const tmp=fs.mkdtempSync(path.join(os.tmpdir(),'jm-living-home-signed-signal-'));
@@ -149,6 +150,31 @@ try{
   assert.equal(senderInbox.signals[0].payload.missionId,missionId);
   assert.equal(senderInbox.signals[0].payload.challenge,challenge);
   pass('Original sender received exact challenge-matched server result');
+  const ledger={schema:'JM.LivingHome.CP07.CloudReturn/1.0',missions:[{
+    missionId,challenge,project:forward.project,origin:base,spaceId,to:'receiver',
+    returnSignalId:returnId,returnText:response.result,state:'RETURN_RECEIVED_UNVERIFIED',
+    outgoing:forward}]};
+  const verified=await verifyLivingHomeReturn({
+    baseUrl:base,spaceId,memberId:'sender',memberToken:sender,
+    ledger,allowLocal:true,pinnedKeyId:publicKeyMeta.keyId
+  });
+  assert.equal(verified.status,'SERVER_RETURN_SIGNATURE_VERIFIED');
+  assert.equal(verified.keyPinVerified,true);
+  assert.equal(verified.returnSignalId,returnId);
+  assert.equal(verified.sourceId,'jm-games-house');
+  assert.ok(!JSON.stringify(verified).includes(sender));
+  pass('Actual CP07 ledger independently verified through authorised server GET + signed receipt');
+  await assert.rejects(verifyLivingHomeReturn({
+    baseUrl:base,spaceId,memberId:'sender',memberToken:sender,
+    ledger:{...ledger,missions:[{...ledger.missions[0],returnText:'FAKE RESULT'}]},
+    allowLocal:true,pinnedKeyId:publicKeyMeta.keyId
+  }),/differs from CP07 export/);
+  pass('Forged CP07 ledger text fails against authenticated returned signal');
+  await assert.rejects(verifyLivingHomeReturn({
+    baseUrl:base,spaceId,memberId:'sender',memberToken:sender,
+    ledger,allowLocal:true,pinnedKeyId:'0'.repeat(24)
+  }),/differs from the owner-pinned key ID/);
+  pass('Owner-pinned server public key mismatch fails closed');
   const dedup=await status('/v4/spaces/'+spaceId+'/signals',{method:'POST',
     token:receiver,requestId:returnRid,data:{to:'sender',kind:'JM_LIVING_HOME_RETURN',payload:response}},200);
   assert.equal(dedup.deduplicated,true);assert.equal(dedup.signal.id,returnId);
