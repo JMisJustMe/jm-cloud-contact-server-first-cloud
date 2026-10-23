@@ -7,6 +7,7 @@ on:
       - "package.json"
       - "contact/JM_CLOUD_CONTACT_PG_DURABLE_v0_1.mjs"
       - "qa/JM_CLOUD_CONTACT_PG_DURABLE_QA_v0_1.mjs"
+      - "deploy/Dockerfile"
       - ".github/workflows/jm-living-home-signed-signal.yml"
   workflow_dispatch:
 permissions:
@@ -41,3 +42,5 @@ jobs:
         env:
           JM_QA_POSTGRES_URL: postgres://jm_qa:qa123@localhost:5432/jm_cloud_qa
         run: node qa/JM_CLOUD_CONTACT_PG_DURABLE_QA_v0_1.mjs
+      - name: Build the actual Render Docker carrier with signed contact modules
+        run: docker build -f deploy/Dockerfile -t jm-cloud-contact-durable-qa:ci .
