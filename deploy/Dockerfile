@@ -4,6 +4,7 @@ COPY package.json ./
 RUN npm install --omit=dev
 COPY render.yaml ./
 COPY deploy ./deploy
+COPY contact ./contact
 COPY JM_CLOUD_CONTACT_SERVER_v0_5_1_HOSTED_DESCENDANT.mjs ./
 COPY JM_CLOUD_CONTACT_SERVER_CONTRACT_HOSTED_v0_5_1.json ./
 COPY profiles ./profiles
