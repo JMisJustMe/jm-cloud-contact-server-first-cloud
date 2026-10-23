@@ -143,6 +143,26 @@ try{
   const restored=await status('/v4/spaces/'+space+'/signals?after=0',{token:receiver},200);
   assert.equal(restored.signals.length,1,'Unacknowledged failed write survived durable restart');
   pass('Failed write does not survive process restart as a successful signal');
+  await stop();
+  start({JM_CLOUD_MODE:'production',JM_CLOUD_DURABLE_INIT_ALLOW_EMPTY:'0',
+    JM_CLOUD_EXPECTED_SIGNING_KEY_ID:key});
+  await waitReady();
+  const readyProd=await status('/ready',{},200);
+  assert.equal(readyProd.contactDurable,true);
+  assert.ok(readyProd.contactRevision>=3);
+  assert.equal((await status('/health',{},200)).spaces,1);
+  pass('Production-mode readiness requires real durable recovery and stable owner-pinned signing ID');
+  await stop();
+  start({JM_CLOUD_MODE:'production',JM_CLOUD_CONTACT_POSTGRES_URL:'',
+    JM_CLOUD_EXPECTED_SIGNING_KEY_ID:key});
+  await new Promise(r=>setTimeout(r,1500));
+  assert.notEqual(child.exitCode,null,'Production started without any Postgres persistence');
+  await stop();pass('Production without durable Postgres refuses to boot');
+  start({JM_CLOUD_MODE:'production',JM_CLOUD_DURABLE_INIT_ALLOW_EMPTY:'0',
+    JM_CLOUD_EXPECTED_SIGNING_KEY_ID:'0'.repeat(24)});
+  await new Promise(r=>setTimeout(r,1500));
+  assert.notEqual(child.exitCode,null,'Production accepted an incorrect owner-pinned signer ID');
+  await stop();pass('Production key pin mismatch refuses to boot');
 }finally{
   await stop().catch(console.error);
   await pool.end();
