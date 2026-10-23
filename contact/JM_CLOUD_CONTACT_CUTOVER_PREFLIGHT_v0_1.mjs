@@ -54,7 +54,7 @@ function signerKey(value){
 export async function inspectCutover({
   host,pgUrl,approvedDatabase,expectedSigningKeyId,signingKeyB64,
   memberHmacSecret,previouslyObservedKeyId='',allowLoopback=false,
-  pool=null,fetchImpl=fetch
+  reviewedExistingState=null,pool=null,fetchImpl=fetch
 }={}){
   if(!hex24.test(expectedSigningKeyId||''))throw Error('Independent expected key ID missing');
   if(previouslyObservedKeyId&&!hex24.test(previouslyObservedKeyId))
@@ -64,6 +64,14 @@ export async function inspectCutover({
   if(typeof memberHmacSecret!=='string'||memberHmacSecret.length<32)
     throw Error('Existing stable member-token HMAC secret required privately');
   if(!pgUrl&&!pool)throw Error('Owner-approved PostgreSQL connection is required');
+  // A reviewed witness is only accepted when it exactly matches the existing
+  // singleton state revision, SHA-256 and observed production space count.
+  // It is not permission to initialise or overwrite this database.
+  const reviewed=reviewedExistingState||null;
+  if(reviewed&&(typeof reviewed!=='object'||!Number.isSafeInteger(reviewed.revision)||
+      reviewed.revision<1||!hex64.test(reviewed.sha256||'')||
+      !Number.isSafeInteger(reviewed.liveSpaces)||reviewed.liveSpaces<0))
+    throw Error('Invalid owner-reviewed existing-state witness');
   const base=cleanHost(host,{allowLoopback});
   const privateKey=signerKey(signingKeyB64);
   const authKeyCheck=crypto.createHmac('sha256',memberHmacSecret)
@@ -109,9 +117,8 @@ export async function inspectCutover({
     gate('signer_unchanged_since_prior_observation',
       previouslyObservedKeyId===actualPublicFingerprint,
       'An observed signing-key change requires investigation, not a silent trust update');
-  gate('live_space_inventory_safe_for_zero_space_initialization',
-    spaces===0,
-    'Nonzero live spaces require independent backup/migration and cannot initialise an empty database');
+  // Delay inventory gate until the actual durable snapshot can be examined.
+  // No nonzero live inventory can be accepted on a virgin/empty database.
   const ownPool=pool||new Pool({connectionString:pgUrl,max:1,connectionTimeoutMillis:5500,
     idleTimeoutMillis:3000,statement_timeout:7000});
   let connection;
@@ -130,6 +137,7 @@ export async function inspectCutover({
       "SELECT EXISTS(SELECT 1 FROM pg_namespace WHERE nspname='jm_cloud_contact_v1') AS exists");
     evidence.observed.contactNamespaceExists=Boolean(ns.rows[0]?.exists);
     evidence.observed.contactStateTableExists=hasState;
+    let reviewedRowMatch=false;
     if(hasState){
       const state=await connection.query(
         'SELECT revision,document_sha256,signer_key_id,auth_key_check,length(document) AS bytes FROM jm_cloud_contact_v1.state WHERE singleton=1');
@@ -138,6 +146,9 @@ export async function inspectCutover({
         const row=state.rows[0];
         evidence.observed.durableRevision=Number(row.revision);
         evidence.observed.snapshotBytes=Number(row.bytes);
+        const actualHash=String(row.document_sha256).trim();
+        reviewedRowMatch=!!reviewed&&reviewed.revision===Number(row.revision)&&
+          reviewed.sha256===actualHash&&reviewed.liveSpaces===spaces;
         gate('stored_signing_key_matches_owner_key',
           String(row.signer_key_id).trim()===expectedSigningKeyId,
           'Existing durable state may never silently adopt another signing identity');
@@ -148,9 +159,13 @@ export async function inspectCutover({
           hex64.test(String(row.document_sha256).trim()),
           'Actual content checksum is checked by the server at controlled boot');
       }
-      gate('existing_durable_state_requires_review',state.rowCount===0,
-        'Existing state row is not overwritten by preflight');
+      gate('existing_durable_state_requires_review',
+        state.rowCount===0||reviewedRowMatch,
+        'Existing state requires independent owner-reviewed revision, checksum and live-space count; no overwrite');
     }else evidence.observed.durableRows=0;
+    gate('live_space_inventory_safe_for_cutover',
+      spaces===0||reviewedRowMatch,
+      'Nonzero hosted space inventory requires exact reviewed durable snapshot and no empty-store bootstrap');
     const dbSize=await connection.query('SELECT pg_database_size(current_database()) AS bytes');
     evidence.observed.databaseBytes=Number(dbSize.rows[0]?.bytes);
     gate('database_size_below_initial_cap',
@@ -168,6 +183,13 @@ export async function inspectCutover({
     // pool.connect() clients are released after read-only transaction in finally below.
     if(!pool)await ownPool.end();
   }
+  const secondKey=await getPublic(base,'/receipt-key',fetchImpl);
+  if(secondKey.algorithm!=='ECDSA-P256-SHA256-P1363'||!secondKey.publicKeyJwk||
+    sha(canon(secondKey.publicKeyJwk)).slice(0,24)!==secondKey.keyId)
+    throw Error('Second hosted signing-key observation invalid');
+  gate('signer_stable_during_read_only_preflight',
+    secondKey.keyId===actualPublicFingerprint,
+    'Hosting process changed public signer during preflight: no trust/promotion');
   evidence.status=evidence.holds.length?'HOLD':'TECHNICAL_PREFLIGHT_PASS_OWNER_APPROVAL_REQUIRED';
   return evidence;
 }
@@ -181,6 +203,11 @@ async function main(){
     signingKeyB64:env.JM_CLOUD_RECEIPT_SIGNING_KEY_B64,
     memberHmacSecret:env.JM_CLOUD_SERVER_SECRET,
     previouslyObservedKeyId:env.JM_CLOUD_PREVIOUS_OBSERVED_KEY_ID||'',
+    reviewedExistingState:env.JM_CLOUD_REVIEWED_STATE_SHA256?{
+      sha256:env.JM_CLOUD_REVIEWED_STATE_SHA256,
+      revision:Number(env.JM_CLOUD_REVIEWED_STATE_REVISION),
+      liveSpaces:Number(env.JM_CLOUD_REVIEWED_LIVE_SPACES)
+    }:null,
     allowLoopback:env.JM_CLOUD_QA_LOOPBACK==='1'
   });
   console.log(JSON.stringify(report,null,2));
