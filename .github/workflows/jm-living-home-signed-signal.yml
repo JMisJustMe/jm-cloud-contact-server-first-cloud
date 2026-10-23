@@ -1,0 +1,25 @@
+name: JM Living Home — Existing Cloud Contact v05 signed signal proof
+on:
+  pull_request:
+    paths:
+      - "JM_CLOUD_CONTACT_SERVER_v0_5_1_HOSTED_DESCENDANT.mjs"
+      - "qa/JM_LIVING_HOME_SIGNED_SIGNAL_QA_v0_1.mjs"
+      - "package.json"
+      - ".github/workflows/jm-living-home-signed-signal.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  signed-existing-server:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm install --no-audit --no-fund
+      - name: Run actual existing v05 server and isolated signed mission-return suite
+        run: node qa/JM_LIVING_HOME_SIGNED_SIGNAL_QA_v0_1.mjs
+      - name: Retain existing v05 server preflight checks
+        run: npm test
