@@ -14,8 +14,11 @@ export class JMDurableContactStore {
     this.allowEmpty=allowEmpty;
     this.version=null;
     this.signerKeyId=null;
+    this.authKeyCheck=null;
   }
-  async open({signerKeyId}={}){
+  async open({signerKeyId,authKeyCheck}={}){
+    if(!/^[a-f0-9]{64}$/.test(authKeyCheck||''))throw Error('Stable member-token HMAC key fingerprint required');
+    this.authKeyCheck=authKeyCheck;
     if(!/^[a-f0-9]{24}$/.test(signerKeyId||''))throw Error('Stable server signing key ID required');
     this.signerKeyId=signerKeyId;
     await this.pool.query('CREATE SCHEMA IF NOT EXISTS jm_cloud_contact_v1');
@@ -25,10 +28,11 @@ export class JMDurableContactStore {
       document TEXT NOT NULL,
       document_sha256 CHAR(64) NOT NULL,
       signer_key_id CHAR(24) NOT NULL,
+      auth_key_check CHAR(64) NOT NULL,
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )`);
     const result=await this.pool.query(
-      'SELECT revision,document,document_sha256,signer_key_id FROM jm_cloud_contact_v1.state WHERE singleton=1'
+      'SELECT revision,document,document_sha256,signer_key_id,auth_key_check FROM jm_cloud_contact_v1.state WHERE singleton=1'
     );
     if(!result.rows.length){
       if(!this.allowEmpty)throw Error('JM Cloud Contact durable store has no state: explicit first-time initialization required');
@@ -36,6 +40,8 @@ export class JMDurableContactStore {
       return null;
     }
     const row=result.rows[0];
+    if(row.auth_key_check.trim()!==authKeyCheck)
+      throw Error('JM Cloud Contact persisted member-token HMAC authority mismatch; refusing to rotate');
     if(row.signer_key_id.trim()!==signerKeyId)
       throw Error('JM Cloud Contact persisted signing identity mismatch; refusing to rotate');
     if(sha(row.document)!==row.document_sha256.trim())
@@ -56,18 +62,18 @@ export class JMDurableContactStore {
     if(this.version===0){
       result=await this.pool.query(
         `INSERT INTO jm_cloud_contact_v1.state
-           (singleton,revision,document,document_sha256,signer_key_id)
-         VALUES (1,1,$1,$2,$3)
+           (singleton,revision,document,document_sha256,signer_key_id,auth_key_check)
+         VALUES (1,1,$1,$2,$3,$4)
          ON CONFLICT(singleton) DO NOTHING RETURNING revision`,
-         [body,digest,this.signerKeyId]
+         [body,digest,this.signerKeyId,this.authKeyCheck]
       );
     }else{
       result=await this.pool.query(
         `UPDATE jm_cloud_contact_v1.state SET revision=revision+1,
           document=$1,document_sha256=$2,updated_at=NOW()
-          WHERE singleton=1 AND revision=$3 AND signer_key_id=$4
+          WHERE singleton=1 AND revision=$3 AND signer_key_id=$4 AND auth_key_check=$5
           RETURNING revision`,
-        [body,digest,this.version,this.signerKeyId]
+        [body,digest,this.version,this.signerKeyId,this.authKeyCheck]
       );
     }
     if(result.rowCount!==1)throw Error('JM Cloud Contact durable CAS/revision conflict; refusing acknowledgement');
