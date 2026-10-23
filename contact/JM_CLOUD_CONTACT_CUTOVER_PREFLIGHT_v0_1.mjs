@@ -54,11 +54,17 @@ function signerKey(value){
 export async function inspectCutover({
   host,pgUrl,approvedDatabase,expectedSigningKeyId,signingKeyB64,
   memberHmacSecret,previouslyObservedKeyId='',allowLoopback=false,
-  reviewedExistingState=null,pool=null,fetchImpl=fetch
+  reviewedExistingState=null,bootstrapRekeyApproval='',approvedLiveKeyId='',
+  pool=null,fetchImpl=fetch
 }={}){
   if(!hex24.test(expectedSigningKeyId||''))throw Error('Independent expected key ID missing');
   if(previouslyObservedKeyId&&!hex24.test(previouslyObservedKeyId))
     throw Error('Previously observed key ID invalid');
+  if(bootstrapRekeyApproval&&
+     bootstrapRekeyApproval!=='JM_OWNER_APPROVED_ZERO_SPACE_REKEY_V1')
+    throw Error('Unrecognised owner bootstrap rekey approval');
+  if(bootstrapRekeyApproval&&!hex24.test(approvedLiveKeyId))
+    throw Error('Explicit old live key ID required for a planned rekey');
   if(!approvedDatabase||!/^[a-zA-Z][a-zA-Z0-9_]{0,62}$/.test(approvedDatabase))
     throw Error('Owner must independently approve exact existing database name');
   if(typeof memberHmacSecret!=='string'||memberHmacSecret.length<32)
@@ -110,9 +116,20 @@ export async function inspectCutover({
     ownerExpectedKeyId:expectedSigningKeyId,
     previouslyObservedKeyId:previouslyObservedKeyId||null,
     currentSpaces:spaces,hostedReady:true};
-  gate('hosted_key_continuity',
-    actualPublicFingerprint===expectedSigningKeyId,
-    'Live signer must equal owner-held private PEM; any re-key needs separate approval and re-pin');
+  // An explicitly owner-reviewed first bootstrap may replace an ephemeral
+  // zero-space public signer ONCE. No key is generated, stored or rotated here.
+  const planningRekey=bootstrapRekeyApproval==='JM_OWNER_APPROVED_ZERO_SPACE_REKEY_V1';
+  const rekeyWindow=planningRekey&&spaces===0&&
+    approvedLiveKeyId===actualPublicFingerprint&&
+    previouslyObservedKeyId===actualPublicFingerprint&&
+    expectedSigningKeyId!==actualPublicFingerprint;
+  evidence.plannedKeyTransition=rekeyWindow?{
+    oldLiveKeyId:actualPublicFingerprint,newOwnerKeyId:expectedSigningKeyId,
+    executed:false,ownerDeploymentApprovalStillRequired:true
+  }:null;
+  gate('hosted_key_continuity_or_explicit_zero_space_rekey',
+    actualPublicFingerprint===expectedSigningKeyId||rekeyWindow,
+    'Only exact continuity or independently authorised zero-space, one-time rekey is eligible; no key is rotated by this check');
   if(previouslyObservedKeyId)
     gate('signer_unchanged_since_prior_observation',
       previouslyObservedKeyId===actualPublicFingerprint,
@@ -166,6 +183,9 @@ export async function inspectCutover({
     gate('live_space_inventory_safe_for_cutover',
       spaces===0||reviewedRowMatch,
       'Nonzero hosted space inventory requires exact reviewed durable snapshot and no empty-store bootstrap');
+    gate('bootstrap_rekey_requires_virgin_durable_state',
+      !planningRekey||(rekeyWindow&&evidence.observed.durableRows===0),
+      'A planned signer replacement is forbidden if durable contact records already exist');
     const dbSize=await connection.query('SELECT pg_database_size(current_database()) AS bytes');
     evidence.observed.databaseBytes=Number(dbSize.rows[0]?.bytes);
     gate('database_size_below_initial_cap',
@@ -203,6 +223,8 @@ async function main(){
     signingKeyB64:env.JM_CLOUD_RECEIPT_SIGNING_KEY_B64,
     memberHmacSecret:env.JM_CLOUD_SERVER_SECRET,
     previouslyObservedKeyId:env.JM_CLOUD_PREVIOUS_OBSERVED_KEY_ID||'',
+    bootstrapRekeyApproval:env.JM_CLOUD_BOOTSTRAP_REKEY_APPROVAL||'',
+    approvedLiveKeyId:env.JM_CLOUD_BOOTSTRAP_REKEY_OLD_KEY_ID||'',
     reviewedExistingState:env.JM_CLOUD_REVIEWED_STATE_SHA256?{
       sha256:env.JM_CLOUD_REVIEWED_STATE_SHA256,
       revision:Number(env.JM_CLOUD_REVIEWED_STATE_REVISION),
