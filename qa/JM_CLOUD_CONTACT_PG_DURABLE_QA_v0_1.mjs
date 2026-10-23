@@ -10,6 +10,7 @@ import path from 'node:path';
 import os from 'node:os';
 import pg from 'pg';
 import {fileURLToPath} from 'node:url';
+import {inspectCutover} from '../contact/JM_CLOUD_CONTACT_CUTOVER_PREFLIGHT_v0_1.mjs';
 const {Pool}=pg;
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const temp=fs.mkdtempSync(path.join(os.tmpdir(),'jm-contact-pg-qa-'));
@@ -80,6 +81,34 @@ try{
   start({JM_CLOUD_DURABLE_INIT_ALLOW_EMPTY:'1'});
   await waitReady();pass('Explicit empty-store bootstrap starts on isolated Postgres');
   const key=(await status('/receipt-key',{},200)).keyId;
+  const pre=await inspectCutover({
+    host:base,pgUrl:dbUrl,approvedDatabase:'jm_cloud_qa',
+    expectedSigningKeyId:key,signingKeyB64:KEY_B64,
+    memberHmacSecret:secret,previouslyObservedKeyId:key,allowLoopback:true
+  });
+  assert.equal(pre.status,'TECHNICAL_PREFLIGHT_PASS_OWNER_APPROVAL_REQUIRED');
+  assert.equal(pre.migrationPerformed,false);
+  assert.equal(pre.deploymentAuthorized,false);
+  assert.equal(pre.observed.durableRows,0);
+  assert.equal(pre.observed.contactNamespaceExists,true);
+  assert.ok(!JSON.stringify(pre).includes(secret)&&!JSON.stringify(pre).includes(admin));
+  pass('Actual owner key + read-only Postgres preflight: review-ready without secrets or writes');
+  const drift=await inspectCutover({
+    host:base,pgUrl:dbUrl,approvedDatabase:'jm_cloud_qa',
+    expectedSigningKeyId:key,signingKeyB64:KEY_B64,
+    memberHmacSecret:secret,previouslyObservedKeyId:'0'.repeat(24),allowLoopback:true
+  });
+  assert.equal(drift.status,'HOLD');
+  assert.ok(drift.holds.includes('signer_unchanged_since_prior_observation'));
+  pass('Changed previously observed hosted signer fails the read-only migration gate');
+  const wrongDb=await inspectCutover({
+    host:base,pgUrl:dbUrl,approvedDatabase:'other_owner_database',
+    expectedSigningKeyId:key,signingKeyB64:KEY_B64,
+    memberHmacSecret:secret,allowLoopback:true
+  });
+  assert.equal(wrongDb.status,'HOLD');
+  assert.ok(wrongDb.holds.includes('database_approved_name_matches'));
+  pass('Read-only gate refuses an unapproved shared database identity');
   const space='contact_pg_durable_qa';
   const created=await status('/v4/spaces',{method:'POST',token:admin,
     body:{spaceId:space,label:'Durable Contact QA',
