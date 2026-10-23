@@ -160,7 +160,6 @@ export async function inspectCutover({
     gate('no_unreviewed_schema_collision',!evidence.observed.contactNamespaceExists||hasState,
       'Pre-existing empty/unrecognised contact namespace needs manual review');
     await connection.query('ROLLBACK');
-    connection=null;
   }catch(e){
     if(connection)await connection.query('ROLLBACK').catch(()=>{});
     throw Error('Read-only PostgreSQL preflight unavailable: '+String(e?.message||e));
