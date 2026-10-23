@@ -124,7 +124,7 @@ try{
   const got=await status('/v4/spaces/'+space+'/signals?after=0',{token:receiver},200);
   assert.equal(got.signals.length,1);
   pass('New space and member signal persisted before HTTP 201');
-  let snap=await pool.query('SELECT revision,document,signer_key_id,auth_key_check FROM jm_cloud_contact_v1.state WHERE singleton=1');
+  let snap=await pool.query('SELECT revision,document,document_sha256,signer_key_id,auth_key_check FROM jm_cloud_contact_v1.state WHERE singleton=1');
   assert.equal(snap.rowCount,1);
   const db=JSON.parse(snap.rows[0].document);
   assert.equal(db.spaces[space].signals[0].id,firstSignal);
@@ -132,6 +132,58 @@ try{
   assert.equal(snap.rows[0].auth_key_check.trim().length,64);
   assert.ok(!snap.rows[0].document.includes(sender)&&!snap.rows[0].document.includes(receiver));
   pass('Isolated database contains correct signal and hashed credentials only');
+  const witness={revision:Number(snap.rows[0].revision),
+    sha256:String(snap.rows[0].document_sha256).trim(),liveSpaces:1};
+  const reviewed=await inspectCutover({
+    host:base,pgUrl:dbUrl,approvedDatabase:'jm_cloud_qa',
+    expectedSigningKeyId:key,signingKeyB64:KEY_B64,
+    memberHmacSecret:secret,previouslyObservedKeyId:key,allowLoopback:true,
+    reviewedExistingState:witness
+  });
+  assert.equal(reviewed.status,'TECHNICAL_PREFLIGHT_PASS_OWNER_APPROVAL_REQUIRED');
+  assert.equal(reviewed.observed.durableRevision,witness.revision);
+  assert.equal(reviewed.observed.currentSpaces,1);
+  pass('Reviewed existing live space + exact Postgres revision/checksum is eligible for owner-approved recovery');
+  const unsignedReview=await inspectCutover({
+    host:base,pgUrl:dbUrl,approvedDatabase:'jm_cloud_qa',
+    expectedSigningKeyId:key,signingKeyB64:KEY_B64,
+    memberHmacSecret:secret,allowLoopback:true
+  });
+  assert.equal(unsignedReview.status,'HOLD');
+  assert.ok(unsignedReview.holds.includes('existing_durable_state_requires_review'));
+  assert.ok(unsignedReview.holds.includes('live_space_inventory_safe_for_cutover'));
+  pass('Nonzero contact spaces without reviewed state witness remain HOLD');
+  const staleReview=await inspectCutover({
+    host:base,pgUrl:dbUrl,approvedDatabase:'jm_cloud_qa',
+    expectedSigningKeyId:key,signingKeyB64:KEY_B64,
+    memberHmacSecret:secret,allowLoopback:true,
+    reviewedExistingState:{...witness,revision:witness.revision+1}
+  });
+  assert.equal(staleReview.status,'HOLD');
+  assert.ok(staleReview.holds.includes('existing_durable_state_requires_review'));
+  pass('Stale reviewed revision cannot authorise contact-state cutover');
+  const alternateJwk=crypto.createPublicKey(otherSigning.privateKey).export({format:'jwk'});
+  const alternateFingerprint=crypto.createHash('sha256')
+    .update(JSON.stringify(Object.fromEntries(
+       Object.entries(alternateJwk).sort(([a],[b])=>a.localeCompare(b)))))
+    .digest('hex').slice(0,24);
+  let observedKeys=0;
+  const inFlightDrift=await inspectCutover({
+    host:base,pgUrl:dbUrl,approvedDatabase:'jm_cloud_qa',
+    expectedSigningKeyId:key,signingKeyB64:KEY_B64,
+    memberHmacSecret:secret,allowLoopback:true,reviewedExistingState:witness,
+    fetchImpl:async (url,opts)=>{
+      if(url.endsWith('/receipt-key')&&++observedKeys===2)
+        return new Response(JSON.stringify({ok:true,
+          algorithm:'ECDSA-P256-SHA256-P1363',
+          publicKeyJwk:alternateJwk,keyId:alternateFingerprint}),{
+          status:200,headers:{'Content-Type':'application/json'}});
+      return fetch(url,opts);
+    }
+  });
+  assert.equal(inFlightDrift.status,'HOLD');
+  assert.ok(inFlightDrift.holds.includes('signer_stable_during_read_only_preflight'));
+  pass('Host public signer drift DURING preflight refuses cutover');
   await stop();
   fs.rmSync(path.join(temp,'state.json'),{force:true});
   fs.rmSync(path.join(temp,'state.json.bak'),{force:true});
