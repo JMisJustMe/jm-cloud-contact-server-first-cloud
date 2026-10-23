@@ -42,7 +42,7 @@ export function verifyReceipt(receipt,originalPayload,keyMeta){
 }
 export async function verifyLivingHomeReturn({
   baseUrl,spaceId,memberId,memberToken,ledger,missionId,
-  pinnedKeyId='',fetchImpl=fetch,allowLocal=false
+  pinnedKeyId='',fetchImpl=fetch,allowLocal=false,includeBundle=false
 }={}){
   const base=serverOrigin(baseUrl,{allowLocal});
   if(!ID.test(spaceId||'')||!ID.test(memberId||''))throw Error('Invalid member or space identifier');
@@ -91,7 +91,7 @@ export async function verifyLivingHomeReturn({
      receipt.kind!=='JM_LIVING_HOME_RETURN')
      throw Error('Signed signal scope does not match expected members');
   // Return only public evidence and project/mission metadata, never the member token.
-  return {schema:PROOF_SCHEMA,status:'SERVER_RETURN_SIGNATURE_VERIFIED',
+  const nativeEvidence={schema:PROOF_SCHEMA,status:'SERVER_RETURN_SIGNATURE_VERIFIED',
     claimBoundary:'Server-signed persisted signal matching CP07 local record; remote work, AI identity and physical Fold action remain independently unverified',
     origin:base,spaceId,memberId,from:row.to,missionId:row.missionId,
     project:row.project,sourceId:row.outgoing.source?.id||null,
@@ -101,10 +101,24 @@ export async function verifyLivingHomeReturn({
     keyPinVerified:Boolean(pinnedKeyId),
     observedVia:'member-authenticated GET /v4/signals and /v4/signals/:id/receipt',
     verifiedAt:new Date().toISOString()};
+  if(!includeBundle)return nativeEvidence;
+  const boundedRow={missionId:row.missionId,challenge:row.challenge,project:row.project,
+    returnSignalId:row.returnSignalId,returnText:row.returnText,
+    state:'RETURN_RECEIVED_UNVERIFIED',outgoing:{
+      schema:row.outgoing.schema,missionId:row.outgoing.missionId,
+      challenge:row.outgoing.challenge,project:row.outgoing.project,
+      source:{id:row.outgoing.source?.id||''}}};
+  const bundle={schema:'JM.LivingHome.NativeSignedReturnBundle/1',
+    ledger:{schema:'JM.LivingHome.CP07.CloudReturn/1.0',missions:[boundedRow]},
+    evidence:nativeEvidence,signedReceipt:receipt,signedPayload:signal.payload,
+    serverPublicJwk:keyMeta.publicKeyJwk};
+  if(Buffer.byteLength(JSON.stringify(bundle))>250000)
+    throw Error('Native signed bundle exceeds 250 KB');
+  return {...nativeEvidence,nativeBundle:bundle};
 }
 async function main(args=process.argv.slice(2)){
   if(args.includes('--help')||!args.includes('--ledger')){
-    console.log('Read-only verified return: node contact/JM_LIVING_HOME_RETURN_VERIFY_v0_1.mjs --ledger /path/to/CP07-return.json --host https://jm-cloud-contact-server-v05.onrender.com --space SPACE --member MEMBER [--mission ID] [--key-id PINNED24HEX]');
+    console.log('Read-only verified return: node contact/JM_LIVING_HOME_RETURN_VERIFY_v0_1.mjs --ledger /path/to/CP07-return.json --host https://jm-cloud-contact-server-v05.onrender.com --space SPACE --member MEMBER [--mission ID] [--key-id PINNED24HEX] [--bundle-output /private/path/return.json]');
     console.log('Put member token in JM_LIVING_HOME_MEMBER_TOKEN environment privately; never in CLI flags, URL, chat or exported ledger.');
     return;
   }
@@ -113,12 +127,18 @@ async function main(args=process.argv.slice(2)){
   const raw=await fs.readFile(input,'utf8');
   if(Buffer.byteLength(raw)>250000)throw Error('Ledger exceeds 250 KB');
   const ledger=JSON.parse(raw);
+  const output=arg('--bundle-output');
   const result=await verifyLivingHomeReturn({
     baseUrl:arg('--host'),spaceId:arg('--space'),memberId:arg('--member'),
     memberToken:process.env.JM_LIVING_HOME_MEMBER_TOKEN,ledger,
-    missionId:arg('--mission')||undefined,pinnedKeyId:arg('--key-id')
+    missionId:arg('--mission')||undefined,pinnedKeyId:arg('--key-id'),
+    includeBundle:Boolean(output)
   });
-  console.log(JSON.stringify(result,null,2));
+  if(output){
+    const {nativeBundle,...receipt}=result;
+    await fs.writeFile(output,JSON.stringify(nativeBundle,null,2)+'\\n',{flag:'wx',mode:0o600});
+    console.log(JSON.stringify({...receipt,bundleSaved:resolve(output)},null,2));
+  }else console.log(JSON.stringify(result,null,2));
 }
 if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url))
   main().catch(error=>{console.error('JM LIVING HOME HOLD · '+error.message);process.exitCode=1});
