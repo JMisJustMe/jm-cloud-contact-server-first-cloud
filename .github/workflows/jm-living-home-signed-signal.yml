@@ -6,6 +6,7 @@ on:
       - "qa/JM_LIVING_HOME_SIGNED_SIGNAL_QA_v0_1.mjs"
       - "package.json"
       - "contact/JM_CLOUD_CONTACT_PG_DURABLE_v0_1.mjs"
+      - "contact/JM_CLOUD_CONTACT_CUTOVER_PREFLIGHT_v0_1.mjs"
       - "qa/JM_CLOUD_CONTACT_PG_DURABLE_QA_v0_1.mjs"
       - "deploy/Dockerfile"
       - ".github/workflows/jm-living-home-signed-signal.yml"
@@ -38,6 +39,8 @@ jobs:
         run: node qa/JM_LIVING_HOME_SIGNED_SIGNAL_QA_v0_1.mjs
       - name: Retain existing v05 server preflight checks
         run: npm test
+      - name: Check read-only hosted cutover preflight source
+        run: node --check contact/JM_CLOUD_CONTACT_CUTOVER_PREFLIGHT_v0_1.mjs
       - name: Existing v05 cloud contact durability against disposable PostgreSQL
         env:
           JM_QA_POSTGRES_URL: postgres://jm_qa:qa123@localhost:5432/jm_cloud_qa
