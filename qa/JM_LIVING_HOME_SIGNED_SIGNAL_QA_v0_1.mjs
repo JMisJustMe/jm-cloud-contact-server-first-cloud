@@ -164,6 +164,19 @@ try{
   assert.equal(verified.sourceId,'jm-games-house');
   assert.ok(!JSON.stringify(verified).includes(sender));
   pass('Actual CP07 ledger independently verified through authorised server GET + signed receipt');
+  const portable=await verifyLivingHomeReturn({
+    baseUrl:base,spaceId,memberId:'sender',memberToken:sender,
+    ledger,allowLocal:true,pinnedKeyId:publicKeyMeta.keyId,includeBundle:true
+  });
+  assert.equal(portable.nativeBundle.schema,'JM.LivingHome.NativeSignedReturnBundle/1');
+  assert.equal(portable.nativeBundle.signedReceipt.receiptHash,returnProof.receiptHash);
+  assert.equal(portable.nativeBundle.evidence.publicKeyId,publicKeyMeta.keyId);
+  assert.equal(portable.nativeBundle.ledger.missions.length,1);
+  assert.equal(portable.nativeBundle.signedPayload.result,response.result);
+  assert.equal(portable.nativeBundle.ledger.missions[0].outgoing.source.id,'jm-games-house');
+  assert.ok(!JSON.stringify(portable.nativeBundle).includes(sender));
+  assert.ok(!JSON.stringify(portable.nativeBundle).includes(receiver));
+  pass('Native-compatible portable signed bundle carries independently matched receipt, no secrets');
   await assert.rejects(verifyLivingHomeReturn({
     baseUrl:base,spaceId,memberId:'sender',memberToken:sender,
     ledger:{...ledger,missions:[{...ledger.missions[0],returnText:'FAKE RESULT'}]},
