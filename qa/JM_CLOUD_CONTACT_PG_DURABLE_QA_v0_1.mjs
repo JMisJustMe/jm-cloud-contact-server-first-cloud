@@ -93,6 +93,32 @@ try{
   assert.equal(pre.observed.contactNamespaceExists,true);
   assert.ok(!JSON.stringify(pre).includes(secret)&&!JSON.stringify(pre).includes(admin));
   pass('Actual owner key + read-only Postgres preflight: review-ready without secrets or writes');
+  const ownerJwk=crypto.createPublicKey(otherSigning.privateKey).export({format:'jwk'});
+  const ownerKeyId=crypto.createHash('sha256').update(JSON.stringify(Object.fromEntries(
+      Object.entries(ownerJwk).sort(([a],[b])=>a.localeCompare(b)))))
+    .digest('hex').slice(0,24);
+  const privateOwnerKey=Buffer.from(otherSigning.privateKey).toString('base64');
+  const explicitRekey={host:base,pgUrl:dbUrl,approvedDatabase:'jm_cloud_qa',
+    expectedSigningKeyId:ownerKeyId,signingKeyB64:privateOwnerKey,
+    memberHmacSecret:secret,previouslyObservedKeyId:key,allowLoopback:true,
+    approvedLiveKeyId:key,
+    bootstrapRekeyApproval:'JM_OWNER_APPROVED_ZERO_SPACE_REKEY_V1'};
+  const rekeyReadOnly=await inspectCutover(explicitRekey);
+  assert.equal(rekeyReadOnly.status,'TECHNICAL_PREFLIGHT_PASS_OWNER_APPROVAL_REQUIRED');
+  assert.equal(rekeyReadOnly.plannedKeyTransition.executed,false);
+  assert.equal(rekeyReadOnly.plannedKeyTransition.oldLiveKeyId,key);
+  assert.equal(rekeyReadOnly.plannedKeyTransition.newOwnerKeyId,ownerKeyId);
+  assert.equal(rekeyReadOnly.migrationPerformed,false);
+  pass('Owner-approved one-time zero-space rekey is only a plan; no rotation or durable mutation');
+  const missingRekeyApproval=await inspectCutover({
+    ...explicitRekey,bootstrapRekeyApproval:''});
+  assert.equal(missingRekeyApproval.status,'HOLD');
+  assert.ok(missingRekeyApproval.holds.includes('hosted_key_continuity_or_explicit_zero_space_rekey'));
+  pass('New private signing key alone cannot bypass owner bootstrap-rekey approval');
+  const wrongLiveKey=await inspectCutover({...explicitRekey,approvedLiveKeyId:'0'.repeat(24)});
+  assert.equal(wrongLiveKey.status,'HOLD');
+  assert.equal(wrongLiveKey.plannedKeyTransition,null);
+  pass('Owner bootstrap-rekey authorisation bound to exact observed previous public key');
   const drift=await inspectCutover({
     host:base,pgUrl:dbUrl,approvedDatabase:'jm_cloud_qa',
     expectedSigningKeyId:key,signingKeyB64:KEY_B64,
@@ -132,6 +158,11 @@ try{
   assert.equal(snap.rows[0].auth_key_check.trim().length,64);
   assert.ok(!snap.rows[0].document.includes(sender)&&!snap.rows[0].document.includes(receiver));
   pass('Isolated database contains correct signal and hashed credentials only');
+  const rekeyAfterMemberCreation=await inspectCutover(explicitRekey);
+  assert.equal(rekeyAfterMemberCreation.status,'HOLD');
+  assert.ok(rekeyAfterMemberCreation.holds.includes('bootstrap_rekey_requires_virgin_durable_state'));
+  assert.ok(rekeyAfterMemberCreation.holds.includes('hosted_key_continuity_or_explicit_zero_space_rekey'));
+  pass('Bootstrap rekey refuses to replace signer after real space and durable contact state exist');
   const witness={revision:Number(snap.rows[0].revision),
     sha256:String(snap.rows[0].document_sha256).trim(),liveSpaces:1};
   const reviewed=await inspectCutover({
