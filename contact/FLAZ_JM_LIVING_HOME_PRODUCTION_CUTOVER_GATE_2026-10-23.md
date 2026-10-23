@@ -28,3 +28,20 @@
 ### Contact/governance
 **SOURCE → SIGNAL → CONTACT FIELD → ROUTE PRESSURE → STATE CHANGE → DING → TRACE → RECOVERY → OUTPUT.** No Ding, no claim. Contact before crown. Recover before rebuild. Integration ≠ replacement. 
 FLAZ is sourced to existing Cloud Contact GitHub House and readback required. This is a documentation-only descendant of tested code, not a new production build or live migration.
+
+
+---
+
+## FORWARD CONTACT ADDENDUM · 23 October 2026 · reviewed-state / one-time signer transition
+
+**Current exact tested code SHA:** `c25eac66226a7e9d6223442bd701329d1ccc6595` (supersedes older tested SHA in the historical section above, without erasing that evidence). GitHub Actions `40001660728` **SUCCESS**: **23/23** actual v0.5 HTTP + isolated disposable PostgreSQL durable/cutover checks PASS; existing **27/27** cryptographic member/CP07 return checks PASS; full preexisting v0.5 server suite PASS; hosted `deploy/Dockerfile` image build PASS. Source is still **draft PR #69**, not deployed.
+
+**New bounded code:** Existing read-only `contact/JM_CLOUD_CONTACT_CUTOVER_PREFLIGHT_v0_1.mjs` now demands a second independent `/receipt-key` observation after database inspection. If the host's public signer changes during that inspection, it returns HOLD. An existing nonempty contact database can be approved for *future recovery* only with an owner-held exact `revision` + 64-hex snapshot `sha256` + actual `liveSpaces` witness; a missing/stale witness or conflicting key/HMAC never permits silent adoption.
+
+**Safe first-time volatile-to-stable signing transition:** Because Render v05's earlier local PEM has been observed to drift despite no new deployed source SHA, demanding literal equality to the old ephemeral key can deadlock an owner-approved durable first boot. A **plan-only** special case is now available: only when the original hosted space count is independently **zero**, original live public signer is exactly owner-confirmed twice, the prior observed key ID and explicit old-key ID match, the approved *new* EC P-256 PEM maps to its independently approved new key ID, and the durable contact namespace is virgin/no stored row. An explicit `JM_CLOUD_BOOTSTRAP_REKEY_APPROVAL=JM_OWNER_APPROVED_ZERO_SPACE_REKEY_V1` with `JM_CLOUD_BOOTSTRAP_REKEY_OLD_KEY_ID` is required. It emits `plannedKeyTransition.executed:false`, **never generates/rotates/writes a signing key or grants deployment authority**. Real deployed contact spaces or stored contacts immediately forbid this bootstrap route. Negative tests confirmed wrong old key, missing owner approval, populated DB and mid-preflight drift fail closed.
+
+**Do NOT blindly copy live ephemeral signing IDs into Fold Ultra**. On final owner-authorised deployment, establish permanent private PEM custody privately in Render, independent stable owner pin, approved schema/role, rollback, consistent member/admin HMAC authority and two-member hosted receipt/restart proof. `JM_CLOUD_REVIEWED_STATE_REVISION`, `JM_CLOUD_REVIEWED_STATE_SHA256`, `JM_CLOUD_REVIEWED_LIVE_SPACES` are only for already reviewed existing-state recovery, **not** a virgin DB. Private key, Postgres URL and credentials stay outside GitHub, downloaded HTML and chat. No live Render service or user DB changes made by this addendum.
+
+**Scoped claim:** Tested preflight and safe two-phase signer *planning* complete in disposable CI; actual owner custody, Render secret install, production deployment, authorised member enrolment, live signed return and physical Fold acceptance still **HOLD**. The original FLAZ text is preserved for chronology.
+
+**DING boundary: local CI source and container PASS, production identity and mission HOLD.**
