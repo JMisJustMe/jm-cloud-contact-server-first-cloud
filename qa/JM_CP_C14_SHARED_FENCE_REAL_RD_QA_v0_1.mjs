@@ -94,7 +94,7 @@ try{
  await stop();
  try{await boot('source',ownerA,1,{expectFailure:true});pass('stale-epoch-source-reboot-fails-closed');}finally{await stop()}
  await boot('target',ownerB,2);const targetBefore=await hostState();assert.equal(targetBefore.receipt.receiptHash,sourceBeforeCutover.receipt.receiptHash);pass('successor-with-new-epoch-restores-exact-signed-history');
- bridge=newBridge();const second=await actualProbe();assert.notEqual(first,second);assert.ok(late.record?.hash);pass('real-rd-probe-executes-on-new-fenced-Postgres-owner');
+ bridge=newBridge();const second=await actualProbe();assert.notEqual(first,second);assert.ok(late.data.record?.hash);pass('real-rd-probe-executes-on-new-fenced-Postgres-owner');
  const after=await hostState();assert.equal(after.deep.commandCount,2);assert.equal(runner.store.audit().status,'PASS');pass('post-promotion-local-and-host-signatures-verify');
  const oldEpochAttempt=await fence.promote({expectedOwner:ownerA,expectedEpoch:1,expectedRevision:latest.revision,expectedChecksum:latest.checksum,nextOwner:'third'});assert.equal(oldEpochAttempt.status,'HOLD');assert.equal(oldEpochAttempt.reason,'STALE_WRITER_EPOCH');pass('second-promotion-with-stale-epoch-refused');
  const f2=await fence.current();assert.equal(f2.owner,ownerB);assert.equal(Number(f2.epoch),2);pass('new-owner-authority-preserved');
