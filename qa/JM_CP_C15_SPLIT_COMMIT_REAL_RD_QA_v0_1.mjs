@@ -56,7 +56,7 @@ function newBridge(){return new V05Bridge({cloudUrl:host,spaceId,memberId,member
 
 // Inherited names and env contracts deliberately remain CP-C14-compatible;
 // GitHub Actions provisions FRESH disposable databases for this independent job.
-let dump=null,sourceBefore=null,faultDigest=null,decisionReason=null;
+let dump=null,secondDump=null,sourceBefore=null,faultDigest=null,decisionReason=null;
 try {
  process.env.JM_C14_DISPOSABLE_FENCE_BOOTSTRAP='YES_TEST_ONLY';
  await fence.bootstrapForTest();delete process.env.JM_C14_DISPOSABLE_FENCE_BOOTSTRAP;
@@ -125,12 +125,66 @@ try {
  assert.equal(Number(nowFence.snapshot_revision),nowState.revision);
  assert.equal(nowFence.snapshot_sha256,nowState.checksum);
  pass('contact-and-fence-watermarks-again-match-after-new-probe');
+
+ // Independent failure mode: the AUTHORITY PostgreSQL connection itself dies
+ // AFTER the Contact state save commits. The trigger only delays UPDATE;
+ // a separate, authorised disposable test connection terminates that backend.
+ const lastAccepted=await hostState();const beforeDrop=await saved(sourcePool);
+ secondDump=command(['exec',sourceCid,'pg_dump','-Fc','--schema=jm_cloud_contact_v1','-U','jm_qa','-d','jm_cloud_c14_source']);
+ assert.ok(secondDump.length>500);pass('second-native-backup-captures-last-approved-signed-state');
+ await fence.pool.query(`CREATE FUNCTION jm_cloud_contact_fence_v1.c15_delay_update() RETURNS trigger LANGUAGE plpgsql AS $$
+ BEGIN PERFORM pg_sleep(7); RETURN NEW; END; $$`);
+ await fence.pool.query(`CREATE TRIGGER c15_delay_authority_update BEFORE UPDATE ON jm_cloud_contact_fence_v1.authority
+ FOR EACH ROW EXECUTE FUNCTION jm_cloud_contact_fence_v1.c15_delay_update()`);
+ const lostId='c15_lost_conn_'+crypto.randomBytes(10).toString('hex');
+ const pending=call(`/v5/spaces/${spaceId}/events`,{method:'POST',token:memberToken,
+    body:{requestId:lostId,event:{type:'JM_C15_FENCE_CONNECTION_DROPPED',details:{isolated:'yes'}}}}).catch(()=>null);
+ let backend=null;
+ for(let i=0;i<65;i++){
+   const pids=await fence.pool.query(`SELECT pid FROM pg_stat_activity
+     WHERE datname=current_database() AND pid<>pg_backend_pid() AND state='active'
+       AND query LIKE 'UPDATE jm_cloud_contact_fence_v1.authority%'`);
+   if(pids.rows.length){backend=pids.rows[0].pid;break;}
+   await new Promise(r=>setTimeout(r,45));
+ }
+ assert.ok(Number.isInteger(backend),'Expected a real fence UPDATE backend inside pg_sleep');
+ pass('real-PostgreSQL-backend-observed-inside-fence-update');
+ const killed=await fence.pool.query('SELECT pg_terminate_backend($1) AS terminated',[backend]);
+ assert.equal(killed.rows[0].terminated,true);
+ pass('independent-disposable-connection-terminates-fence-backend');
+ const lostReply=await pending;
+ assert.ok(!lostReply||lostReply.status>=400,'No 2xx after loss of fencing authority backend');
+ pass('fence-connection-loss-without-successful-HTTP-ack');
+ const lostState=await saved(sourcePool),lostFence=await fence.current();
+ assert.equal(lostState.revision,beforeDrop.revision+1);
+ assert.notEqual(lostState.checksum,beforeDrop.checksum);
+ assert.equal(Number(lostFence.snapshot_revision),beforeDrop.revision);
+ assert.equal(lostFence.snapshot_sha256,beforeDrop.checksum);
+ pass('real-backend-termination-creates-detected-unacknowledged-state-fence-divergence');
+ await fence.pool.query('DROP TRIGGER c15_delay_authority_update ON jm_cloud_contact_fence_v1.authority');
+ await fence.pool.query('DROP FUNCTION jm_cloud_contact_fence_v1.c15_delay_update()');
+ await stop();await boot('source',ownerA,1,{expectFailure:true});await stop();
+ pass('restart-refuses-state-ahead-of-fence-after-actual-backend-loss');
+ command(['exec',sourceCid,'psql','-U','jm_qa','-d','jm_cloud_c14_source','-c','DROP SCHEMA IF EXISTS jm_cloud_contact_v1 CASCADE']);
+ command(['exec','-i',sourceCid,'pg_restore','--no-owner','--no-privileges','-U','jm_qa','-d','jm_cloud_c14_source'],{input:secondDump});secondDump.fill(0);secondDump=null;
+ assert.deepEqual(await saved(sourcePool),beforeDrop);
+ await boot('source',ownerA,1);const restarted=await hostState();
+ assert.equal(restarted.receipt.receiptHash,lastAccepted.receipt.receiptHash);
+ assert.equal(restarted.deep.events.some(e=>e.event?.type==='JM_C15_FENCE_CONNECTION_DROPPED'),false);
+ pass('second-controlled-backup-restore-preserves-signed-history-without-crowning-lost-write');
+ bridge.close();bridge=null;bridge=newBridge();
+ const third=await actualProbe();assert.notEqual(third,second);
+ const finalState=await saved(sourcePool),finalFence=await fence.current();
+ assert.equal(finalState.revision,Number(finalFence.snapshot_revision));
+ assert.equal(finalState.checksum,finalFence.snapshot_sha256);
+ pass('third-real-rd-signed-probe-confirms-continuity-after-actual-lock-backend-loss');
+
  // Reverse divergence (fence ahead of state) is covered by pure policy tests,
  // not claimed as live runtime proof in this fixture.
  pass('reverse-divergence-fail-closed-policy-is-separate-from-runtime-proof');
- report={schema:'jm.cp-c15.actual-db-split-commit-recovery/1',status:'PASS',checksPassed:log.length,checks:log,contactStateCommittedWithoutFence:true,httpSuccessAfterSplit:false,restartOnDivergence:'HOLD',controlledDatabaseRestore:true,signedRunnerAfterRestore:true,reverseDivergenceRuntime:'NOT_TESTED',productionApproved:false,productionTouched:false,physicalDeviceContact:false,claimBoundary:'Demonstrates post-state-commit fence-update failure and explicit operator restore, not atomic distributed commit or real network loss.'};
+ report={schema:'jm.cp-c15.actual-db-split-commit-recovery/1',status:'PASS',checksPassed:log.length,checks:log,contactStateCommittedWithoutFence:true,httpSuccessAfterSplit:false,restartOnDivergence:'HOLD',controlledDatabaseRestore:true,signedRunnerAfterRestore:true,actualFenceBackendTerminated:true,reverseDivergenceRuntime:'NOT_TESTED',productionApproved:false,productionTouched:false,physicalDeviceContact:false,claimBoundary:'Proves simulated fence-update exception and actual PostgreSQL authority backend termination after separate state commit; not an atomic distributed commit nor proof of public network failure.'};
 }catch(err){report={schema:'jm.cp-c15.actual-db-split-commit-recovery/1',status:'HOLD',checksPassed:log.length,checks:log,error:String(err.stack||err).slice(0,1700)};process.exitCode=1;}
-finally{try{if(blocker){try{await blocker.query('ROLLBACK')}catch{}blocker.release();blocker=null;}if(bridge){bridge.close();bridge=null;}await runner?.close();if(relayServer)await new Promise(ok=>relayServer.close(ok));relay?.close();await stop();await fence.close();await sourcePool.end();await targetPool.end();}catch(e){report.status='HOLD';report.cleanupError=String(e);process.exitCode=1;}if(dump){dump.fill(0);dump=null;}fs.rmSync(tmp,{recursive:true,force:true});}
+finally{try{if(blocker){try{await blocker.query('ROLLBACK')}catch{}blocker.release();blocker=null;}if(bridge){bridge.close();bridge=null;}await runner?.close();if(relayServer)await new Promise(ok=>relayServer.close(ok));relay?.close();await stop();await fence.close();await sourcePool.end();await targetPool.end();}catch(e){report.status='HOLD';report.cleanupError=String(e);process.exitCode=1;}if(dump){dump.fill(0);dump=null;}if(secondDump){secondDump.fill(0);secondDump=null;}fs.rmSync(tmp,{recursive:true,force:true});}
 clearTimeout(watchdog);
 if(process.env.JM_C15_EVIDENCE_PATH)fs.writeFileSync(process.env.JM_C15_EVIDENCE_PATH,JSON.stringify(report,null,2));
 console.log(JSON.stringify(report,null,2));
