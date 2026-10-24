@@ -15,7 +15,7 @@ permissions:
   contents: read
 concurrency:
   group: jm-c14-shared-writer-fence
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   shared-fence-actual-server-and-runner:
     runs-on: ubuntu-latest
@@ -81,7 +81,7 @@ jobs:
           JM_C14_TARGET_CONTAINER_ID: ${{ job.services.target.id }}
           JM_C14_FENCE_CONTAINER_ID: ${{ job.services.fence.id }}
           JM_C14_EVIDENCE_PATH: JM_C14_CI_RESULT.json
-        run: node qa/JM_CP_C14_SHARED_FENCE_REAL_RD_QA_v0_1.mjs
+        run: timeout 75s node qa/JM_CP_C14_SHARED_FENCE_REAL_RD_QA_v0_1.mjs
       - name: Preserve evidence
         if: always()
         uses: actions/upload-artifact@v4
