@@ -1,0 +1,35 @@
+name: JM CP-C17 inherited physical contact — bounded overlay
+on:
+  push:
+    branches:
+      - jm/c17-inherited-device-contact-20261024
+    paths:
+      - 'owner-contact/**'
+      - '.github/workflows/jm-c17-inherited-physical-contact.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  bounded-transport-inheritance:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test bounded CP-C17 inheritance without ADB or owner devices
+        run: node --test owner-contact/JM_CP17_INHERITED_ADB_CONTACT.test.mjs
+      - name: Pin original CP-C17 source and verify no replacement
+        shell: bash
+        run: |
+          test "$(git hash-object compose.yaml)" = '9e93a674524f847be0174c99162769d4e9a81fbe'
+          test "$(git hash-object JM_CLOUD_CONTACT_SERVER_v0_5_1_HOSTED_DESCENDANT.mjs)" = '9c9a2290a81d0ba4f0bbd4e9d955aaa251ae670f'
+      - name: Print evidence boundary
+        run: node -e "console.log('JM CP-C17 inherited ADB transport contract only; simulated local tests; owner Fold/laptop CP-C17 HTTP and signed mission HOLD')"

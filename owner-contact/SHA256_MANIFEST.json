@@ -1,0 +1,31 @@
+{
+  "schema": "jm.cp17.inherited-contact-overlay-custody/0.1",
+  "date": "2026-10-24",
+  "files": [
+    {
+      "name": "INHERITANCE_MATRIX.json",
+      "size": 2365,
+      "sha256": "49b769c72777b8bd00668085d9d34f98c46cdc8690c76a7b7489d1c617e1e1c4"
+    },
+    {
+      "name": "JM_CP17_INHERITED_ADB_CONTACT.mjs",
+      "size": 6374,
+      "sha256": "da60febd9a26f013cb9b5f30119aec0bc04fa9012a3ac37ec38723d16ab9429c"
+    },
+    {
+      "name": "JM_CP17_INHERITED_ADB_CONTACT.test.mjs",
+      "size": 7121,
+      "sha256": "47e2218c98c302692b4477aded0b4c3896b2d6ba4936c335f4ad2543dd9e60c9"
+    },
+    {
+      "name": "OPEN_FIRST.md",
+      "size": 5785,
+      "sha256": "2635583620ff78978316d1930c8c3293eea4de085a23458b35af4da0cd34fffd"
+    },
+    {
+      "name": "README.md",
+      "size": 686,
+      "sha256": "9df4f2299a5a0205dde980fb063f3e2e4cc3110e68875c2dced303ce3c5c1e3c"
+    }
+  ]
+}

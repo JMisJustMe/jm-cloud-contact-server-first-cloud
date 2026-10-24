@@ -1,0 +1,55 @@
+{
+  "schema": "jm.cp17.existing-physical-contact-inheritance/0.1",
+  "created": "2026-10-24",
+  "relation": "REUSE_INTEGRATE_TRUE_DELTA",
+  "donors": [
+    {
+      "body": "JM PHONE \u2194 LAPTOP CONTACT RUNNER Founding Contact Closure v0.2",
+      "scope": "owner-device connect/pair/exchange/recover/revoke/block",
+      "state": "INHERIT_PRIOR_PHYSICAL_PASS",
+      "notProved": "any CP-C17 specific device result"
+    },
+    {
+      "body": "JM COMPUTATION REOPENED \u2014 Cross-Device History Return Receipt v0.1",
+      "scope": "96,617 byte exact round-trip over physical direct WebRTC with signed ACK",
+      "sha256": "f44d731428765b3c0edda42338ee4d9d76ca08041c48c97770d924054b76bc10",
+      "state": "INHERIT_EXACT_BYTE_RETURN",
+      "notProved": "all file types, all phone hardware"
+    },
+    {
+      "body": "JM32-1DA Cross-Device Runtime Adapter v0.2",
+      "scope": "current seven-route tested carrier",
+      "state": "INHERIT_NAMED_SCOPE_ONLY"
+    },
+    {
+      "body": "JM ADB LOCALHOST BRIDGE v0.1",
+      "scope": "owner-approved USB adb reverse tcp:8791 to laptop tcp:8791",
+      "sourceSha256": "15a03914175da7f9c29358cd00f76c43775a7fe6f212bb0c167c21850d5ec747",
+      "state": "INHERIT_TRANSPORT_NOT_LEGACY_JMC5_CREDENTIALS"
+    },
+    {
+      "body": "JM PHONE\u2194LAPTOP DEVELOPER PLAYGROUND Whole-Chat Contact Closure v1.1",
+      "scope": "frozen source and evidence of old ADB/Node/phone owner routes",
+      "state": "READ_ONLY_DONOR",
+      "boundary": "original owner's physical phone\u2194laptop crown is separately scoped"
+    },
+    {
+      "body": "JM CP-C17 owner-hosted cloud",
+      "scope": "real local Docker Cloud Contact\u00d7RD signed-probe and PostgreSQL recovery in isolated GitHub CI",
+      "commit": "f5953cc798d4a65c0e59cc476b43f6738ec25d54",
+      "state": "INHERIT_ISOLATED_CI_NOT_OWNER_LAPTOP"
+    }
+  ],
+  "samePortContact": {
+    "port": 8791,
+    "route": "phone localhost -> USB ADB reverse -> laptop loopback CP-C17",
+    "private": true
+  },
+  "newAdapterScope": "read-only host and key preflight; authorised single ADB device; optional local reverse and phone browser health-view intent",
+  "newAdapterLocalTests": 22,
+  "newAdapterActualPhoneProof": "HOLD",
+  "phoneSignedRDProbe": "HOLD",
+  "productionDeployment": "HOLD",
+  "ownerAdminCredentialsOnPhone": false,
+  "oldProofRerunRequired": false
+}
