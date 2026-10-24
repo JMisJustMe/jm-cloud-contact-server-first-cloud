@@ -1,0 +1,36 @@
+name: JM CP-C8 immutable tested-source FLAZ export
+on:
+  push:
+    branches:
+      - jm/flaz-c8-source-export-20261024
+permissions:
+  contents: read
+jobs:
+  archive-tested-commit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout exact tested CP-C8 source commit
+        uses: actions/checkout@v4
+        with:
+          ref: cb4d787e63b951a248f230fc4a47f0c4e35894a3
+          persist-credentials: false
+      - name: Archive original git-tracked source without dependencies or state
+        shell: bash
+        run: |
+          set -euo pipefail
+          target=cb4d787e63b951a248f230fc4a47f0c4e35894a3
+          test "$(git rev-parse HEAD)" = "$target"
+          git archive --format=zip --output=JM_CP_C8_TESTED_SOURCE_20261024.zip HEAD
+          sha256sum JM_CP_C8_TESTED_SOURCE_20261024.zip > JM_CP_C8_TESTED_SOURCE_SHA256.txt
+          printf 'source_commit=%s\narchive_scope=git-tracked source only\nproduction_writes=none\nrunner_secret_capture=none\n' "$target" > JM_CP_C8_SOURCE_CUSTODY_RECEIPT.txt
+      - name: Preserve exact source artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: jm-c8-tested-source-flaz
+          path: |
+            JM_CP_C8_TESTED_SOURCE_20261024.zip
+            JM_CP_C8_TESTED_SOURCE_SHA256.txt
+            JM_CP_C8_SOURCE_CUSTODY_RECEIPT.txt
+          if-no-files-found: error
+          retention-days: 90
