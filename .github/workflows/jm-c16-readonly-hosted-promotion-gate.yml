@@ -1,0 +1,55 @@
+name: JM CP-C16 Readonly Hosted Promotion Gate
+on:
+  push:
+    branches:
+      - jm/c16-production-promotion-authority-20261024
+    paths:
+      - .github/workflows/jm-c16-readonly-hosted-promotion-gate.yml
+      - qa/c16/**
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: jm-c16-readonly-gate
+  cancel-in-progress: false
+jobs:
+  production-gate-is-always-review-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Inherited CP-C15 source must be byte-identical
+        run: |
+          test "$(git hash-object JM_CLOUD_CONTACT_SERVER_v0_5_1_HOSTED_DESCENDANT.mjs)" = '9c9a2290a81d0ba4f0bbd4e9d955aaa251ae670f'
+          test "$(git hash-object contact/JM_CLOUD_CONTACT_WRITER_FENCE_v0_1.mjs)" = '6331e23cb4b446874e58f0ece94879175677e471'
+      - name: Compile readonly release gate
+        run: |
+          node --check qa/c16/promotion-gate.mjs
+          node --check qa/c16/validate-observed.mjs
+      - name: CP-C16 current-real-inventory stays HOLD
+        run: node qa/c16/validate-observed.mjs
+      - name: CP-C16 owner approval, custody, source and rollback negative tests
+        run: node --test qa/c16/promotion-gate.test.mjs
+      - name: Inherit CP-C15 split-state checkpoint policy tests
+        run: node --test qa/c15/checkpoint-policy.test.mjs
+      - name: Inherit CP-C14 writer-fence policy tests
+        run: node --test qa/c14/fence-policy.test.mjs
+      - name: Inherit CP-C13 fork/lineage policy tests
+        run: node --test qa/c13/*.test.mjs
+      - name: Emit bounded read-only report
+        if: always()
+        run: |
+          mkdir -p c16_witness
+          node qa/c16/validate-observed.mjs > c16_witness/RENDER_C16_READONLY_HOLD.json
+          printf 'schema=jm.cp-c16.ci-source-boundary/1\ncommit=%s\nno_production_mutation=true\nnot_a_provider_signed_snapshot=true\n' "$GITHUB_SHA" > c16_witness/SCOPE.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: jm-c16-owner-gated-production-hold-witness
+          if-no-files-found: ignore
+          path: c16_witness/

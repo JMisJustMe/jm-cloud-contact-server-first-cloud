@@ -1,0 +1,47 @@
+{
+  "schema": "jm.cp-c16.read-only-production-gate/1",
+  "stage": "PREPARE",
+  "release": {
+    "candidateCommit": "84bb7a2dbac2352e8e680d7ce1993dfee299b621",
+    "sourceBranch": "jm/c15-uncertain-commit-fence-recovery-20261024",
+    "currentLiveCommit": "0921217d95285bcb21cda7a995d02f7ec0725810",
+    "ci": {
+      "runId": 40085185327,
+      "headSha": "84bb7a2dbac2352e8e680d7ce1993dfee299b621",
+      "conclusion": "success",
+      "jobsPassed": 3
+    }
+  },
+  "provider": {
+    "observedAt": "2026-10-24T11:31:30Z",
+    "service": {
+      "id": "srv-dag55iek1f9s73e7fmng",
+      "url": "https://jm-cloud-contact-server-v05.onrender.com",
+      "branch": "hosted-v0.5-descendant",
+      "autoDeploy": "no",
+      "deployedCommit": "0921217d95285bcb21cda7a995d02f7ec0725810",
+      "plan": "free"
+    },
+    "inventory": {
+      "databases": [
+        {
+          "id": "dpg-daro60h7lnhs73e6frg0-a",
+          "name": "jm-market-survivor-state",
+          "status": "available"
+        }
+      ]
+    },
+    "publicReadOnlyContact": {
+      "healthHttp": 503,
+      "readyHttp": 503,
+      "receiptKeyHttp": 503,
+      "observation": "HTTP_503_AT_CHECK_NOT_PERMANENT_OUTAGE"
+    }
+  },
+  "resources": {},
+  "expenses": {},
+  "rollback": {},
+  "signing": {},
+  "approval": null,
+  "observationNote": "Read-only connection at 2026-10-24 approximately 12:30 Europe/London. Timestamp is an observation field, not a provider-signed attestation. Requery before any real decision."
+}
