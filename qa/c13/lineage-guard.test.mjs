@@ -1,0 +1,16 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';
+import {assessLineage} from './lineage-guard.mjs';
+const a='a'.repeat(64),b='b'.repeat(64),c='c'.repeat(64),k='test-only-pin';
+const e=(hash)=>({hash});
+const data=(h,events)=>({spaceId:'s',publicKeyId:k,chainHead:h,events:events.map(e)});
+const prior=data(a,[a]),equal=data(a,[a]),after=data(b,[a,b]),fork=data(c,[a,c]);
+const valid=(s,t)=>({source:s,target:t,sourceVerified:true,targetVerified:true,pinnedKeyId:k});
+test('same signed history is identity, not production permission',()=>{const r=assessLineage(valid(prior,equal));assert.equal(r.status,'IDENTICAL');assert.equal(r.productionApproved,false)});
+test('verified forward-only history is local candidate, not approval',()=>{const r=assessLineage(valid(prior,after));assert.equal(r.status,'FORWARD_EXTENSION');assert.equal(r.productionApproved,false)});
+test('forked hashes HOLD',()=>assert.deepEqual(assessLineage(valid(after,fork)).reason,'DIVERGENT_SIGNED_HISTORY'));
+test('stale recipient cannot replace newer carrier',()=>assert.equal(assessLineage(valid(after,prior)).reason,'STALE_ROLLBACK_RECIPIENT'));
+test('wrong signer pin HOLD',()=>assert.equal(assessLineage({...valid(prior,after),pinnedKeyId:'attacker'}).reason,'SIGNER_PIN_MISMATCH'));
+test('missing external signature proof HOLD',()=>assert.equal(assessLineage({...valid(prior,after),targetVerified:false}).reason,'UNVERIFIED_SIGNED_READBACK'));
+test('missing full event journal HOLD',()=>assert.equal(assessLineage({...valid(prior,after),target:{...after,events:[]}}).reason,'MISSING_FULL_EVENT_JOURNAL'));
+test('mismatched space HOLD',()=>assert.equal(assessLineage({...valid(prior,after),target:{...after,spaceId:'other'}}).reason,'SPACE_MISMATCH'));
+test('head contradicts final event HOLD',()=>assert.equal(assessLineage({...valid(prior,after),target:{...after,chainHead:c}}).reason,'CHAIN_HEAD_INCONSISTENT'));

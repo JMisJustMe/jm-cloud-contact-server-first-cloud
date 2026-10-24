@@ -1,0 +1,12 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';
+import {SOURCE,TARGET,RECOVERY,guardThreeDisposable} from './three-carrier-guard.mjs';
+const a='a'.repeat(64),b='b'.repeat(64),c='c'.repeat(64);
+const good=()=>({source:SOURCE,target:TARGET,recovery:RECOVERY,sourceContainer:a,targetContainer:b,recoveryContainer:c,ci:'true'});
+test('three distinct CI-only PostgreSQL hosts admitted as TEST_ONLY',()=>assert.equal(guardThreeDisposable(good()).neverProduction,true));
+test('missing CI denied',()=>assert.throws(()=>guardThreeDisposable({...good(),ci:undefined}),/CI_ISOLATION/));
+test('fake Render source refused',()=>assert.throws(()=>guardThreeDisposable({...good(),source:'postgres://render.internal:5432/db'}),/EXACT_DISPOSABLE/));
+test('existing Market database refused',()=>assert.throws(()=>guardThreeDisposable({...good(),recovery:RECOVERY.replace('jm_cloud_c13_recovery','jm_market_survivor_state')}),/EXACT_DISPOSABLE/));
+test('same URL both ways refused',()=>assert.throws(()=>guardThreeDisposable({...good(),target:SOURCE}),/EXACT_DISPOSABLE/));
+test('same container for recovery refused',()=>assert.throws(()=>guardThreeDisposable({...good(),recoveryContainer:b}),/THREE_DISTINCT/));
+test('malformed docker container refused',()=>assert.throws(()=>guardThreeDisposable({...good(),sourceContainer:'../../prod'}),/THREE_DISTINCT/));
+test('absent third container refused',()=>assert.throws(()=>guardThreeDisposable({...good(),recoveryContainer:undefined}),/THREE_DISTINCT/));

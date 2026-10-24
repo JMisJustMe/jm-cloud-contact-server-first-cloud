@@ -1,0 +1,100 @@
+name: JM CP-C13 three-carrier fork and signed recovery
+on:
+  push:
+    branches:
+      - jm/c13-three-carrier-fork-recovery-20261024
+    paths:
+      - '.github/workflows/jm-c13-three-carrier-fork-recovery.yml'
+      - 'qa/c13/**'
+      - 'qa/JM_CP_C13_THREE_CARRIER_FORK_RECOVERY_QA_v0_1.mjs'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: jm-c13-three-carrier-fork-recovery
+  cancel-in-progress: false
+jobs:
+  three-disposable-postgres-carriers:
+    runs-on: ubuntu-latest
+    timeout-minutes: 24
+    services:
+      source:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: jm_qa
+          POSTGRES_PASSWORD: qa123
+          POSTGRES_DB: jm_cloud_c13_source
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U jm_qa -d jm_cloud_c13_source"
+          --health-interval 5s --health-timeout 3s --health-retries 12
+      target:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: jm_qa
+          POSTGRES_PASSWORD: qa123
+          POSTGRES_DB: jm_cloud_c13_target
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U jm_qa -d jm_cloud_c13_target"
+          --health-interval 5s --health-timeout 3s --health-retries 12
+      recovery:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: jm_qa
+          POSTGRES_PASSWORD: qa123
+          POSTGRES_DB: jm_cloud_c13_recovery
+        ports:
+          - 5434:5432
+        options: >-
+          --health-cmd "pg_isready -U jm_qa -d jm_cloud_c13_recovery"
+          --health-interval 5s --health-timeout 3s --health-retries 12
+    steps:
+      - name: Checkout exact CP-C12 successor
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install inherited runtime dependency
+        run: npm install --no-audit --no-fund
+      - name: Verify actual JM server and new test syntax
+        run: |
+          node --check JM_CLOUD_CONTACT_SERVER_v0_5_1_HOSTED_DESCENDANT.mjs
+          node --check qa/JM_CP_C13_THREE_CARRIER_FORK_RECOVERY_QA_v0_1.mjs
+          node --check qa/c13/three-carrier-guard.mjs
+          node --check qa/c13/lineage-guard.mjs
+      - name: Run three-container and signed-lineage negative tests
+        run: node --test qa/c13/*.test.mjs
+      - name: Preserve original signed Revolving Door regression
+        run: node --test qa/c10/bridge/revolving-door-v0_1_2_challenge/test/*.test.mjs
+      - name: Real Cloud Contact and RD three-carrier backup/fork/recovery test
+        env:
+          JM_C13_SOURCE_PG_URL: postgres://jm_qa:qa123@127.0.0.1:5432/jm_cloud_c13_source
+          JM_C13_TARGET_PG_URL: postgres://jm_qa:qa123@127.0.0.1:5433/jm_cloud_c13_target
+          JM_C13_RECOVERY_PG_URL: postgres://jm_qa:qa123@127.0.0.1:5434/jm_cloud_c13_recovery
+          JM_C13_SOURCE_CONTAINER_ID: ${{ job.services.source.id }}
+          JM_C13_TARGET_CONTAINER_ID: ${{ job.services.target.id }}
+          JM_C13_RECOVERY_CONTAINER_ID: ${{ job.services.recovery.id }}
+          JM_C13_EVIDENCE_PATH: JM_C13_CI_RESULT.json
+        run: node qa/JM_CP_C13_THREE_CARRIER_FORK_RECOVERY_QA_v0_1.mjs
+      - name: Preserve reproducible nonsecret receipt
+        if: always()
+        run: |
+          echo 'CP-C13 isolated three-PG CI; no Render writes' > JM_C13_META.txt
+          echo "commit=$GITHUB_SHA" >> JM_C13_META.txt
+          echo "run=$GITHUB_RUN_ID" >> JM_C13_META.txt
+          echo 'Production cutover and physical device execution remain HOLD.' >> JM_C13_META.txt
+      - name: Upload CI evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jm-c13-three-carrier-signed-fork-recovery
+          if-no-files-found: ignore
+          path: |
+            JM_C13_CI_RESULT.json
+            JM_C13_META.txt
