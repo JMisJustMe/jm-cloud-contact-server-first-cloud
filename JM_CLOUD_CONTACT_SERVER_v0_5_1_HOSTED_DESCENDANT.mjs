@@ -3,10 +3,19 @@ import {createGameProfile} from './game/JM_GAME_LIVE_PROFILE_v0_3.mjs';
 import {createMarketLabProfile} from './market/JM_MARKET_LAB_PROFILE_CURRENT.mjs';
 import {createZezuHistoryReturn} from './zezu/JM_ZEZU_HISTORY_RETURN_PROFILE_CURRENT.mjs';
 import {JMDurableContactStore} from './contact/JM_CLOUD_CONTACT_PG_DURABLE_v0_1.mjs';
+import {JMContactWriterFence} from './contact/JM_CLOUD_CONTACT_WRITER_FENCE_v0_1.mjs';
 import http from'node:http';import fs from'node:fs';import path from'node:path';import crypto from'node:crypto';import{URL}from'node:url';
 const N='JM CLOUD CONTACT SERVER',V='0.5.1-hosted',S='jm.cloud-contact.server/0.5',P=+process.env.PORT||8791,H=process.env.HOST||'0.0.0.0',M=(process.env.JM_CLOUD_MODE||'development').toLowerCase(),A=process.env.JM_CLOUD_ADMIN_TOKEN||'',K=process.env.JM_CLOUD_SERVER_SECRET||'',D=process.env.JM_CLOUD_DATA||path.resolve('./JM_CLOUD_CONTACT_DATA_v0_5_1.json'),PD=process.env.JM_CLOUD_PROFILE_DIR||path.resolve('./profiles'),PM=process.env.JM_CLOUD_PROFILE_MANIFEST||path.resolve('./profiles/JM_CLOUD_PROFILE_MANIFEST_HOSTED_v0_5_1.json'),KF=process.env.JM_CLOUD_RECEIPT_SIGNING_KEY||path.resolve('./JM_CLOUD_RECEIPT_SIGNING_KEY_v0_5_1.pem'),O=(process.env.JM_CLOUD_ORIGINS||'*').split(',').map(x=>x.trim()).filter(Boolean),TU=(process.env.JM_CLOUD_TURN_URLS||'').split(';').map(x=>x.trim()).filter(Boolean),TS=process.env.JM_CLOUD_TURN_SHARED_SECRET||'',TT=Math.max(300,Math.min(86400,+process.env.JM_CLOUD_TURN_TTL_SECONDS||3600)),RW=Math.max(1000,+process.env.JM_CLOUD_RATE_WINDOW_MS||60000),RM=Math.max(10,+process.env.JM_CLOUD_RATE_MAX||360),Z='0'.repeat(64),startedAt=new Date().toISOString();if(!A||!K)process.exit(2);if(M==='production'&&(A.length<32||K.length<32||O.includes('*')))process.exit(2);
 const CONTACT_PG_URL=process.env.JM_CLOUD_CONTACT_POSTGRES_URL||'';
 const CONTACT_PG_ENABLED=!!CONTACT_PG_URL;
+const FENCE_URL=process.env.JM_CLOUD_WRITER_FENCE_POSTGRES_URL||'';
+const FENCE_OWNER=process.env.JM_CLOUD_WRITER_FENCE_OWNER||'';
+const FENCE_EPOCH=process.env.JM_CLOUD_WRITER_FENCE_EPOCH||'';
+const FENCE_SCOPE=process.env.JM_CLOUD_WRITER_FENCE_SCOPE||'jm-cloud-contact-v05';
+const FENCE_ENABLED=!!FENCE_URL;
+if((FENCE_ENABLED||FENCE_OWNER||FENCE_EPOCH)&&(!FENCE_ENABLED||!FENCE_OWNER||!FENCE_EPOCH||!CONTACT_PG_ENABLED))
+  throw Error('JM writer fence requires dedicated shared authority URL, explicit writer/epoch and durable contact state');
+
 // This descendant cannot be promoted into production without durable storage.
 // The old production revision remains separate and unchanged until controlled deployment.
 if(M==='production'&&!CONTACT_PG_ENABLED)
@@ -16,7 +25,7 @@ if(M==='production'&&!/^[0-9a-f]{24}$/.test(process.env.JM_CLOUD_EXPECTED_SIGNIN
 if(CONTACT_PG_ENABLED&&!process.env.JM_CLOUD_RECEIPT_SIGNING_KEY_B64)
   throw Error('Postgres mode requires a stable owner-managed private signing key environment secret');
 const now=()=>new Date().toISOString(),sha=x=>crypto.createHash('sha256').update(String(x)).digest('hex'),hm=x=>crypto.createHmac('sha256',K).update(String(x)).digest('hex'),b64=x=>Buffer.from(x).toString('base64url'),tok=(p='jmcl_')=>p+b64(crypto.randomBytes(32)),safe=x=>/^[A-Za-z0-9._:-]{1,128}$/.test(String(x||'')),canon=v=>v===null||typeof v!=='object'?JSON.stringify(v):Array.isArray(v)?'['+v.map(canon).join(',')+']':'{'+Object.keys(v).sort().map(k=>JSON.stringify(k)+':'+canon(v[k])).join(',')+'}',eq=(a,b)=>{let x=Buffer.from(String(a)),y=Buffer.from(String(b));return x.length===y.length&&crypto.timingSafeEqual(x,y)},th=t=>hm('member-token\n'+t),rh=t=>hm('member-rejoin\n'+t),parts=x=>x.split('/').filter(Boolean).map(decodeURIComponent),bearer=q=>{let h=String(q.headers.authorization||'');return h.startsWith('Bearer ')?h.slice(7):''},admin=q=>eq(bearer(q),A),cap=(m,c)=>(m.capabilities||[]).includes(c)||(m.capabilities||[]).includes('*');
-let db={schema:S,version:5,nextCommandId:1,nextSignalId:1,spaces:{}};if(!CONTACT_PG_ENABLED)for(let f of[D,D+'.bak'])try{let x=JSON.parse(fs.readFileSync(f));db={...db,...x,schema:S,version:5,spaces:x.spaces||{}};break}catch{}let contactStore=null,contactFault=null,saveQueue=Promise.resolve();
+let db={schema:S,version:5,nextCommandId:1,nextSignalId:1,spaces:{}};if(!CONTACT_PG_ENABLED)for(let f of[D,D+'.bak'])try{let x=JSON.parse(fs.readFileSync(f));db={...db,...x,schema:S,version:5,spaces:x.spaces||{}};break}catch{}let contactStore=null,contactFault=null,writerFence=null,saveQueue=Promise.resolve();
 function persist(){
   if(contactFault)return Promise.reject(contactFault);
   // Keep old local cache, but never acknowledge a write solely on its presence.
@@ -25,7 +34,7 @@ function persist(){
   let t=D+'.tmp';fs.writeFileSync(t,JSON.stringify(db,null,2),{mode:384});fs.renameSync(t,D);
   if(!contactStore)return Promise.resolve();
   const snapshot=structuredClone(db);
-  const write=saveQueue.then(()=>contactStore.save(snapshot)).catch(e=>{contactFault=e;throw e});
+  const write=saveQueue.then(()=>writerFence?writerFence.withWriteLease(()=>contactStore.save(snapshot)):contactStore.save(snapshot)).catch(e=>{contactFault=e;throw e});
   saveQueue=write.catch(()=>{});
   return write;
 }
@@ -40,6 +49,12 @@ if(CONTACT_PG_ENABLED){
     throw Error('JM Cloud Contact production signing key differs from owner-pinned identity');
   const saved=await contactStore.open({signerKeyId:keyId,authKeyCheck:hm('JM-CLOUD-CONTACT-SECRET-ID-v1')});
   if(saved)db=saved;
+  if(FENCE_ENABLED){
+    writerFence=new JMContactWriterFence({connectionString:FENCE_URL,scope:FENCE_SCOPE,owner:FENCE_OWNER,epoch:Number(FENCE_EPOCH)});
+    await writerFence.prepare();
+    await writerFence.verifyOwner();
+    console.log('JM_CLOUD_CONTACT_FENCE_VERIFIED scope='+FENCE_SCOPE+' epoch='+FENCE_EPOCH);
+  }
   console.log('JM_CLOUD_CONTACT_DURABLE_READY revision='+contactStore.version+
     ' keyId='+keyId+' restored='+!!saved);
 }
