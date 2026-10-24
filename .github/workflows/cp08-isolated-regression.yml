@@ -1,0 +1,40 @@
+name: JM Cloud Contact CP08 isolated regression
+on:
+  push:
+    branches: [jm-cc-cp08-security-candidate]
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  cp08-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check untouched frozen main source
+        run: node --check JM_CLOUD_CONTACT_SERVER_v0_4_2.mjs
+      - name: Check isolated candidate syntax
+        run: node --check CP08/JM_CLOUD_CONTACT_SERVER_v0_4_3_HARDENING_CANDIDATE.mjs
+      - name: Real server loopback HTTP regression (dummy credentials)
+        run: node --test CP08/security_regression.test.mjs
+
+      - name: Save CP08 portable source and QA evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: jm-cc-cp08-source-and-tests
+          retention-days: 30
+          path: |
+            JM_CLOUD_CONTACT_SERVER_v0_4_2.mjs
+            render.yaml
+            CP08/JM_CLOUD_CONTACT_SERVER_v0_4_3_HARDENING_CANDIDATE.mjs
+            CP08/security_regression.test.mjs
+            CP08/render.candidate.yaml
+            CP08/README_HOLD.md
+            public/
+            deploy/Dockerfile
+            package.json
