@@ -1,0 +1,15 @@
+.env
+.env.*
+*.pem
+*.key
+secrets/
+*.sqlite
+*.sqlite-*
+*BACKUP*.dump
+*.tar.gz
+JM_*.zip
+.git
+node_modules
+**/node_modules
+**/.qa-data
+.host-local

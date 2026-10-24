@@ -1,0 +1,153 @@
+name: jm-owner-cloud
+
+x-cloud-env: &cloud-env
+  NODE_ENV: production
+  JM_CLOUD_MODE: production
+  JM_CLOUD_ORIGINS: self
+  JM_CLOUD_ADMIN_TOKEN: ${JM_CLOUD_ADMIN_TOKEN:?Run owner-setup first}
+  JM_CLOUD_SERVER_SECRET: ${JM_CLOUD_SERVER_SECRET:?Run owner-setup first}
+  JM_CLOUD_CONTACT_POSTGRES_URL: postgres://jm_contact:${JM_STATE_PG_PASSWORD:?Run owner-setup first}@contact-db:5432/jm_contact
+  JM_CLOUD_WRITER_FENCE_POSTGRES_URL: postgres://jm_fence:${JM_FENCE_PG_PASSWORD:?Run owner-setup first}@fence-db:5432/jm_fence
+  JM_CLOUD_WRITER_FENCE_OWNER: ${JM_CLOUD_WRITER_FENCE_OWNER:?Run owner-setup first}
+  JM_CLOUD_WRITER_FENCE_EPOCH: ${JM_CLOUD_WRITER_FENCE_EPOCH:?Run owner-setup first}
+  JM_CLOUD_WRITER_FENCE_SCOPE: jm-owner-cloud-contact
+  JM_CLOUD_RECEIPT_SIGNING_KEY_B64: ${JM_CLOUD_RECEIPT_SIGNING_KEY_B64:?Run owner-setup first}
+  JM_CLOUD_EXPECTED_SIGNING_KEY_ID: ${JM_CLOUD_EXPECTED_SIGNING_KEY_ID:?Run owner-setup first}
+  JM_CLOUD_DURABLE_INIT_ALLOW_EMPTY: '0'
+  JM_CLOUD_PROFILE_DIR: /app/profiles
+  JM_CLOUD_PROFILE_MANIFEST: /app/profiles/JM_CLOUD_PROFILE_MANIFEST_HOSTED_v0_5_1.json
+  JM_CLOUD_DATA: /data/cloud-cache.json
+  JM_GAME_DATA: /data/game-state.json
+  JM_SERVICE_MESH_DATA: /data/mesh-state.json
+  JM_MARKET_DATA: /data/market-state.json
+  JM_ZEZU_HISTORY_DATA: /data/zezu-history.json
+  JM_MARKET_POSTGRES_URL: ''
+  JM_SPACE_ID: ${JM_SPACE_ID:?Run owner-setup first}
+  JM_MEMBER_ID: ${JM_MEMBER_ID:?Run owner-setup first}
+
+x-rd-env: &rd-env
+  JM_PRODUCER_TOKEN: ${JM_PRODUCER_TOKEN:?Run owner-setup first}
+  JM_RUNNER_TOKEN: ${JM_RUNNER_TOKEN:?Run owner-setup first}
+  JM_MISSION_KEY: ${JM_MISSION_KEY:?Run owner-setup first}
+  JM_RECEIPT_KEY: ${JM_RECEIPT_KEY:?Run owner-setup first}
+  JM_WAKE_TOKEN: ${JM_WAKE_TOKEN:?Run owner-setup first}
+  JM_ALLOWED_RUNNER_ID: jm-owner-runner
+  JM_SPACE_ID: ${JM_SPACE_ID:?Run owner-setup first}
+  JM_MEMBER_ID: ${JM_MEMBER_ID:?Run owner-setup first}
+
+services:
+  contact-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: jm_contact
+      POSTGRES_PASSWORD: ${JM_STATE_PG_PASSWORD:?Run owner-setup first}
+      POSTGRES_DB: jm_contact
+    volumes:
+      - contact-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U jm_contact -d jm_contact']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+    networks: [jm-private]
+
+  fence-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: jm_fence
+      POSTGRES_PASSWORD: ${JM_FENCE_PG_PASSWORD:?Run owner-setup first}
+      POSTGRES_DB: jm_fence
+    volumes:
+      - fence-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U jm_fence -d jm_fence']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+    networks: [jm-private]
+
+  cloud:
+    build:
+      context: .
+      dockerfile: host/Dockerfile
+    image: jm-owner-cloud-contact:cp-c17
+    environment:
+      <<: *cloud-env
+      HOST: '0.0.0.0'
+      PORT: '8791'
+    ports:
+      - '127.0.0.1:${JM_LOCAL_PORT:-8791}:8791'
+    volumes:
+      - cloud-cache:/data
+    depends_on:
+      contact-db: {condition: service_healthy}
+      fence-db: {condition: service_healthy}
+    healthcheck:
+      test: ['CMD', 'node', 'host/readiness.mjs']
+      interval: 10s
+      timeout: 6s
+      retries: 10
+      start_period: 20s
+    restart: unless-stopped
+    networks: [jm-private, jm-edge]
+
+  operator:
+    profiles: ['setup']
+    image: jm-owner-cloud-contact:cp-c17
+    build:
+      context: .
+      dockerfile: host/Dockerfile
+    environment:
+      <<: *cloud-env
+      JM_HOST_URL: http://cloud:8791
+      JM_OWNER_BOOTSTRAP_ACK: ${JM_OWNER_BOOTSTRAP_ACK:-HOLD}
+    depends_on:
+      contact-db: {condition: service_healthy}
+      fence-db: {condition: service_healthy}
+    volumes:
+      - rd-data:/rdstate
+    networks: [jm-private]
+
+  rd:
+    profiles: ['runner']
+    image: jm-owner-cloud-contact:cp-c17
+    environment:
+      <<: *rd-env
+      JM_HOST_URL: http://127.0.0.1:8791
+      JM_POLL_MS: '4000'
+    command: ['node', 'host/local-rd-service.mjs']
+    network_mode: 'service:cloud'
+    depends_on:
+      cloud: {condition: service_healthy}
+    volumes:
+      - rd-data:/rdstate
+    restart: unless-stopped
+
+  reconcile:
+    profiles: ['reconcile']
+    image: jm-owner-cloud-contact:cp-c17
+    environment:
+      JM_CLOUD_ADMIN_TOKEN: ${JM_CLOUD_ADMIN_TOKEN:?Run owner-setup first}
+      JM_CLOUD_EXPECTED_SIGNING_KEY_ID: ${JM_CLOUD_EXPECTED_SIGNING_KEY_ID:?Run owner-setup first}
+      JM_SPACE_ID: ${JM_SPACE_ID:?Run owner-setup first}
+      JM_MEMBER_ID: ${JM_MEMBER_ID:?Run owner-setup first}
+      JM_HOST_URL: http://127.0.0.1:8791
+    network_mode: 'service:cloud'
+    depends_on:
+      cloud: {condition: service_healthy}
+    volumes:
+      - rd-data:/rdstate
+
+volumes:
+  contact-data:
+  fence-data:
+  cloud-cache:
+  rd-data:
+
+networks:
+  jm-private:
+    internal: true
+  jm-edge:
+    driver: bridge

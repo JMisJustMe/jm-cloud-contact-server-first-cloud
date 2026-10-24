@@ -1,10 +1,10 @@
 .env
 .env.*
-*.log
-JM_CLOUD_CONTACT_DATA*.json
-JM_CLOUD_RECEIPT_SIGNING_KEY*.pem
-JM_CLOUD_CONTACT_DATA*.bak
-.qa-data/
-qa-*.json
+secrets/
+*.pem
+*.key
+*.sqlite*
+*.dump
+*.tar.gz
+.host-local/
 node_modules/
-.DS_Store
