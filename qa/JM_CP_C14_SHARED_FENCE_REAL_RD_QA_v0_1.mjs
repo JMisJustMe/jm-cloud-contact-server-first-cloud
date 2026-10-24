@@ -26,7 +26,8 @@ const tokens={JM_PRODUCER_TOKEN:rand(),JM_RUNNER_TOKEN:rand(),JM_MISSION_KEY:ran
 const signer=crypto.generateKeyPairSync('ec',{namedCurve:'prime256v1',privateKeyEncoding:{type:'pkcs8',format:'pem'},publicKeyEncoding:{type:'spki',format:'pem'}}).privateKey;
 const pin=keyIdFor(crypto.createPublicKey(signer).export({format:'jwk'}));
 const port=await new Promise((ok,no)=>{const s=createServer();s.once('error',no);s.listen(0,'127.0.0.1',()=>{const p=s.address().port;s.close(()=>ok(p));});});
-const host='http://127.0.0.1:'+port,log=[];const pass=k=>log.push(k);
+const host='http://127.0.0.1:'+port,log=[];const pass=k=>{log.push(k);console.log('JM_C14_STAGE',log.length,k);};
+const watchdog=setTimeout(()=>{console.error('JM_C14_WATCHDOG_HOLD',JSON.stringify({lastChecks:log.slice(-5)}));process.exit(124);},55000);watchdog.unref();
 const envBase={...process.env,HOST:'127.0.0.1',PORT:String(port),JM_CLOUD_MODE:'production',JM_CLOUD_ADMIN_TOKEN:admin,JM_CLOUD_SERVER_SECRET:secret,JM_CLOUD_ORIGINS:'https://example.invalid',JM_CLOUD_RECEIPT_SIGNING_KEY_B64:Buffer.from(signer).toString('base64'),JM_CLOUD_EXPECTED_SIGNING_KEY_ID:pin,JM_CLOUD_PROFILE_DIR:path.join(root,'profiles'),JM_CLOUD_PROFILE_MANIFEST:path.join(root,'profiles','JM_CLOUD_PROFILE_MANIFEST_HOSTED_v0_5_1.json'),JM_MARKET_POSTGRES_URL:'',JM_CLOUD_WRITER_FENCE_POSTGRES_URL:U.fence,JM_CLOUD_WRITER_FENCE_SCOPE:scope};
 let child,relay,relayServer,runner,bridge,memberToken,relayUrl,boots=0, report,blocker=null;
 const fence=new JMContactWriterFence({connectionString:U.fence,scope,owner:ownerA,epoch:1});
@@ -103,4 +104,5 @@ try{
  report={schema:'jm.cp-c14.shared-pg-fence-real-rd/1',status:'PASS',checksPassed:log.length,checks:log,threeDistinctDisposablePostgres:true,sharedFence:true,oneOldWriterDurablyDenied:true,staleSnapshotPromotion:'HOLD',oldWriterRestart:'HOLD',productionApproved:false,productionTouched:false,physicalDeviceContact:false,claimBoundary:'Shared fence serialises successful application saves while lock is held; not an atomic distributed commit across independent databases or authority for production cutover.'};
 }catch(err){report={schema:'jm.cp-c14.shared-pg-fence-real-rd/1',status:'HOLD',checksPassed:log.length,checks:log,error:String(err.stack||err).slice(0,1500)};process.exitCode=1;}
 finally{try{if(blocker){try{await blocker.query('ROLLBACK')}catch{}blocker.release();blocker=null;}bridge?.close();await runner?.close();if(relayServer)await new Promise(ok=>relayServer.close(ok));relay?.close();await stop();await fence.close();await sourcePool.end();await targetPool.end();}catch(e){report.status='HOLD';report.cleanupError=String(e);process.exitCode=1}fs.rmSync(tmp,{recursive:true,force:true});}
+clearTimeout(watchdog);
 if(process.env.JM_C14_EVIDENCE_PATH)fs.writeFileSync(process.env.JM_C14_EVIDENCE_PATH,JSON.stringify(report,null,2));console.log(JSON.stringify(report,null,2));
