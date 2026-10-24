@@ -60,7 +60,7 @@ try{
  runner=new Runner({relayUrl,dbFile:path.join(tmp,'runner.sqlite'),tokens,runnerId:tokens.JM_ALLOWED_RUNNER_ID});
  const member=await checked('/v5/spaces',{status:201,method:'POST',token:admin,body:{spaceId,label:'CP-C14 shared writer-fence QA',kind:'test',members:[{id:memberId,type:'service',capabilities:['command:probe','event:write']}]}});memberToken=member.credentials[memberId];bridge=newBridge();
  const first=await actualProbe();const initial=await hostState();const watermark1=await saved(sourcePool);const fence1=await fence.current();assert.equal(Number(fence1.snapshot_revision),watermark1.revision);assert.equal(fence1.snapshot_sha256,watermark1.checksum);pass('actual-rd-probe-committed-with-shared-fence-watermark');
- bridge.close();await stop();
+ bridge.close();bridge=null;await stop();
  let dump=command(['exec',sourceCid,'pg_dump','-Fc','--schema=jm_cloud_contact_v1','-U','jm_qa','-d','jm_cloud_c14_source']);command(['exec','-i',targetCid,'pg_restore','--no-owner','--no-privileges','-U','jm_qa','-d','jm_cloud_c14_target'],{input:dump});dump.fill(0);pass('first-real-postgres-snapshot-restored-to-separate-carrier');
  await boot('source',ownerA,1);
  // Actual concurrency proof: block the Cloud Contact state row to suspend an
@@ -99,7 +99,7 @@ try{
  const after=await hostState();assert.equal(after.deep.commandCount,2);assert.equal(runner.store.audit().status,'PASS');pass('post-promotion-local-and-host-signatures-verify');
  const oldEpochAttempt=await fence.promote({expectedOwner:ownerA,expectedEpoch:1,expectedRevision:latest.revision,expectedChecksum:latest.checksum,nextOwner:'third'});assert.equal(oldEpochAttempt.status,'HOLD');assert.equal(oldEpochAttempt.reason,'STALE_WRITER_EPOCH');pass('second-promotion-with-stale-epoch-refused');
  const f2=await fence.current();assert.equal(f2.owner,ownerB);assert.equal(Number(f2.epoch),2);pass('new-owner-authority-preserved');
- bridge.close();await stop();
+ bridge.close();bridge=null;await stop();
  const targetAgain=await boot('target',ownerB,2);const final=await hostState();assert.equal(final.receipt.receiptHash,after.receipt.receiptHash);pass('cold-boot-retains-new-owner-signed-history');await stop();
  report={schema:'jm.cp-c14.shared-pg-fence-real-rd/1',status:'PASS',checksPassed:log.length,checks:log,threeDistinctDisposablePostgres:true,sharedFence:true,oneOldWriterDurablyDenied:true,staleSnapshotPromotion:'HOLD',oldWriterRestart:'HOLD',productionApproved:false,productionTouched:false,physicalDeviceContact:false,claimBoundary:'Shared fence serialises successful application saves while lock is held; not an atomic distributed commit across independent databases or authority for production cutover.'};
 }catch(err){report={schema:'jm.cp-c14.shared-pg-fence-real-rd/1',status:'HOLD',checksPassed:log.length,checks:log,error:String(err.stack||err).slice(0,1500)};process.exitCode=1;}
