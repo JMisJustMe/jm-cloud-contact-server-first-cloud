@@ -1,0 +1,10 @@
+# CP-C14 — Promotion prerequisites and loss-of-lock HOLD
+
+1. **Owner authority:** operator must explicitly authorise account, dedicated cloud-contact state storage, shared fence storage, fixed writer identifiers, initial epoch, target migration, costs, backup and rollback. No automatic resources, migrations, or credentials.
+2. **Compatible writers:** all potential old/new writers must use the shared writer fence. An unfenced older Render process is not under this protocol. Before cutover, prevent any bypassing traffic/legacy worker writes.
+3. **Signer custody:** protected owner-managed P-256 signing private key and expected key ID; preserved historical signer eras remain distinct. Confirm member-token HMAC fingerprint on recovered state.
+4. **Snapshot equality:** last fence watermark (revision + SHA-256) must equal the state restored at target; stale backup triggers HOLD. Validate full signed host journal and independent RD SQLite receipts before deciding authority.
+5. **Fencing operation:** obtain shared Postgres row lock and atomically update writer-owner/epoch inside *fence database*, then ensure old writer does not acknowledge or persist new commands; recipient may act only after verified startup with correct epoch.
+6. **Failure between two databases:** fence acquisition serialises *cooperating* applications while its connection is alive, but a lost fence connection around an otherwise successful remote state save is not atomically resolved. Set HOLD, stop writes, compare actual state revisions and signed histories, recover from a trusted checkpoint before resuming. A standby cannot infer a clean cutover from a green readiness endpoint.
+7. **Rollback:** require explicit approved rollback plan; rollback to a divergent/lagging signed journal remains HOLD. No automatic reversion of an old unfenced service.
+8. **Real-world gates:** live Render deployment, dedicated financed storage, physical Fold/laptop consequences and one authorised hosted command are separately UNTESTED/HOLD. CI is not billing or production authority.
