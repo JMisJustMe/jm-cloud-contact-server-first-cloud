@@ -27,7 +27,7 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd 'pg_isready -U jm_qa -d jm_cloud_c12_source'
+          --health-cmd "pg_isready -U jm_qa -d jm_cloud_c12_source"
           --health-interval 5s --health-timeout 3s --health-retries 12
       restore:
         image: postgres:16-alpine
@@ -38,7 +38,7 @@ jobs:
         ports:
           - 5433:5432
         options: >-
-          --health-cmd 'pg_isready -U jm_qa -d jm_cloud_c12_restore'
+          --health-cmd "pg_isready -U jm_qa -d jm_cloud_c12_restore"
           --health-interval 5s --health-timeout 3s --health-retries 12
     steps:
       - uses: actions/checkout@v4
@@ -81,7 +81,7 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd 'pg_isready -U jm_qa -d jm_cloud_qa'
+          --health-cmd "pg_isready -U jm_qa -d jm_cloud_qa"
           --health-interval 5s --health-timeout 3s --health-retries 12
     steps:
       - uses: actions/checkout@v4
