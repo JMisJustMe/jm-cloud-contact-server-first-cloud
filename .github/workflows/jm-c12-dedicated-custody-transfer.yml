@@ -98,6 +98,36 @@ jobs:
           JM_QA_POSTGRES_URL: postgres://jm_qa:qa123@localhost:5432/jm_cloud_qa
           JM_C11_EVIDENCE_PATH: JM_C11_RECHECK_C12.json
         run: node qa/JM_CP_C11_FRESH_VOLUME_CUSTODY_QA_v0_1.mjs
+      - name: Preserve independently tested CP-C11 witness
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jm-c12-c11-inherited-custody-recheck
+          if-no-files-found: ignore
+          path: JM_C11_RECHECK_C12.json
+  inherited-real-rd-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: jm_qa
+          POSTGRES_PASSWORD: qa123
+          POSTGRES_DB: jm_cloud_qa
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U jm_qa -d jm_cloud_qa"
+          --health-interval 5s --health-timeout 3s --health-retries 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
       - name: Inherited RD 0.1.2 original regression
         run: node --test qa/c10/bridge/revolving-door-v0_1_2_challenge/test/*.test.mjs
       - name: CP-C10 actual RD runner plus actual Cloud Contact disposable Postgres
@@ -105,12 +135,10 @@ jobs:
           JM_QA_POSTGRES_URL: postgres://jm_qa:qa123@localhost:5432/jm_cloud_qa
           JM_C10_EVIDENCE_PATH: JM_C10_RECHECK_C12.json
         run: node qa/JM_RD_ACTUAL_HOST_POSTGRES_REAL_RUNNER_QA_v0_1.mjs
-      - name: Preserve nonsecret prior-evidence results
+      - name: Preserve independently tested CP-C10 witness
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: jm-c12-inherited-contact-recheck
+          name: jm-c12-c10-inherited-rd-recheck
           if-no-files-found: ignore
-          path: |
-            JM_C11_RECHECK_C12.json
-            JM_C10_RECHECK_C12.json
+          path: JM_C10_RECHECK_C12.json
