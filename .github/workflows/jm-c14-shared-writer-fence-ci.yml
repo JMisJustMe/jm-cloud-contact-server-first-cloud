@@ -14,7 +14,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: jm-c14-shared-writer-fence
+  group: jm-c14-shared-writer-fence-bounded-20261024
   cancel-in-progress: true
 jobs:
   shared-fence-actual-server-and-runner:
