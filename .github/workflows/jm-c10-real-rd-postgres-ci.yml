@@ -1,0 +1,69 @@
+name: JM CP-C10 actual RD and durable PostgreSQL
+on:
+  push:
+    branches:
+      - jm/c10-real-rd-postgres-ci-20261024
+    paths:
+      - ".github/workflows/jm-c10-real-rd-postgres-ci.yml"
+      - "qa/c10/**"
+      - "qa/JM_RD_ACTUAL_HOST_POSTGRES_REAL_RUNNER_QA_v0_1.mjs"
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: jm-c10-real-rd-postgres-ci
+  cancel-in-progress: false
+jobs:
+  isolated-integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: jm_qa
+          POSTGRES_PASSWORD: qa123
+          POSTGRES_DB: jm_cloud_qa
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U jm_qa -d jm_cloud_qa"
+          --health-interval 5s --health-timeout 3s --health-retries 12
+    steps:
+      - name: Checkout exact tested source lineage
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install existing dependency
+        run: npm install --no-audit --no-fund
+      - name: Syntax
+        run: |
+          node --check JM_CLOUD_CONTACT_SERVER_v0_5_1_HOSTED_DESCENDANT.mjs
+          node --check qa/JM_RD_ACTUAL_HOST_POSTGRES_REAL_RUNNER_QA_v0_1.mjs
+      - name: Preserved RD v0.1.2 regression tests
+        run: node --test qa/c10/bridge/revolving-door-v0_1_2_challenge/test/*.test.mjs
+      - name: One real-host real-runner durable PostgreSQL route
+        env:
+          JM_QA_POSTGRES_URL: postgres://jm_qa:qa123@localhost:5432/jm_cloud_qa
+          JM_C10_EVIDENCE_PATH: JM_C10_CI_RESULT.json
+        run: node qa/JM_RD_ACTUAL_HOST_POSTGRES_REAL_RUNNER_QA_v0_1.mjs
+      - name: Archive nonsecret run metadata
+        if: always()
+        run: |
+          echo "JM CP-C10 isolated CI" > JM_C10_CI_META.txt
+          echo "commit=$GITHUB_SHA" >> JM_C10_CI_META.txt
+          echo "run=$GITHUB_RUN_ID" >> JM_C10_CI_META.txt
+          echo "No production hosted writes or device proof." >> JM_C10_CI_META.txt
+      - name: Upload CI witness
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jm-c10-actual-rd-postgres-witness
+          if-no-files-found: ignore
+          path: |
+            JM_C10_CI_META.txt
+            JM_C10_CI_RESULT.json

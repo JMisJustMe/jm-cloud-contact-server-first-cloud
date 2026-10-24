@@ -1,0 +1,56 @@
+{
+  "schema": "jm.cp-c10.original-source-custody/1",
+  "parentGitCommit": "cb4d787e63b951a248f230fc4a47f0c4e35894a3",
+  "files": [
+    {
+      "path": "qa/JM_RD_ACTUAL_HOST_POSTGRES_REAL_RUNNER_QA_v0_1.mjs",
+      "sha256": "085b794c89d9c652a1088eeb264780a86fc25c69e2c036b0ccd2f4a12044975c"
+    },
+    {
+      "path": "qa/c10/bridge/revolving-door-v0_1_2_challenge/src/client.mjs",
+      "sha256": "a0455cd1370206ed98a3512ce4cae3fdfc5f2c42b934cfc8b92dd3e37f2e59e4"
+    },
+    {
+      "path": "qa/c10/bridge/revolving-door-v0_1_2_challenge/src/local-store.mjs",
+      "sha256": "77d35e9acc0d5069f3e7a403e46b5048216a0a28ca60beacf97007c534f19e12"
+    },
+    {
+      "path": "qa/c10/bridge/revolving-door-v0_1_2_challenge/src/make-env.mjs",
+      "sha256": "4eb17a4d8bd4c8bde29d9cd682214aa756d492920376dd69ef141561a09ebbfe"
+    },
+    {
+      "path": "qa/c10/bridge/revolving-door-v0_1_2_challenge/src/protocol.mjs",
+      "sha256": "c3e7cca891c64cf81d78fa5efdf2e8fa087ebba7a47ce7902a24a5a3bf32737e"
+    },
+    {
+      "path": "qa/c10/bridge/revolving-door-v0_1_2_challenge/src/relay.mjs",
+      "sha256": "c97470ad9e23e91301fbb9f3bd9ee55d731caeb49629e2b31f358f7c33305395"
+    },
+    {
+      "path": "qa/c10/bridge/revolving-door-v0_1_2_challenge/src/runner.mjs",
+      "sha256": "678b2a7c07146b62cad65d51714aa599e8094bca313ecd9344257386021b5d7f"
+    },
+    {
+      "path": "qa/c10/bridge/revolving-door-v0_1_2_challenge/test/door.test.mjs",
+      "sha256": "ef4b1d1ad40b2416f164d02c4ca0ef74d93f26b97eae9c36c9c9b852292efd16"
+    },
+    {
+      "path": "qa/c10/bridge/revolving-door-v0_1_2_challenge/test/verification.test.mjs",
+      "sha256": "6870420162f7c135cdcf5beefd62cae9dcd62c56c4a8ada8343136841078452c"
+    },
+    {
+      "path": "qa/c10/bridge/src/v05-bridge.mjs",
+      "sha256": "39b842ed7444b32664ff1c0628526c70d2ab71f180c5c49e52046de0c8f88bad"
+    },
+    {
+      "path": "qa/c10/bridge/src/v05-proof.mjs",
+      "sha256": "8bd205c086c14f2759fa8e308fe385a5e5e1593cdb9171ac73e96a90b197dba4"
+    },
+    {
+      "path": "qa/c10/bridge/src/v05-reconcile.mjs",
+      "sha256": "8c25481f9e8051e27c6896d1b6a0a146c7d5221bb6a7fd9abd8bf12a0916b4c0"
+    }
+  ],
+  "scope": "disposable-postgres + actual-v05-source + real-RD-runner",
+  "production": "HOLD"
+}
