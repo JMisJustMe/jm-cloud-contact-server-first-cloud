@@ -1,0 +1,11 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';
+import {guardDisposable,SOURCE,TARGET} from './backup-guard.mjs';
+const a='a'.repeat(64),b='b'.repeat(64);const correct=()=>({source:SOURCE,target:TARGET,sourceContainer:a,targetContainer:b,ci:'true'});
+test('exact two distinct disposable PostgreSQL services accepted as TEST_ONLY',()=>assert.equal(guardDisposable(correct()).neverProduction,true));
+test('absent CI refuses',()=>assert.throws(()=>guardDisposable({...correct(),ci:undefined}),/CI_ISOLATION/));
+test('real Render host refuses',()=>assert.throws(()=>guardDisposable({...correct(),source:'postgres://jm_qa:qa123@render.internal:5432/jm_cloud_c12_source'}),/EXACT_DISPOSABLE/));
+test('market database path refuses',()=>assert.throws(()=>guardDisposable({...correct(),source:SOURCE.replace('jm_cloud_c12_source','jm_market_survivor_state')}),/EXACT_DISPOSABLE/));
+test('source target swap refuses',()=>assert.throws(()=>guardDisposable({...correct(),target:SOURCE}),/EXACT_DISPOSABLE/));
+test('same Docker PG container refuses',()=>assert.throws(()=>guardDisposable({...correct(),targetContainer:a}),/TWO_DISTINCT/));
+test('malformed container refuses',()=>assert.throws(()=>guardDisposable({...correct(),sourceContainer:'../../prod'}),/TWO_DISTINCT/));
+test('no container refuses',()=>assert.throws(()=>guardDisposable({...correct(),targetContainer:''}),/TWO_DISTINCT/));
