@@ -1,0 +1,96 @@
+name: JM CP-C6 — isolated actual-server and Postgres contact QA
+on:
+  push:
+    branches:
+      - jm/rd-bound-command-witness-20261024
+    paths:
+      - "JM_CLOUD_CONTACT_SERVER_v0_5_1_HOSTED_DESCENDANT.mjs"
+      - "contact/**"
+      - "qa/**"
+      - "package.json"
+      - ".github/workflows/jm-c6-isolated-contact-qa.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: jm-c6-isolated-contact-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  actual-cloud-contact:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: jm_qa
+          POSTGRES_PASSWORD: qa123
+          POSTGRES_DB: jm_cloud_qa
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U jm_qa -d jm_cloud_qa"
+          --health-interval 5s --health-timeout 3s --health-retries 12
+    steps:
+      - name: Checkout exact branch under test
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install repository dependencies
+        run: npm install --no-audit --no-fund
+      - name: Syntax and actual hosted server test suite
+        run: npm test
+      - name: Isolated signer-bound command HTTP QA
+        run: node qa/JM_RD_SIGNED_COMMAND_WITNESS_QA_v0_1.mjs
+      - name: Postgres and cutover recovery QA using disposable CI database
+        env:
+          JM_QA_POSTGRES_URL: postgres://jm_qa:qa123@localhost:5432/jm_cloud_qa
+        run: node qa/JM_CLOUD_CONTACT_PG_DURABLE_QA_v0_1.mjs
+      - name: Verify contact cutover preflight source syntax
+        run: node --check contact/JM_CLOUD_CONTACT_CUTOVER_PREFLIGHT_v0_1.mjs
+      - name: Preserve run metadata
+        if: always()
+        run: |
+          printf '%s\n' "CP-C6 isolated branch QA" "commit=${GITHUB_SHA}" "run=${GITHUB_RUN_ID}" "This is NOT a hosted production deploy or real device Ding." > JM_C6_CI_WITNESS.txt
+      - name: Upload nonsecret test witness
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jm-c6-isolated-ci-witness
+          path: JM_C6_CI_WITNESS.txt
+
+  signed-durable-restart:
+    needs: actual-cloud-contact
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: jm_qa
+          POSTGRES_PASSWORD: qa123
+          POSTGRES_DB: jm_cloud_qa
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U jm_qa -d jm_cloud_qa"
+          --health-interval 5s --health-timeout 3s --health-retries 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Confirm QA source syntax
+        run: node --check qa/JM_RD_ACTUAL_HOST_PG_RESTART_BOUND_QA_v0_1.mjs
+      - name: Actual v0.5 signed command survives isolated Postgres cold restart
+        env:
+          JM_QA_POSTGRES_URL: postgres://jm_qa:qa123@localhost:5432/jm_cloud_qa
+        run: node qa/JM_RD_ACTUAL_HOST_PG_RESTART_BOUND_QA_v0_1.mjs
