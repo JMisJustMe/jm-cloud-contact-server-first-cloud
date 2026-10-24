@@ -1,0 +1,106 @@
+name: JM CP-C11 — Fresh-volume custody and real RD regression
+on:
+  push:
+    branches:
+      - jm/c11-fresh-volume-cutover-gate-20261024
+    paths:
+      - ".github/workflows/jm-c11-cutover-rehearsal.yml"
+      - "qa/c11/**"
+      - "qa/JM_CP_C11_FRESH_VOLUME_CUSTODY_QA_v0_1.mjs"
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: jm-c11-cutover-rehearsal
+  cancel-in-progress: false
+jobs:
+  fresh-volume-owner-signer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: jm_qa
+          POSTGRES_PASSWORD: qa123
+          POSTGRES_DB: jm_cloud_qa
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U jm_qa -d jm_cloud_qa"
+          --health-interval 5s --health-timeout 3s --health-retries 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install preexisting pg dependency
+        run: npm install --no-audit --no-fund
+      - name: Syntax and strict decision gate tests
+        run: |
+          node --check qa/JM_CP_C11_FRESH_VOLUME_CUSTODY_QA_v0_1.mjs
+          node --check qa/c11/cutover-gate.mjs
+          node --test qa/c11/cutover-gate.test.mjs
+      - name: Actual current live readiness fixture MUST HOLD
+        run: |
+          set +e
+          node qa/c11/cutover-gate.mjs qa/c11/CP_C11_CURRENT_LIVE_EVIDENCE_2026-10-24.json > JM_C11_LIVE_HOLD_DECISION.json
+          code=$?
+          set -e
+          test "$code" -eq 2
+          node -e "const r=require('./JM_C11_LIVE_HOLD_DECISION.json');if(r.status!=='HOLD'||r.deploymentAuthorised!==false||r.failedGates.length<5)process.exit(1)"
+      - name: REAL V05 fresh isolated filesystem, independently held P-256 signer, disposable PostgreSQL
+        env:
+          JM_QA_POSTGRES_URL: postgres://jm_qa:qa123@localhost:5432/jm_cloud_qa
+          JM_C11_EVIDENCE_PATH: JM_C11_FRESH_VOLUME_CI_RESULT.json
+        run: node qa/JM_CP_C11_FRESH_VOLUME_CUSTODY_QA_v0_1.mjs
+      - name: Preserve nonsecret witness
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jm-c11-fresh-volume-cutover-witness
+          if-no-files-found: ignore
+          path: |
+            JM_C11_LIVE_HOLD_DECISION.json
+            JM_C11_FRESH_VOLUME_CI_RESULT.json
+
+  inherited-actual-rd-postgres:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: jm_qa
+          POSTGRES_PASSWORD: qa123
+          POSTGRES_DB: jm_cloud_qa
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U jm_qa -d jm_cloud_qa"
+          --health-interval 5s --health-timeout 3s --health-retries 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install preexisting pg dependency
+        run: npm install --no-audit --no-fund
+      - name: RD signed local regression tests
+        run: node --test qa/c10/bridge/revolving-door-v0_1_2_challenge/test/*.test.mjs
+      - name: CP-C10 actual-server actual-runner disposable PostgreSQL integration
+        env:
+          JM_QA_POSTGRES_URL: postgres://jm_qa:qa123@localhost:5432/jm_cloud_qa
+          JM_C10_EVIDENCE_PATH: JM_C10_RECHECK_IN_C11.json
+        run: node qa/JM_RD_ACTUAL_HOST_POSTGRES_REAL_RUNNER_QA_v0_1.mjs
+      - name: Preserve nonsecret inherited evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jm-c11-inherited-real-rd-postgres-witness
+          if-no-files-found: ignore
+          path: JM_C10_RECHECK_IN_C11.json

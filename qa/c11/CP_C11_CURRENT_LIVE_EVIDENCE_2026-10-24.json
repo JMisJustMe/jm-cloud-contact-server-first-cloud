@@ -1,0 +1,59 @@
+{
+  "schema": "jm.cp-c11.cutover-evidence/1",
+  "capturedDate": "2026-10-24",
+  "provenance": "Read-only connected Render, GitHub and public HTTPS fetch; not an authenticated signed attestation",
+  "service": {
+    "serviceId": "srv-dag55iek1f9s73e7fmng",
+    "name": "jm-cloud-contact-server-v05",
+    "branch": "hosted-v0.5-descendant",
+    "liveDeployCommit": "0921217d95285bcb21cda7a995d02f7ec0725810",
+    "proposedCommit": "17d5f1815e61a1feaedbf255f05ac0ba4f0efcac",
+    "autoDeploy": false,
+    "readiness": "VERIFIED_READY",
+    "readinessProof": {"status": "VERIFIED", "evidenceRef": "https://jm-cloud-contact-server-v05.onrender.com/ready"},
+    "deploymentProof": {"status": "VERIFIED", "evidenceRef": "https://dashboard.render.com/web/srv-dag55iek1f9s73e7fmng"},
+    "healthStartedAt": "2026-10-24T02:22:02.923Z",
+    "initialHttpFailures": [503, 503, 503, 503],
+    "caution": "Public ready true after 503; old live deploy still separate from CP-C10"
+  },
+  "database": {
+    "name": null,
+    "databaseName": null,
+    "purpose": "NOT_ALLOCATED",
+    "separateResource": false,
+    "ownerApproved": false,
+    "resourceProof": null,
+    "freshVolumeRecoveryProof": null,
+    "backupRestoreProof": null,
+    "backupsProtected": false,
+    "existingOtherResource": "jm-market-survivor-state",
+    "note": "Existing market resource is not available for Cloud Contact custody without explicit separate approval"
+  },
+  "signing": {
+    "provider": "CURRENT_HOST_LOCAL_OR_UNKNOWN",
+    "expectedKeyId": null,
+    "currentKeyId": "40faae12ef1f19d5e5aabcf1",
+    "keyContinuityProof": null,
+    "historicalDriftAcknowledged": true,
+    "rotationOrRecoveryProof": null,
+    "observedHistoricalKeyIds": ["a619ac1a08f845bd82b77eec", "42c9967ad9f2d551fd6a78b9"],
+    "note": "Observed 3 distinct public signer epochs without owner-approved key continuity ceremony"
+  },
+  "verification": {
+    "integrationCiResult": "PASS",
+    "integrationCiChecks": 25,
+    "integrationCiProof": {"status": "VERIFIED", "evidenceRef": "https://github.com/JMisJustMe/jm-cloud-contact-server-first-cloud/actions/runs/40051921550"},
+    "ciCommit": "17d5f1815e61a1feaedbf255f05ac0ba4f0efcac",
+    "freshVolumeCiResult": "NOT_YET_RUN",
+    "freshVolumeCiProof": null
+  },
+  "authority": {
+    "explicitProbeApproval": false,
+    "approvalRef": null,
+    "capability": "command:probe",
+    "secretHandling": "PRIVATE_HOST_ONLY",
+    "rollbackRehearsalProof": null,
+    "incrementalCostsApproved": false,
+    "financialApprovalRef": null
+  }
+}
