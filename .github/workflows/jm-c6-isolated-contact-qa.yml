@@ -62,3 +62,35 @@ jobs:
         with:
           name: jm-c6-isolated-ci-witness
           path: JM_C6_CI_WITNESS.txt
+
+  signed-durable-restart:
+    needs: actual-cloud-contact
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: jm_qa
+          POSTGRES_PASSWORD: qa123
+          POSTGRES_DB: jm_cloud_qa
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U jm_qa -d jm_cloud_qa"
+          --health-interval 5s --health-timeout 3s --health-retries 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Confirm QA source syntax
+        run: node --check qa/JM_RD_ACTUAL_HOST_PG_RESTART_BOUND_QA_v0_1.mjs
+      - name: Actual v0.5 signed command survives isolated Postgres cold restart
+        env:
+          JM_QA_POSTGRES_URL: postgres://jm_qa:qa123@localhost:5432/jm_cloud_qa
+        run: node qa/JM_RD_ACTUAL_HOST_PG_RESTART_BOUND_QA_v0_1.mjs
