@@ -8,6 +8,7 @@ const {Pool}=pg;
 const HEX=/^[0-9a-f]{64}$/;
 const IDENT=/^[A-Za-z0-9._:-]{1,128}$/;
 import {validateWriter,assessPromotion} from './JM_CONTACT_FENCE_POLICY_v0_1.mjs';
+import {assessCheckpoint} from './JM_CLOUD_CONTACT_CHECKPOINT_POLICY_v0_1.mjs';
 const TB='jm_cloud_contact_fence_v1.authority';
 export class JMContactWriterFence {
   constructor({connectionString,pool=null,scope='jm-cloud-contact-v05',owner,epoch}={}){
@@ -43,7 +44,13 @@ export class JMContactWriterFence {
     if(!a||a.owner!==this.owner||Number(a.epoch)!==this.epoch)throw Error('JM_FENCE_WRITER_REVOKED');
     return a;
   }
-  async withWriteLease(save){
+  async assertCheckpoint(checkpoint){
+    const current=await this.current();
+    const decision=assessCheckpoint({fence:current,owner:this.owner,epoch:this.epoch,...checkpoint});
+    if(!decision.status.startsWith('MATCHED'))throw Error('JM_FENCE_UNCERTAIN_COMMIT:'+decision.reason);
+    return decision;
+  }
+  async withWriteLease(save,{checkpoint}={}){
     if(typeof save!=='function')throw Error('JM_FENCE_OPERATION_REQUIRED');
     const client=await this.pool.connect();let transaction=false;
     try{
@@ -51,6 +58,13 @@ export class JMContactWriterFence {
       const r=await client.query(`SELECT owner,epoch,snapshot_revision,snapshot_sha256 FROM ${TB} WHERE scope=$1 FOR UPDATE`,[this.scope]);
       const row=r.rows[0];
       if(!row||row.owner!==this.owner||Number(row.epoch)!==this.epoch)throw Error('JM_FENCE_WRITER_REVOKED');
+      // Check the already-committed CONTACT store before advancing it.
+      // A lost acknowledgment between the two databases must never be repaired
+      // implicitly by another write, or disguised as successful promotion.
+      if(checkpoint){
+        const decision=assessCheckpoint({fence:row,owner:this.owner,epoch:this.epoch,...checkpoint});
+        if(!decision.status.startsWith('MATCHED'))throw Error('JM_FENCE_UNCERTAIN_COMMIT:'+decision.reason);
+      }
       // The lock must stay held throughout the actual durable state write.
       const result=await save();
       if(!result||!Number.isSafeInteger(result.revision)||result.revision<1||!HEX.test(result.checksum||''))throw Error('JM_FENCE_INVALID_DURABLE_RECEIPT');

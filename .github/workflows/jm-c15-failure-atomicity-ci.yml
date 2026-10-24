@@ -1,0 +1,230 @@
+name: JM CP-C15 uncertain state/fence commit and recovered Revolving Door
+on:
+  push:
+    branches:
+      - jm/c15-uncertain-commit-fence-recovery-20261024
+    paths:
+      - '.github/workflows/jm-c15-failure-atomicity-ci.yml'
+      - 'contact/JM_CLOUD_CONTACT_WRITER_FENCE_v0_1.mjs'
+      - 'contact/JM_CONTACT_FENCE_POLICY_v0_1.mjs'
+      - 'contact/JM_CLOUD_CONTACT_CHECKPOINT_POLICY_v0_1.mjs'
+      - 'qa/c15/**'
+      - 'qa/JM_CP_C15_SPLIT_COMMIT_REAL_RD_QA_v0_1.mjs'
+      - 'qa/c14/**'
+      - 'qa/JM_CP_C14_SHARED_FENCE_REAL_RD_QA_v0_1.mjs'
+      - 'JM_CLOUD_CONTACT_SERVER_v0_5_1_HOSTED_DESCENDANT.mjs'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: jm-c15-uncertain-commit-ci-20261024
+  cancel-in-progress: true
+jobs:
+  post-state-commit-fence-failure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      source:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: jm_qa
+          POSTGRES_PASSWORD: qa123
+          POSTGRES_DB: jm_cloud_c14_source
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U jm_qa -d jm_cloud_c14_source"
+          --health-interval 5s --health-timeout 3s --health-retries 12
+      target:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: jm_qa
+          POSTGRES_PASSWORD: qa123
+          POSTGRES_DB: jm_cloud_c14_target
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U jm_qa -d jm_cloud_c14_target"
+          --health-interval 5s --health-timeout 3s --health-retries 12
+      fence:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: jm_qa
+          POSTGRES_PASSWORD: qa123
+          POSTGRES_DB: jm_cloud_c14_fence
+        ports:
+          - 5434:5432
+        options: >-
+          --health-cmd "pg_isready -U jm_qa -d jm_cloud_c14_fence"
+          --health-interval 5s --health-timeout 3s --health-retries 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - name: Check actual server and fail-closed checkpoint policy
+        run: |
+          node --check JM_CLOUD_CONTACT_SERVER_v0_5_1_HOSTED_DESCENDANT.mjs
+          node --check contact/JM_CLOUD_CONTACT_WRITER_FENCE_v0_1.mjs
+          node --check contact/JM_CONTACT_FENCE_POLICY_v0_1.mjs
+          node --check qa/JM_CP_C15_SPLIT_COMMIT_REAL_RD_QA_v0_1.mjs
+      - name: CP-C15 split-commit checkpoint and inherited fencing policy tests
+        run: node --test qa/c15/*.test.mjs
+      - name: Preserved real Revolving Door tests
+        run: node --test qa/c10/bridge/revolving-door-v0_1_2_challenge/test/*.test.mjs
+      - name: Real state commit with failed shared fence, restart HOLD, native restore and new signed probe
+        env:
+          JM_C14_SOURCE_PG_URL: postgres://jm_qa:qa123@127.0.0.1:5432/jm_cloud_c14_source
+          JM_C14_TARGET_PG_URL: postgres://jm_qa:qa123@127.0.0.1:5433/jm_cloud_c14_target
+          JM_C14_FENCE_PG_URL: postgres://jm_qa:qa123@127.0.0.1:5434/jm_cloud_c14_fence
+          JM_C14_SOURCE_CONTAINER_ID: ${{ job.services.source.id }}
+          JM_C14_TARGET_CONTAINER_ID: ${{ job.services.target.id }}
+          JM_C14_FENCE_CONTAINER_ID: ${{ job.services.fence.id }}
+          JM_C15_EVIDENCE_PATH: JM_C15_CI_RESULT.json
+        run: timeout 75s node qa/JM_CP_C15_SPLIT_COMMIT_REAL_RD_QA_v0_1.mjs
+      - name: Preserve evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jm-c15-actual-partial-commit-recovery
+          if-no-files-found: ignore
+          path: JM_C15_CI_RESULT.json
+  inherited-c14-fencing-regressions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      source:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: jm_qa
+          POSTGRES_PASSWORD: qa123
+          POSTGRES_DB: jm_cloud_c14_source
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U jm_qa -d jm_cloud_c14_source"
+          --health-interval 5s --health-timeout 3s --health-retries 12
+      target:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: jm_qa
+          POSTGRES_PASSWORD: qa123
+          POSTGRES_DB: jm_cloud_c14_target
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U jm_qa -d jm_cloud_c14_target"
+          --health-interval 5s --health-timeout 3s --health-retries 12
+      fence:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: jm_qa
+          POSTGRES_PASSWORD: qa123
+          POSTGRES_DB: jm_cloud_c14_fence
+        ports:
+          - 5434:5432
+        options: >-
+          --health-cmd "pg_isready -U jm_qa -d jm_cloud_c14_fence"
+          --health-interval 5s --health-timeout 3s --health-retries 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - name: Check fenced actual server and pure authority modules
+        run: |
+          node --check JM_CLOUD_CONTACT_SERVER_v0_5_1_HOSTED_DESCENDANT.mjs
+          node --check contact/JM_CLOUD_CONTACT_WRITER_FENCE_v0_1.mjs
+          node --check contact/JM_CONTACT_FENCE_POLICY_v0_1.mjs
+          node --check qa/JM_CP_C14_SHARED_FENCE_REAL_RD_QA_v0_1.mjs
+      - name: CP-C14 pure falsification
+        run: node --test qa/c14/*.test.mjs
+      - name: Preserved real Revolving Door tests
+        run: node --test qa/c10/bridge/revolving-door-v0_1_2_challenge/test/*.test.mjs
+      - name: Shared fence with two state Postgres and actual HTTP runner under concurrent writes
+        env:
+          JM_C14_SOURCE_PG_URL: postgres://jm_qa:qa123@127.0.0.1:5432/jm_cloud_c14_source
+          JM_C14_TARGET_PG_URL: postgres://jm_qa:qa123@127.0.0.1:5433/jm_cloud_c14_target
+          JM_C14_FENCE_PG_URL: postgres://jm_qa:qa123@127.0.0.1:5434/jm_cloud_c14_fence
+          JM_C14_SOURCE_CONTAINER_ID: ${{ job.services.source.id }}
+          JM_C14_TARGET_CONTAINER_ID: ${{ job.services.target.id }}
+          JM_C14_FENCE_CONTAINER_ID: ${{ job.services.fence.id }}
+          JM_C14_EVIDENCE_PATH: JM_C14_CI_RECHECK_C15.json
+        run: timeout 75s node qa/JM_CP_C14_SHARED_FENCE_REAL_RD_QA_v0_1.mjs
+      - name: Preserve evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jm-c15-inherited-c14-actual-fence
+          if-no-files-found: ignore
+          path: JM_C14_CI_RECHECK_C15.json
+  inherited-c13-no-fence-compatibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      source:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: jm_qa
+          POSTGRES_PASSWORD: qa123
+          POSTGRES_DB: jm_cloud_c13_source
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U jm_qa -d jm_cloud_c13_source"
+          --health-interval 5s --health-timeout 3s --health-retries 12
+      target:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: jm_qa
+          POSTGRES_PASSWORD: qa123
+          POSTGRES_DB: jm_cloud_c13_target
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U jm_qa -d jm_cloud_c13_target"
+          --health-interval 5s --health-timeout 3s --health-retries 12
+      recovery:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: jm_qa
+          POSTGRES_PASSWORD: qa123
+          POSTGRES_DB: jm_cloud_c13_recovery
+        ports:
+          - 5434:5432
+        options: >-
+          --health-cmd "pg_isready -U jm_qa -d jm_cloud_c13_recovery"
+          --health-interval 5s --health-timeout 3s --health-retries 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - name: Existing C13 signed lineage negative regressions
+        run: node --test qa/c13/*.test.mjs
+      - name: Inherited three-carrier actual RD integration without writer fencing
+        env:
+          JM_C13_SOURCE_PG_URL: postgres://jm_qa:qa123@127.0.0.1:5432/jm_cloud_c13_source
+          JM_C13_TARGET_PG_URL: postgres://jm_qa:qa123@127.0.0.1:5433/jm_cloud_c13_target
+          JM_C13_RECOVERY_PG_URL: postgres://jm_qa:qa123@127.0.0.1:5434/jm_cloud_c13_recovery
+          JM_C13_SOURCE_CONTAINER_ID: ${{ job.services.source.id }}
+          JM_C13_TARGET_CONTAINER_ID: ${{ job.services.target.id }}
+          JM_C13_RECOVERY_CONTAINER_ID: ${{ job.services.recovery.id }}
+          JM_C13_EVIDENCE_PATH: JM_C13_RECHECK_C15.json
+        run: node qa/JM_CP_C13_THREE_CARRIER_FORK_RECOVERY_QA_v0_1.mjs
+      - name: Preserve backward compatibility witness
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jm-c15-inherited-c13-compatibility
+          if-no-files-found: ignore
+          path: JM_C13_RECHECK_C15.json

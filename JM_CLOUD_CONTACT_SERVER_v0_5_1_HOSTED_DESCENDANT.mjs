@@ -34,7 +34,14 @@ function persist(){
   let t=D+'.tmp';fs.writeFileSync(t,JSON.stringify(db,null,2),{mode:384});fs.renameSync(t,D);
   if(!contactStore)return Promise.resolve();
   const snapshot=structuredClone(db);
-  const write=saveQueue.then(()=>writerFence?writerFence.withWriteLease(()=>contactStore.save(snapshot)):contactStore.save(snapshot)).catch(e=>{contactFault=e;throw e});
+  const write=saveQueue.then(async()=>{
+    if(!writerFence)return contactStore.save(snapshot);
+    const rows=await contactStore.pool.query('SELECT revision,document_sha256 FROM jm_cloud_contact_v1.state WHERE singleton=1');
+    const row=rows.rows[0];
+    const checkpoint={revision:row?Number(row.revision):0,checksum:row?row.document_sha256.trim():null};
+    if(checkpoint.revision!==contactStore.version)throw Error('JM_FENCE_DURABLE_LOCAL_REVISION_DRIFT');
+    return writerFence.withWriteLease(()=>contactStore.save(snapshot),{checkpoint});
+  }).catch(e=>{contactFault=e;throw e});
   saveQueue=write.catch(()=>{});
   return write;
 }
@@ -53,6 +60,8 @@ if(CONTACT_PG_ENABLED){
     writerFence=new JMContactWriterFence({connectionString:FENCE_URL,scope:FENCE_SCOPE,owner:FENCE_OWNER,epoch:Number(FENCE_EPOCH)});
     await writerFence.prepare();
     await writerFence.verifyOwner();
+    const checkpoint={revision:contactStore.version,checksum:saved?sha(JSON.stringify(saved)):null};
+    await writerFence.assertCheckpoint(checkpoint);
     console.log('JM_CLOUD_CONTACT_FENCE_VERIFIED scope='+FENCE_SCOPE+' epoch='+FENCE_EPOCH);
   }
   console.log('JM_CLOUD_CONTACT_DURABLE_READY revision='+contactStore.version+
