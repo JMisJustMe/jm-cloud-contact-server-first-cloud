@@ -36,8 +36,13 @@ try {
   $env:JM_CP17_QA_FAIL_FOREVER=Join-Path $case 'fail_forever'
   if($alwaysFail){ Set-Content -LiteralPath $env:JM_CP17_QA_FAIL_FOREVER -Value 'forever' }
   if($failOnce){ Set-Content -LiteralPath $env:JM_CP17_QA_FAIL_ONCE -Value 'once' }
-  $out= & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $case 'START_HERE_WINDOWS.ps1') start 2>&1 | Out-String
-  $code=$LASTEXITCODE
+  # Expected native stderr from the refusal case is data for assertions, not a QA crash.
+  $previousErrorAction=$ErrorActionPreference
+  try {
+   $ErrorActionPreference='Continue'
+   $out= & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $case 'START_HERE_WINDOWS.ps1') start 2>&1 | Out-String
+   $code=$LASTEXITCODE
+  } finally { $ErrorActionPreference=$previousErrorAction }
   $lines=Get-Content -LiteralPath $env:JM_CP17_QA_LOG
   if(($code -eq 0) -ne $expectSuccess){throw "$label unexpected exit=$code output=$out"}
   $restarts=@($lines | Where-Object {$_ -match '^compose --profile runner restart rd$'}).Count
