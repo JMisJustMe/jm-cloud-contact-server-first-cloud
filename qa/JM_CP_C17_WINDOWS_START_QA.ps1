@@ -11,16 +11,16 @@ $shim=Join-Path $bin 'docker.cmd'
 @'
 @echo off
 echo %*>>"%JM_CP17_QA_LOG%"
-if /I "%~1"=="compose" if /I "%~4"=="exec" (
- echo PROBE_ARGS_4=%~4 FOREVER=%JM_CP17_QA_FAIL_FOREVER% ONCE=%JM_CP17_QA_FAIL_ONCE%>>"%JM_CP17_QA_LOG%"
- if exist "%JM_CP17_QA_FAIL_FOREVER%" echo FOREVER_EXISTS>>"%JM_CP17_QA_LOG%"
- if exist "%JM_CP17_QA_FAIL_ONCE%" echo ONCE_EXISTS>>"%JM_CP17_QA_LOG%"
- if exist "%JM_CP17_QA_FAIL_FOREVER%" exit /b 2
- if exist "%JM_CP17_QA_FAIL_ONCE%" (
-  del /q "%JM_CP17_QA_FAIL_ONCE%"
-  exit /b 2
- )
-)
+if /I not "%~1"=="compose" goto :success
+if /I not "%~4"=="exec" goto :success
+if exist "%JM_CP17_QA_FAIL_FOREVER%" goto :fail
+if exist "%JM_CP17_QA_FAIL_ONCE%" goto :fail_once
+goto :success
+:fail_once
+del /q "%JM_CP17_QA_FAIL_ONCE%"
+:fail
+exit /b 2
+:success
 exit /b 0
 '@ | Set-Content -LiteralPath $shim -Encoding Ascii
 $oldPath=$env:PATH
@@ -39,7 +39,7 @@ try {
   $out= & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $case 'START_HERE_WINDOWS.ps1') start 2>&1 | Out-String
   $code=$LASTEXITCODE
   $lines=Get-Content -LiteralPath $env:JM_CP17_QA_LOG
-  if(($code -eq 0) -ne $expectSuccess){throw "$label unexpected exit=$code output=$out; alwaysFail=$alwaysFail; foreverExists=$(Test-Path -LiteralPath $env:JM_CP17_QA_FAIL_FOREVER); log=$($lines -join '|')"}
+  if(($code -eq 0) -ne $expectSuccess){throw "$label unexpected exit=$code output=$out"}
   $restarts=@($lines | Where-Object {$_ -match '^compose --profile runner restart rd$'}).Count
   if($restarts -ne $expectRestart){throw "$label restart count $restarts expected $expectRestart"}
   if(-not (@($lines | Where-Object {$_ -match '^compose --profile runner up -d --wait cloud rd$'}).Count -eq 1)) { throw "$label missing original runner startup" }
