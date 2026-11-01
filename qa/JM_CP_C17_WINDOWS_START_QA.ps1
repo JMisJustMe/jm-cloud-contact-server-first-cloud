@@ -61,3 +61,5 @@ try {
  Remove-Item Env:JM_CP17_QA_LOG,Env:JM_CP17_QA_FAIL_ONCE,Env:JM_CP17_QA_FAIL_FOREVER -ErrorAction SilentlyContinue
  if(Test-Path -LiteralPath $root){Remove-Item -LiteralPath $root -Recurse -Force}
 }
+# The intentional negative-case child exits nonzero. Do not inherit that exit into CI.
+exit 0
