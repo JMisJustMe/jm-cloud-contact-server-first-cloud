@@ -12,7 +12,7 @@ $shim=Join-Path $bin 'docker.cmd'
 @echo off
 echo %*>>"%JM_CP17_QA_LOG%"
 if /I "%~1"=="compose" if /I "%~4"=="exec" (
- if "%JM_CP17_QA_ALWAYS_FAIL%"=="1" exit /b 2
+ if exist "%JM_CP17_QA_FAIL_FOREVER%" exit /b 2
  if exist "%JM_CP17_QA_FAIL_ONCE%" (
   del /q "%JM_CP17_QA_FAIL_ONCE%"
   exit /b 2
@@ -30,7 +30,8 @@ try {
   Set-Content -LiteralPath (Join-Path $case '.env') -Value 'JM_CP17_QA_DUMMY=1'
   $env:JM_CP17_QA_LOG=Join-Path $case 'docker.log'
   $env:JM_CP17_QA_FAIL_ONCE=Join-Path $case 'fail_once'
-  $env:JM_CP17_QA_ALWAYS_FAIL=if($alwaysFail){'1'}else{'0'}
+  $env:JM_CP17_QA_FAIL_FOREVER=Join-Path $case 'fail_forever'
+  if($alwaysFail){ Set-Content -LiteralPath $env:JM_CP17_QA_FAIL_FOREVER -Value 'forever' }
   if($failOnce){ Set-Content -LiteralPath $env:JM_CP17_QA_FAIL_ONCE -Value 'once' }
   $out= & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $case 'START_HERE_WINDOWS.ps1') start 2>&1 | Out-String
   $code=$LASTEXITCODE
@@ -49,6 +50,6 @@ try {
  Write-Output 'JM_CP_C17_WINDOWS_START_3_CASES_PASS_NO_REAL_DOCKER_OR_DEVICE'
 } finally {
  $env:PATH=$oldPath
- Remove-Item Env:JM_CP17_QA_LOG,Env:JM_CP17_QA_FAIL_ONCE,Env:JM_CP17_QA_ALWAYS_FAIL -ErrorAction SilentlyContinue
+ Remove-Item Env:JM_CP17_QA_LOG,Env:JM_CP17_QA_FAIL_ONCE,Env:JM_CP17_QA_FAIL_FOREVER -ErrorAction SilentlyContinue
  if(Test-Path -LiteralPath $root){Remove-Item -LiteralPath $root -Recurse -Force}
 }
