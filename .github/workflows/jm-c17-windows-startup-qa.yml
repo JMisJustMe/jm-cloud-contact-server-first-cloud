@@ -1,0 +1,32 @@
+name: JM CP-C17 original Windows launcher — Docker/RD recovery delta
+on:
+  push:
+    branches:
+      - fix/jm-c17-owner-start-recovery-20261101
+    paths:
+      - START_HERE_WINDOWS.ps1
+      - qa/JM_CP_C17_WINDOWS_START_QA.ps1
+      - .github/workflows/jm-c17-windows-startup-qa.yml
+  pull_request:
+    branches:
+      - jm/c17-inherited-device-contact-20261024
+    paths:
+      - START_HERE_WINDOWS.ps1
+      - qa/JM_CP_C17_WINDOWS_START_QA.ps1
+      - .github/workflows/jm-c17-windows-startup-qa.yml
+permissions:
+  contents: read
+jobs:
+  windows-owner-start-boundary:
+    runs-on: windows-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Test original launcher with isolated fake Docker command
+        shell: powershell
+        run: .\qa\JM_CP_C17_WINDOWS_START_QA.ps1
+      - name: Report proof scope
+        shell: powershell
+        run: Write-Output 'JM CP-C17 Windows shell/argument/recovery boundary PASS when prior step passes. Does not prove real Docker engine, USB, Fold, remote deployment or signer identity.'
