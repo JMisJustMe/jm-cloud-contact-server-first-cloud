@@ -3,10 +3,12 @@
   "version": "0.4.2",
   "private": true,
   "type": "module",
-  "engines": {"node": ">=20"},
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "start": "node JM_CLOUD_CONTACT_SERVER_v0_4_2.mjs",
-    "test": "node --check JM_CLOUD_CONTACT_SERVER_v0_4_2.mjs",
+    "test": "node --check JM_CLOUD_CONTACT_SERVER_v0_4_2.mjs && node --check tbs-relationship-guard.mjs && node --test tbs-relationship-guard.test.mjs tbs-http.test.mjs",
     "preflight": "npm test"
   }
 }

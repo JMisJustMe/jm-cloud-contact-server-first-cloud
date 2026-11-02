@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { URL } from 'node:url';
+import { assessTransition } from './tbs-relationship-guard.mjs';
 
 const NAME='JM CLOUD CONTACT SERVER';
 const VERSION='0.4.2';
@@ -115,6 +116,13 @@ const server=http.createServer(async(req,res)=>{try{
   if(req.method==='GET'&&u.pathname==='/meta')return send(req,res,200,{ok:true,name:NAME,version:VERSION,schema:SCHEMA,apiRoots:['/v4','/v3'],console:'/console',claimBoundary:'Hosted console proves public server/browser contact only; route-specific external consequences require their own endpoint evidence.'});
   if(req.method==='GET'&&u.pathname==='/health')return send(req,res,200,{ok:true,name:NAME,version:VERSION,schema:SCHEMA,mode:MODE,spaces:Object.keys(db.spaces).length,startedAt});
   if(req.method==='GET'&&u.pathname==='/ready')return send(req,res,200,{ok:true,ready:true,dataFile:!!DATA_FILE,mode:MODE});
+  // Read-only BRAIDGE/TBS candidate assessment. Admin authentication is required.
+  // Caller claims are not trusted proof; no state mutation or authority grant occurs.
+  if(req.method==='POST'&&u.pathname==='/v4/tbs/assess'){
+    if(!isAdmin(req))return send(req,res,401,{ok:false,error:'admin unauthorized'});
+    const j=await body(req);
+    return send(req,res,200,{ok:true,assessment:assessTransition(j),claimBoundary:'Candidate review only; not execution, source authentication, ownership transfer, or proof inheritance.'});
+  }
   if(req.method==='POST'&&['/v4/spaces','/v3/spaces'].includes(u.pathname)){
     if(!isAdmin(req))return send(req,res,401,{ok:false,error:'admin unauthorized'});const j=await body(req);const id=String(j.spaceId||`space_${Date.now()}_${b64(crypto.randomBytes(4))}`);if(!safe(id)||db.spaces[id])return send(req,res,400,{ok:false,error:'invalid or existing spaceId'});
     const defs=Array.isArray(j.members)?j.members:[];if(defs.length<1||defs.length>64)return send(req,res,400,{ok:false,error:'members must contain 1..64 entries'});
