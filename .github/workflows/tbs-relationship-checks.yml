@@ -4,6 +4,7 @@ on:
     paths:
       - 'tbs-relationship-guard.mjs'
       - 'tbs-relationship-guard.test.mjs'
+      - 'tbs-http.test.mjs'
       - 'package.json'
       - 'JM_CLOUD_CONTACT_SERVER_v0_4_2.mjs'
       - '.github/workflows/tbs-relationship-checks.yml'
