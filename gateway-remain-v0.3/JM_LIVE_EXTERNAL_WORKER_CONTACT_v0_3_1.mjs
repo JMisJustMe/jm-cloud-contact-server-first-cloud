@@ -29,7 +29,7 @@ async function probe({name,url}){
         valid=r.status===200 && body.ready===true && body.version==='0.5.1-hosted';
         detail={version:body.version,ready:body.ready};
       }else{
-        valid=r.status===200 && body.version==='0.8.5' && body.server==='JM ECOSTATE Build Mesh Native MCP';
+        valid=r.status===200 && ['0.8.5','0.8.6'].includes(body.version) && body.server==='JM ECOSTATE Build Mesh Native MCP';
         detail={version:body.version,currentProjectRecords:body.current_project_records,capabilityProfiles:body.capability_profiles};
       }
       return {name,url,attempt,status:r.status,ok:valid,elapsedMs:Date.now()-t,responseSha256:digest(body),detail};
