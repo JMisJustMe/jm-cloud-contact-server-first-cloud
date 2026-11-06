@@ -21,7 +21,7 @@ jobs:
       - name: Recover tested JM candidate (immutable source revision)
         uses: actions/checkout@v4
         with:
-          ref: b36025e6930b680a64d981ca47d2f80940b123ad
+          ref: a08e698adbbd188d796a5716b8f60a6f4b38d0ce
           persist-credentials: false
       - name: Use Node 22
         uses: actions/setup-node@v4
