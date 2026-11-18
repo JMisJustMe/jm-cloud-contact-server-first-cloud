@@ -20,6 +20,17 @@ jobs:
         run: node --check JM_CLOUD_CONTACT_SERVER_v0_4_2.mjs
       - name: Check isolated candidate syntax
         run: node --check CP08/JM_CLOUD_CONTACT_SERVER_v0_4_3_HARDENING_CANDIDATE.mjs
+      - name: Prove original Remain proof workflow is least-privilege
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          s = Path('.github/workflows/jm-remain-v03-proof.yml').read_text()
+          assert '\npermissions:\n  contents: read\n' in s
+          assert not any(x in s for x in ('actions: write', 'contents: write', 'id-token: write'))
+          print('JM CLOUD CP08: source read-only permissions PASS')
+          PY
       - name: Real server loopback HTTP regression (dummy credentials)
         run: node --test CP08/security_regression.test.mjs
 
