@@ -1,0 +1,23 @@
+name: JM Cloud Contact TBS checks
+on:
+  pull_request:
+    paths:
+      - 'tbs-relationship-guard.mjs'
+      - 'tbs-relationship-guard.test.mjs'
+      - 'tbs-http.test.mjs'
+      - 'package.json'
+      - 'JM_CLOUD_CONTACT_SERVER_v0_4_2.mjs'
+      - '.github/workflows/tbs-relationship-checks.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm test
