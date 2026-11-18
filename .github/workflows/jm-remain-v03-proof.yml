@@ -12,6 +12,10 @@ on:
       - 'render.yaml'
       - '.github/workflows/jm-remain-v03-proof.yml'
 
+# Existing JM Remain v0.3 proof: GitHub token is read-only.
+permissions:
+  contents: read
+
 jobs:
   prove:
     runs-on: ubuntu-latest
