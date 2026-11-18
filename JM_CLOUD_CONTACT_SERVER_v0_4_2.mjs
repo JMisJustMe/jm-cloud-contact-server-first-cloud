@@ -146,7 +146,7 @@ const server=http.createServer(async(req,res)=>{try{
     if(req.method==='GET'&&p[3]==='signals'){const m=authMember(req,s);if(!m)return send(req,res,401,{ok:false,error:'member unauthorized'});const after=Number(u.searchParams.get('after')||0);return send(req,res,200,{ok:true,signals:s.signals.filter(x=>x.id>after&&x.to===m.id)})}
   }
   return send(req,res,404,{ok:false,error:'not found'});
-}catch(e){if(!res.headersSent)send(req,res,400,{ok:false,error:String(e.message||e)});else res.end()}});
+}catch{if(!res.headersSent)send(req,res,400,{ok:false,error:'request rejected'});else res.end()}});
 
 let stopping=false;
 function shutdown(sig){if(stopping)return;stopping=true;console.log(`${NAME} ${VERSION} shutting down (${sig})`);try{persist()}catch(e){console.error('persist during shutdown failed',e)}server.close(()=>process.exit(0));setTimeout(()=>process.exit(1),5000).unref()}
