@@ -12,6 +12,10 @@ on:
       - 'render.yaml'
       - '.github/workflows/jm-remain-v03-proof.yml'
 
+# Explicit least-privilege GITHUB_TOKEN scope for existing proof-only workflow.
+permissions:
+  contents: read
+
 jobs:
   prove:
     runs-on: ubuntu-latest
