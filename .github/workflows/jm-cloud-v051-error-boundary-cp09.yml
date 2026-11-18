@@ -1,0 +1,31 @@
+name: JM Cloud v0.5.1 CP09 — hosted descendant security
+
+on:
+  pull_request:
+    branches: [hosted-v0.5-descendant]
+    paths:
+      - 'JM_CLOUD_CONTACT_SERVER_v0_5_1_HOSTED_DESCENDANT.mjs'
+      - 'qa/JM_CLOUD_ERROR_REDACTION_CP09.test.mjs'
+      - '.github/workflows/jm-cloud-v051-error-boundary-cp09.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  original-hosted-security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install original hosted descendant runtime dependencies
+        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Preserve all existing v0.5.1 original QA offices
+        run: npm test
+      - name: Verify exact server-boundary error redaction on local loopback
+        run: node --test qa/JM_CLOUD_ERROR_REDACTION_CP09.test.mjs
