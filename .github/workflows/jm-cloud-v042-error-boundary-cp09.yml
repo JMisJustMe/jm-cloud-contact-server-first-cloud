@@ -1,0 +1,29 @@
+name: JM Cloud v0.4.2 CP09 — isolated error boundary
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'JM_CLOUD_CONTACT_SERVER_v0_4_2.mjs'
+      - 'qa/JM_CLOUD_ERROR_REDACTION_CP09.test.mjs'
+      - '.github/workflows/jm-cloud-v042-error-boundary-cp09.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  original-server-security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Original server source syntax
+        run: node --check JM_CLOUD_CONTACT_SERVER_v0_4_2.mjs
+      - name: Local-only error redaction plus legacy route regression
+        run: node --test qa/JM_CLOUD_ERROR_REDACTION_CP09.test.mjs
