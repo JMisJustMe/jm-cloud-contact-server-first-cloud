@@ -1,0 +1,81 @@
+name: JM v0.3.2 cloud worker handoff — three distinct runners
+on:
+  push:
+    branches:
+      - jm-sovereign-agent-gateway-v0.3.2-cloud-handoff-20261014
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  seed-authorised-job:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install existing JM Cading gateway
+        run: npm install --no-audit --no-fund
+      - name: Test protected v0.3 and v0.3.1 inheritance
+        run: npm run preflight
+      - name: Human-authority gate, approved task and durable state
+        run: node gateway-remain-v0.3/JM_CLOUD_HANDOFF_v0_3_2.mjs seed
+      - name: Pass short-lived state to external worker
+        uses: actions/upload-artifact@v4
+        with:
+          name: jm-v032-authorised-job
+          path: .handoff/
+          include-hidden-files: true
+          retention-days: 1
+          if-no-files-found: error
+  independently-contact-cloud:
+    needs: seed-authorised-job
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/download-artifact@v4
+        with:
+          name: jm-v032-authorised-job
+          path: .handoff
+      - name: Recover instruction and contact external JM servers
+        run: node gateway-remain-v0.3/JM_CLOUD_HANDOFF_v0_3_2.mjs work
+      - name: Return bounded read-only witness
+        uses: actions/upload-artifact@v4
+        with:
+          name: jm-v032-worker-witness
+          path: .handoff/worker-report.json
+          retention-days: 1
+          if-no-files-found: error
+  third-host-reentry-and-proof:
+    needs: independently-contact-cloud
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install existing gateway for fresh host
+        run: npm install --no-audit --no-fund
+      - uses: actions/download-artifact@v4
+        with:
+          name: jm-v032-authorised-job
+          path: .handoff
+      - uses: actions/download-artifact@v4
+        with:
+          name: jm-v032-worker-witness
+          path: .handoff
+      - name: Recover original job, receive witness and prove second restart
+        run: node gateway-remain-v0.3/JM_CLOUD_HANDOFF_v0_3_2.mjs recover
+      - name: Preserve short-lived scoped result, not replicated estate
+        uses: actions/upload-artifact@v4
+        with:
+          name: jm-v032-return-result
+          path: .handoff/recovery-result.json
+          retention-days: 3
+          if-no-files-found: error
