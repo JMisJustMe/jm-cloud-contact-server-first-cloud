@@ -1,12 +1,17 @@
 {
-  "name": "jm-cloud-contact-server",
-  "version": "0.4.2",
+  "name": "jm-sovereign-agent-gateway",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
-  "engines": {"node": ">=20"},
+  "engines": {"node": ">=22"},
   "scripts": {
-    "start": "node JM_CLOUD_CONTACT_SERVER_v0_4_2.mjs",
-    "test": "node --check JM_CLOUD_CONTACT_SERVER_v0_4_2.mjs",
-    "preflight": "npm test"
+    "start": "node gateway-cading-v0.2/JM_SOVEREIGN_AGENT_GATEWAY_API_CARRIER_v0_2.mjs",
+    "check": "node --check gateway-cading-v0.2/JM_SOVEREIGN_AGENT_GATEWAY_CADING_JS_CARRIER_v0_2.mjs && node --check gateway-cading-v0.2/JM_SOVEREIGN_AGENT_GATEWAY_API_CARRIER_v0_2.mjs",
+    "preflight": "npm run check"
+  },
+  "dependencies": {
+    "@agentclientprotocol/sdk": "1.4.0",
+    "ws": "8.21.3",
+    "zod": "4.5.4"
   }
 }

@@ -1,0 +1,49 @@
+{
+  "schema": "jm.sovereign-agent-gateway.manifest/0.2",
+  "name": "JM SOVEREIGN AGENT GATEWAY",
+  "version": "0.2.0",
+  "status": "DURABLE_LOCAL_DING__CLOUD_CONTACT_OPEN",
+  "keeper": "YOUR DOOR. MANY AGENTS. YOUR AUTHORITY.",
+  "sourceAuthority": "Cading / JM Coding Estate",
+  "sourceSha256": "2a1a6e82f615599c9c79f8c5d21a0978cfbf977f566957de1f8324e276ac7479",
+  "proofs": {
+    "cadingStateRoundtrip": "PASS",
+    "jsCarrierParity": "PASS",
+    "localTwoRestartRecovery": "PASS",
+    "cloudPersistentDiskRestart": "OPEN",
+    "acpLiveWire": "OPEN",
+    "externalAgentExecution": "OPEN"
+  },
+  "files": [
+    {
+      "path": "JM_SOVEREIGN_AGENT_GATEWAY_v0_2.cading",
+      "bytes": 2965,
+      "sha256": "2a1a6e82f615599c9c79f8c5d21a0978cfbf977f566957de1f8324e276ac7479"
+    },
+    {
+      "path": "JM_SOVEREIGN_AGENT_GATEWAY_CADING_JS_CARRIER_v0_2.mjs",
+      "bytes": 4232,
+      "sha256": "f3330a26238be993dc0ad0a0dc8cf3c9a2c703fe6e577a52be3eb4482c228b7b"
+    },
+    {
+      "path": "JM_SOVEREIGN_AGENT_GATEWAY_API_CARRIER_v0_2.mjs",
+      "bytes": 21895,
+      "sha256": "fd7b42e4f6aec012988b3f0ba9381673be5a6d9383f6019fd1055fe3ef8c856e"
+    },
+    {
+      "path": "JM_SOVEREIGN_AGENT_GATEWAY_CADING_STATE_ROUNDTRIP_SUMMARY_v0_2.json",
+      "bytes": 543,
+      "sha256": "75b23d66a5126a150c81dc2452d11f8e986dc4326ec0611cc14c33f40f2c9a1f"
+    },
+    {
+      "path": "JM_SOVEREIGN_AGENT_GATEWAY_JS_CARRIER_PARITY_RECEIPT_v0_2.json",
+      "bytes": 657,
+      "sha256": "cfe955994adb339c8695705c1d32a7ff86bb069842f4be9ddc38e724fc1c48a7"
+    },
+    {
+      "path": "JM_SOVEREIGN_AGENT_GATEWAY_DURABLE_RESTART_RECEIPT_v0_2.json",
+      "bytes": 401,
+      "sha256": "d87e322ea1b01d192e0e9e4825270b4fae7596a8f4321236bd119734dd0a7bfb"
+    }
+  ]
+}

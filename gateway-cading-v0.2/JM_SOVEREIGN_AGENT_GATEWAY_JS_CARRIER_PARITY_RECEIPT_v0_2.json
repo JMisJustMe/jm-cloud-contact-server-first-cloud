@@ -1,0 +1,23 @@
+{
+  "schema": "jm.sovereign-agent-gateway.parity-receipt/0.2",
+  "status": "PASS",
+  "checks": {
+    "initial": true,
+    "ids": true,
+    "hold": true,
+    "afterHold": true,
+    "approve": true,
+    "dispatch": true,
+    "final": true,
+    "import": true,
+    "imported": true
+  },
+  "fullRuntime": {
+    "sha256": "06caf0e5c785876bfb31a5a2eb571fba7a216152373f7d871937e5ca72a669a9",
+    "irKind": "cading-ir",
+    "irVersion": "10.0-jm",
+    "normalizedDigest": "jm-b38b1862"
+  },
+  "sourceSha256": "2a1a6e82f615599c9c79f8c5d21a0978cfbf977f566957de1f8324e276ac7479",
+  "carrierSha256": "f3330a26238be993dc0ad0a0dc8cf3c9a2c703fe6e577a52be3eb4482c228b7b"
+}

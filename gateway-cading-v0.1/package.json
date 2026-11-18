@@ -1,0 +1,15 @@
+{
+  "name": "jm-sovereign-agent-gateway-cading",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "@agentclientprotocol/sdk": "1.4.0",
+    "zod": "^4.0.0"
+  },
+  "scripts": {
+    "api": "node JM_SOVEREIGN_AGENT_GATEWAY_API_CARRIER_v0_1.mjs",
+    "acp": "node JM_SOVEREIGN_AGENT_GATEWAY_ACP_STDIO_ADAPTER_v0_1.mjs"
+  }
+}

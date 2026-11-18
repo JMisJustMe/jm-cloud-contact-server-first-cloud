@@ -1,0 +1,9 @@
+{
+  "schema": "jm.sovereign-agent-gateway.runtime-dependency/0.1",
+  "runtimeBody": "JM_CODING_ESTATE_REAL_BUILD_v1_0.mjs",
+  "sha256": "06caf0e5c785876bfb31a5a2eb571fba7a216152373f7d871937e5ca72a669a9",
+  "role": "VERIFIED_JM_RUNTIME_CARRIER",
+  "sourceAuthority": false,
+  "mount": "JM_CODING_ESTATE_RUNTIME",
+  "law": "Runtime carries the Cading body; runtime does not replace Cading source authority."
+}
