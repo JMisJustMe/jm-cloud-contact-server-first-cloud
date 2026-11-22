@@ -7,6 +7,8 @@ on:
       - 'JM_CLOUD_CONTACT_SERVER_v0_5_1_HOSTED_DESCENDANT.mjs'
       - 'qa/JM_CLOUD_ERROR_REDACTION_CP09.test.mjs'
       - '.github/workflows/jm-cloud-v051-error-boundary-cp09.yml'
+      - 'zezu/fixtures/.gitattributes'
+      - 'zezu/fixtures/*.json'
   workflow_dispatch:
 
 permissions:
@@ -28,4 +30,39 @@ jobs:
       - name: Preserve all existing v0.5.1 original QA offices
         run: npm test
       - name: Verify exact server-boundary error redaction on local loopback
+        run: node --test qa/JM_CLOUD_ERROR_REDACTION_CP09.test.mjs
+
+  canonical-zezu-windows-checkout:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout original hosted v0.5.1 source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify the original carriers survive a default Windows checkout
+        shell: pwsh
+        run: |
+          $files = @(
+            'zezu/fixtures/ZEZU_NWONA_PORTABLE_HISTORY_CAPSULE_v0_5.json',
+            'zezu/fixtures/ZEZU_NWONA_PORTABLE_HISTORY_CAPSULE_v0_8.json'
+          )
+          foreach ($file in $files) {
+            $eol = git ls-files --eol -- $file
+            Write-Output $eol
+            if ($eol -notmatch 'i/lf\s+w/lf\s+attr/-text') {
+              throw "ZEZU_CANONICAL_CARRIER_CHECKOUT_HOLD: $file"
+            }
+          }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install original hosted runtime dependencies without scripts
+        shell: cmd
+        run: npm.cmd install --ignore-scripts --no-audit --no-fund
+      - name: Run complete original hosted server suite on Windows
+        shell: cmd
+        run: npm.cmd test
+      - name: Verify original hosted error-boundary tests on Windows
+        shell: cmd
         run: node --test qa/JM_CLOUD_ERROR_REDACTION_CP09.test.mjs

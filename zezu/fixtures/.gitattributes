@@ -1,0 +1,3 @@
+# Zezu portable history carriers carry an exact SHA-256 identity.
+# Windows core.autocrlf must not rewrite source bytes during checkout.
+*.json -text

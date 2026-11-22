@@ -1,0 +1,45 @@
+{
+  "schema": "JM.CloudContactHosted.Win32ContactReceipt/CP04",
+  "date": "2026-11-22",
+  "source_branch": "hosted-v0.5-descendant",
+  "source_commit": "6d36afa2f4c68a5fb5cd794e4bf7d41da11cdaee",
+  "candidate_git_attributes_commit": "0b4dcd45c28770ff63928e9d78143590e57303f7",
+  "owner_host": "GroundZeroJM",
+  "scope": "ISOLATED_WIN11_SOURCE_TEST_AND_LOCALHOST_RUNTIME_ONLY",
+  "original_git_checkout": {
+    "git_eol": "i/lf w/crlf",
+    "zezu_history_suite": "FAIL_4_OF_16",
+    "cause": "TRACKED_FIXTURE_TEXT_CRLF_REWRITES_SHA256_BYTES"
+  },
+  "exact_lf_checkout": {
+    "git_eol": "i/lf w/lf",
+    "original_npm_test_exit": 0
+  },
+  "candidate_windows_default_checkout": {
+    "git_eol": "i/lf w/lf attr/-text",
+    "original_npm_test_exit": 0
+  },
+  "localhost_restart": {
+    "mode": "DEVELOPMENT",
+    "bind": "127.0.0.1",
+    "port_is_ephemeral": true,
+    "first_ready": true,
+    "second_ready": true,
+    "version": "0.5.1-hosted",
+    "local_signing_key_file_created": true,
+    "local_signing_key_sha256_stable": true,
+    "public_receipt_key_id_stable": true,
+    "secrets_generated_ephemeral": true,
+    "production_credentials_used": false,
+    "remote_service_deployed": false,
+    "exercised_processes_stopped": true
+  },
+  "boundaries": {
+    "node_source_runtime_proven": true,
+    "original_source_changed": false,
+    "production_cloud_persistence_unproven": true,
+    "private_R2_or_Postgres_restore_unproven": true,
+    "fold8_owner_tap_test_unproven": true,
+    "release_not_authorised_by_fixture": true
+  }
+}
